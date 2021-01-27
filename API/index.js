@@ -11,4 +11,5 @@ MongoClient.connect(connectionString, function(err, client) {
    const collection = client.db("ProjetGL").collection("ProjetGL");
    // perform actions on the collection object
    client.close();
+   // okdakor
 });
