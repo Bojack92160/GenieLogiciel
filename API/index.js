@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const UtilisateursSchema = require('./models/Utilisateurs-model.js');
+const express = require('express');
 
 const connectionString = 'mongodb+srv://dbuser:dbuser@projetgl.9eaqw.mongodb.net/ProjetGl?retryWrites=true&w=majority'
 
