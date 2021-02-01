@@ -12,7 +12,50 @@ app.use(bodyParser.json()) //permet d afficher dans la console les posts data re
 
 //routes
 app.get('/', (req,res) => {
-  res.send("sweet home")
+  res.send("project manager :)")
+})
+
+/** Ajout d'un utilisateur
+ * requiert un champ :
+ * @nom
+ * @prenom
+ * @mdp
+ * @email
+ * @role
+ * @mdp
+ * @tel
+ * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
+ */
+app.post('/Add/User', async (req,res) => {
+  if (!req.body.nom || !req.body.prenom || !req.body.mdp || !req.body.email || !req.body.role || !req.body.tel) {
+    res.json({error: "Requete non valide. veuillez remplir les champs nom, prenom, mdp, email, role et tel", success: false});
+    return;
+  }
+  if (req.body.role!="administrateur" && req.body.role!="responsable de projet" && req.body.role!="collaborateur") {
+    res.json({error: "Champ role non valide. il ne peut prendre que les valeurs 'administrateur', 'responsable de projet' ou 'collaborateur' (tout en minuscule!)", success: false});
+    return;
+  }
+
+  try {
+    // On crée une instance du Model
+    var NewUtilisateur = new UtilisateursSchema({
+      nom: req.body.nom,
+      prenom: req.body.prenom,
+      mdp: req.body.mdp,
+      email: req.body.email,
+      role: req.body.role,
+      tel: req.body.tel,
+      listeProjets: [],
+      listeNotifications: [],
+      listeTacheCommencés: []
+    });
+
+    await NewUtilisateur.save();
+    res.json({message: "L'utilisateur a bien été sauvegardé", success: true})
+
+  } catch (e) {
+    res.json({error: "Une erreur est survenue", stack: e, success: false})
+  }
 })
 
 
@@ -23,11 +66,11 @@ app.get('/', (req,res) => {
  *  requiert un champ :
  * @email
  * @mdp
- * renvoi les données de l'utilisateurs, sinon un champ error.
+ * renvoi les données de l'utilisateurs, sinon un objet avec un champ error et success a false.
  */
 app.post('/login', async (req,res) => {
   if (!req.body.email || !req.body.mdp) {
-    res.json({error: "Requete non valide. veuillez remplir les champs email et mdp"});
+    res.json({error: "Requete non valide. veuillez remplir les champs email et mdp", success: false});
     return;
   }
   //recherche des utilisateurs avec cet email
@@ -43,7 +86,7 @@ app.post('/login', async (req,res) => {
     }
   }
 
-  res.json({error: "l'email ou le mot de passe est errone"});
+  res.json({error: "l'email ou le mot de passe est errone", success: false});
 })
 
 
