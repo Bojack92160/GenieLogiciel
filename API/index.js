@@ -1,8 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const UtilisateursSchema = require('./models/Utilisateurs-model.js');
 
+const UtilisateursSchema = require('./models/Utilisateurs-model.js');
+const ClientsSchema = require('./models/Clients-model.js');
 
 const connectionString = 'mongodb+srv://dbuser:dbuser@projetgl.9eaqw.mongodb.net/ProjetGl?retryWrites=true&w=majority'
 
@@ -26,7 +27,7 @@ app.get('/', (req,res) => {
  * @tel
  * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
  */
-app.post('/Add/User', async (req,res) => {
+app.post('/Ajout/Utilisateur', async (req,res) => {
   if (!req.body.nom || !req.body.prenom || !req.body.mdp || !req.body.email || !req.body.role || !req.body.tel) {
     res.json({error: "Requete non valide. veuillez remplir les champs nom, prenom, mdp, email, role et tel", success: false});
     return;
@@ -58,7 +59,36 @@ app.post('/Add/User', async (req,res) => {
   }
 })
 
+/** Ajout d'un client
+ * requiert un champ :
+ * @nomEntreprise
+ * @tel
+ * @email
+ * @contactsAssocies
+ * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
+ */
+app.post('/Ajout/Client', async (req,res) => {
+  if (!req.body.nomEntreprise || !req.body.tel || !req.body.email) {
+    res.json({error: "Requete non valide. veuillez remplir les champs nomEntreprise, email et tel", success: false});
+    return;
+  }
 
+  try {
+    // On crée une instance du Model
+    var NewClient = new ClientsSchema({
+      nomEntreprise: req.body.nomEntreprise,
+      email: req.body.email,
+      tel: req.body.tel,
+      contactsAssocies: req.body.contactsAssocies ? req.body.contactsAssocies : [],
+    });
+
+    await NewClient.save();
+    res.json({message: "Le client a bien été sauvegardé", success: true})
+
+  } catch (e) {
+    res.json({error: "Une erreur est survenue", stack: e, success: false})
+  }
+})
 
 
 
