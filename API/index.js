@@ -36,19 +36,24 @@ app.post('/login', async (req,res) => {
     return;
   }
   //recherche des utilisateurs avec cet email
-  let ListUtilisateurs = await UtilisateursSchema.find({"email":req.body.email});
-  if (ListUtilisateurs.length == 0) {
-    res.json({erreur: "adresse email introuvable"});
+  let Utilisateur = await UtilisateursSchema.findOne({"email":req.body.email, "mdp":req.body.mdp});
+  if (Utilisateur) {
+    res.json({erreur: "email ou mot de pass errone", success: false});
+    return;
   }
 
-  for (var i = 0; i < ListUtilisateurs.length; i++) {
-    if (ListUtilisateurs[i].mdp == req.body.mdp) {
-      res.json(ListUtilisateurs[i]);
-      return;
-    }
+  let Response = {dataUtilisateur: {}, dataProjects:[], dataNotifications:[], success: true}
+  Response.dataUtilisateur = Utilisateur;
+
+  for (var i = 0; i < Utilisateur.listeProjets.length; i++) {
+    await Response.dataProjects.push(await ProjetsSchema.findById(Utilisateur.listeProjets[i]))
   }
 
-  res.json({erreur: "l'email ou le mot de passe est errone", success: false});
+  for (var i = 0; i < Utilisateur.listeNotifications.length; i++) {
+    await Response.dataNotifications.push(await NotificationsSchema.findById(Utilisateur.listeNotifications[i]))
+  }
+
+  res.json(Response);
 })
 
 
@@ -56,27 +61,5 @@ app.post('/login', async (req,res) => {
 mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
   console.log("connected to DB!");
 })
-
-/*
-// On crée une instance du Model
-var AdminUtilisateur = new UtilisateursSchema({
-  nom: "Admin",
-  prenom: "Admin",
-  mdp: "Admin",
-  email: "Admin@gmail.com",
-  role: "Administrateur",
-  tel: "0683145939",
-  listeProjets: [],
-  listeNotifications: [],
-  listeTacheCommencés: []
-});
-
-// On le sauvegarde dans MongoDB !
-AdminUtilisateur.save(function (err) {
-  if (err) { throw err; }
-  console.log('utilisateur ajouté avec succès !');
-  // On se déconnecte de MongoDB maintenant
-  mongoose.connection.close();
-});*/
 
 app.listen(3000);
