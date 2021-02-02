@@ -1,10 +1,148 @@
 var mongoose = require('mongoose');
+
 const UtilisateursSchema = require('./../models/Utilisateurs-model.js');
 const ClientsSchema = require('./../models/Clients-model.js');
 const ProjetsSchema = require('./../models/Projets-model.js');
 const NotificationsSchema = require('./../models/Notifications-model.js');
+const TachesSchema = require('./../models/Taches-model.js');
+
+var TachesTools = require('./../tools/TachesTools.js');
 
 module.exports = function(app){
+
+  /** Ajout d'un Projet
+   * requiert un champ :
+   * @titre
+   * @responsable
+   * @description
+   * @dateDebutInit
+   * @dateFinInit
+   * @_idMere
+   * @collaborateur
+   * !il faut que _idMere existe, sinon erreur
+   * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
+   * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
+   * le champ listeSousTaches de la tache mere est update
+   * les champs listeTacheResponsable et listeTacheCollaborateur du responsable et du collaborateur sont automatiquement MAJ
+   * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
+   */
+  app.post('/Ajout/Tache', async (req,res) => {
+    if (!req.body.titre || !req.body.responsable || !req.body.description || !req.body.dateDebutInit || !req.body.dateFinInit || !req.body._idMere || !req.body.collaborateur) {
+      res.json({erreur: "Requete non valide. veuillez remplir les champs titre, responsable, mdp, description, dateDebutInit, dateFinInit, _idMere et collaborateur", success: false});
+      return;
+    }
+
+    //On verifie que le client existe bien
+    let DataMere;
+    let Niveau;
+    try {
+      DataMere = await ProjetsSchema.findById(req.body._idMere);
+      if (!DataMere) {
+        DataMere = await TachesSchema.findById(req.body._idMere);
+        if (!DataMere) {
+          res.json({erreur: "Le projet/tache mere "+req.body._idMere+" n'existe pas dans la base de donnée. Veuillez rentrer un projet/tache mere existant", success: false});
+          return;
+        } else {
+          Niveau = DataMere.niveau+1;
+          if (Niveau>3) {
+            res.json({erreur: "Impossible de creer une tache fille de niveau 4, le niveau d'imbriquation maximale étant 3", success: false});
+            return;
+          }
+        }
+      } else {
+        Niveau = 1;
+      }
+    } catch (e) {
+      console.error(e);
+      res.json({erreur: "Une erreur est survenue lors de la recherche du projet/tache mere ", stack: e, success: false});
+      return;
+    }
+
+    //On verifie que le responsable existe bien et bon role
+    let DataResponsable;
+    try {
+      DataResponsable = await UtilisateursSchema.findOne({email: req.body.responsable});
+      if (!DataResponsable) {
+        res.json({erreur: "Le responsable "+req.body.responsable+" n'existe pas dans la base de donnée. Veuillez rentrer un responsable existant", success: false});
+        return;
+      }
+      if (DataResponsable.role == "collaborateur") {
+        res.json({erreur: "Le responsable "+req.body.responsable+" n'a pas le droit d'être responsable de projet", success: false});
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+      res.json({erreur: "Une erreur est survenue lors de la recherche du responsable", stack: e, success: false});
+      return;
+    }
+
+    //On verifie que le collaborateur existe bien et bon role
+    let DataCollaborateur;
+    try {
+      DataCollaborateur = await UtilisateursSchema.findOne({email: req.body.collaborateur});
+      if (!DataCollaborateur) {
+        res.json({erreur: "Le collaborateur "+req.body.collaborateur+" n'existe pas dans la base de donnée. Veuillez rentrer un collaborateur existant", success: false});
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+      res.json({erreur: "Une erreur est survenue lors de la recherche du collaborateur", stack: e, success: false});
+      return;
+    }
+
+    //on convertit bien en Date
+    try {
+      req.body.dateDebutInit = new Date(req.body.dateDebutInit);
+      req.body.dateFinInit = new Date(req.body.dateFinInit);
+    } catch (e) {
+      console.error(e);
+      res.json({erreur: "Probleme lors du parsage des dates dateDebutInit et dateFinInit", stack: e, success: false});
+      return;
+    }
+
+    try {
+      let Chemin = await TachesTools.getChemin(DataMere._id);
+      //on créé l'id manuellement pour le sauvegardé
+      let ID = mongoose.Types.ObjectId();
+      // On crée une instance du Model
+      var NewTache = new TachesSchema({
+        _id: ID,
+        titre: req.body.titre,
+        responsable: req.body.responsable,
+        description: req.body.description,
+        dateDebutInit: req.body.dateDebutInit,
+        dateFinInit: req.body.dateFinInit,
+        dateDebutEffect: req.body.dateDebutInit,
+        dateFinEffect: req.body.dateFinInit,
+        niveau: Niveau,
+        chemin: Chemin,
+        _idMere: DataMere._id,
+        listeSousTaches: [],
+        collaborateur: req.body.collaborateur,
+        dataAvancement: {
+          pourcent: 0, //entre 0 et 1
+          chargeConsommé: 0, //Somme des soustaches
+          chargeRestante: 0, //Somme des soustaches
+          chargeInitiale: 0, //Somme des soustaches
+          chargeEffective: 0, //Somme des soustaches
+        },
+        prédécesseurs: req.body.predecesseurs ? req.body.predecesseurs : [],
+        sAlerte: true,
+      });
+      await NewTache.save();
+      DataMere.listeSousTaches.push(ID);
+      DataResponsable.listeTacheResponsable.push(ID);
+      DataCollaborateur.listeTacheCollaborateur.push(ID);
+      await DataResponsable.save();
+      await DataCollaborateur.save();
+      await DataMere.save();
+
+      res.json({message: "La tache a bien été sauvegardé", success: true});
+    } catch (e) {
+      console.error(e);
+      res.json({erreur: "Une erreur est survenue", stack: e, success: false});
+    }
+  })
 
   /** Ajout d'une Notification
    * requiert un champ :

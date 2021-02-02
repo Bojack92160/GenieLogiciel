@@ -10,7 +10,7 @@ const Taches = mongoose.Schema({
   dateFinEffect: Date,
   niveau: Number,
   chemin: String,
-  _idMere: Number,
+  _idMere: String,
   listeSousTaches: [String], //list d'id
   collaborateur: String,
   dataAvancement: {
