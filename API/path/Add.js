@@ -2,8 +2,72 @@ var mongoose = require('mongoose');
 const UtilisateursSchema = require('./../models/Utilisateurs-model.js');
 const ClientsSchema = require('./../models/Clients-model.js');
 const ProjetsSchema = require('./../models/Projets-model.js');
+const NotificationsSchema = require('./../models/Notifications-model.js');
 
 module.exports = function(app){
+
+  /** Ajout d'une Notification
+   * requiert un champ :
+   * @de //email
+   * @pour //email
+   * @contenu
+   * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
+   */
+  app.post('/Ajout/Notification', async (req,res) => {
+    if (!req.body.de || !req.body.pour || !req.body.contenu) {
+      res.json({erreur: "Requete non valide. veuillez remplir les champs de, pour et contenu", success: false});
+      return;
+    }
+
+    let DataEnvoyeur;
+    try {
+      DataEnvoyeur = await UtilisateursSchema.findOne({email: req.body.de});
+    /*  console.log("req.body.de", req.body.de);
+      console.log("DataEnvoyeur", DataEnvoyeur);*/
+      if (!DataEnvoyeur) {
+        res.json({erreur: "L'envoyeur n'existe pas dans la base de donnée", success: false});
+        return;
+      }
+    } catch (e) {
+      res.json({erreur: "Un probleme est survenue lors de la recherche de l'envoyeur", success: false});
+      return;
+    }
+
+    let DataDestinataire;
+    try {
+      DataDestinataire = await UtilisateursSchema.findOne({email: req.body.pour});
+      if (!DataDestinataire) {
+        res.json({erreur: "Le destinataire n'existe pas dans la base de donnée", success: false});
+        return;
+      }
+    } catch (e) {
+      res.json({erreur: "Un probleme est survenue lors de la recherche du destinataire", success: false});
+      return;
+    }
+
+
+
+    try {
+      let ID = mongoose.Types.ObjectId();
+      // On crée une instance du Model
+      var NewNotification = new NotificationsSchema({
+        _id: ID,
+        de: req.body.de,
+        pour: req.body.pour,
+        _idde: DataEnvoyeur._id,
+        _idpour: DataDestinataire._id,
+        contenu: req.body.contenu,
+        date: new Date(),
+      });
+      DataDestinataire.listeNotifications.push(ID);
+      await NewNotification.save();
+      await DataDestinataire.save()
+      res.json({message: "La notification a bien été envoyé a bien été sauvegardé", success: true})
+    } catch (e) {
+      res.json({erreur: "Une erreur est survenue", stack: e, success: false})
+    }
+  })
+
 
   /** Ajout d'un Projet
    * requiert un champ :
@@ -101,6 +165,7 @@ module.exports = function(app){
       res.json({erreur: "Une erreur est survenue", stack: e, success: false});
     }
   })
+
 
   /** Ajout d'un utilisateur
    * requiert un champ :
