@@ -2,7 +2,13 @@
   "version": 2,
   "routes": [
     { "src": "/Recherche/Id", "dest": "/" },
+    { "src": "/Recherche/Projet", "dest": "/" },
+    { "src": "/Recherche/Tache", "dest": "/" },
+    { "src": "/Recherche/Utilisateur", "dest": "/" },
+    { "src": "/Recherche/Client", "dest": "/" },
     { "src": "/Ajout/Projet", "dest": "/" },
+    { "src": "/Ajout/Tache", "dest": "/" },
+    { "src": "/Ajout/Notification", "dest": "/" },
     { "src": "/Ajout/Utilisateur", "dest": "/" },
     { "src": "/Ajout/Client", "dest": "/" },
     { "src": "/login", "dest": "/" }
