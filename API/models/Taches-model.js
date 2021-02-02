@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Projets = mongoose.Schema({
+const Taches = mongoose.Schema({
   titre: String,
   responsable: String, //email
   description: String,
@@ -27,4 +27,4 @@ const Projets = mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Projets', Projets);
+module.exports = mongoose.model('Taches', Taches);

@@ -7,7 +7,9 @@ const Utilisateurs = mongoose.Schema({
   email: String,
   role: String,
   tel: Number,
-  listeProjets: [String],
+  listeProjets: [String], //si responsable
+  listeTacheResponsable: [String], //tache où il est responsable
+  listeTacheCollaborateur: [String], //tache où il est collaborateur 
   listeNotifications: [String],
   listeTacheCommencés: [{
     _id: String,
