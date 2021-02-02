@@ -7,6 +7,7 @@ const NotificationsSchema = require('./../models/Notifications-model.js');
 const TachesSchema = require('./../models/Taches-model.js');
 
 var TachesTools = require('./../tools/TachesTools.js');
+var NotificationTools = require('./../tools/NotificationTools.js');
 
 module.exports = function(app){
 
@@ -21,12 +22,8 @@ module.exports = function(app){
    * @collaborateur
    * !il faut que _idMere existe, sinon erreur
    * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
-<<<<<<< HEAD
    * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
    * le champ listeSousTaches de la tache mere est update
-=======
-   !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
->>>>>>> 2dc518a6db8a35d5ab059fbd0179c0615a8cf44a
    * les champs listeTacheResponsable et listeTacheCollaborateur du responsable et du collaborateur sont automatiquement MAJ
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
@@ -137,10 +134,12 @@ module.exports = function(app){
       DataMere.listeSousTaches.push(ID);
       DataResponsable.listeTacheResponsable.push(ID);
       DataCollaborateur.listeTacheCollaborateur.push(ID);
+
       await DataResponsable.save();
       await DataCollaborateur.save();
       await DataMere.save();
-
+      await NotificationTools.sendSystemNotification(DataResponsable.email, "Une tache vient d'etre crééer et vous etes le responsable! ("+Chemin+req.body.titre+")");
+      await NotificationTools.sendSystemNotification(DataCollaborateur.email, "Une tache vient d'etre crééer et vous etes le collaborateur! ("+Chemin+req.body.titre+")");
       res.json({message: "La tache a bien été sauvegardé", success: true});
     } catch (e) {
       console.error(e);
