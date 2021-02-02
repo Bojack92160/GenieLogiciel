@@ -1,28 +1,25 @@
 import "./App.css";
+import Sidebar from "./components/Sidebar";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Projects from "./pages/Projects";
+import Explore from "./pages/Explore";
+import Notifs from "./pages/Notifs";
+import Settings from "./pages/Settings";
 
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Container fluid>
-          <Row>
-            <Col sm={4} lg={12}>
-              col 10
-            </Col>
-            <Col sm={4} lg={12}>
-              col 1
-            </Col>
-            <Col sm={4} lg={12}>
-              col 2
-            </Col>
-          </Row>
-        </Container>
-        <Button variant="primary">Primary</Button>{" "}
-      </header>
+      <Router>
+        <Sidebar />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/projects" component={Projects} />
+          <Route path="/notifications" component={Notifs} />
+          <Route path="/explore" component={Explore} />
+          <Route path="/settings" component={Settings} />
+        </Switch>
+      </Router>
     </div>
   );
 }
