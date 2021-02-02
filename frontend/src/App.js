@@ -11,7 +11,7 @@ function App() {
         <Container fluid>
           <Row>
             <Col sm={4} lg={12}>
-              col 2
+              col 1
             </Col>
             <Col sm={4} lg={12}>
               col 1
