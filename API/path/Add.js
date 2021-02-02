@@ -188,6 +188,20 @@ module.exports = function(app){
       return;
     }
 
+    //On verifie que le mail n'existe pas deja
+    try {
+      let DataResponsable = await UtilisateursSchema.findOne({email: req.body.email});
+      if (DataResponsable) {
+        res.json({erreur: "L'utilisateur avec le mail "+req.body.email+" existe deja dans la base de donnée", success: false});
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+      res.json({erreur: "Une erreur est survenue lors de la recherche d'utilisateur unique", stack: e, success: false});
+      return;
+    }
+
+
     try {
       // On crée une instance du Model
       var NewUtilisateur = new UtilisateursSchema({
