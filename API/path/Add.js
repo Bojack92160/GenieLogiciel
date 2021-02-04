@@ -11,7 +11,7 @@ var NotificationTools = require('./../tools/NotificationTools.js');
 
 module.exports = function(app){
 
-  /** Ajout d'un Projet
+  /** Ajout d'un Tache
    * requiert un champ :
    * @titre
    * @responsable

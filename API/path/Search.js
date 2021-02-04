@@ -97,11 +97,11 @@ module.exports = function (app) {
     } else if (req.body.responsable) {
       res.json(await TachesSchema.find({"responsable" : req.body.responsable}));
       return;
-    } else if (req.body.responsable) {
-      res.json(await TachesSchema.find({"responsable" : req.body.responsable}));
+    } else if (req.body.collaborateur) {
+      res.json(await TachesSchema.find({"collaborateur" : req.body.collaborateur}));
       return;
     } else if (req.body.client) {
-      res.json(await TachesSchema.find({"collaborateur" : req.body.collaborateur}));
+      res.json(await TachesSchema.find({"client" : req.body.client}));
       return;
     } else if (req.body.date) {
       ResponseList = await TachesSchema.find();
