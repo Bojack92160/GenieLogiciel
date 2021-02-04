@@ -5,11 +5,89 @@ const ClientsSchema = require('./../models/Clients-model.js');
 const ProjetsSchema = require('./../models/Projets-model.js');
 const NotificationsSchema = require('./../models/Notifications-model.js');
 const TachesSchema = require('./../models/Taches-model.js');
+const Rapports_Activites = require('./../models/Rapports_Activites-model.js');
 
 var TachesTools = require('./../tools/TachesTools.js');
 var NotificationTools = require('./../tools/NotificationTools.js');
 
 module.exports = function(app){
+
+  /** Ajout d'un Rapport_Activite
+   * requiert un champ :
+   * @_idTache
+   * @_idUtilisateur
+   * @periodeDebut
+   * @periodeFin
+   * @chargeEffectue
+   * @chargeRestante
+   * @avancementFinal //entre 0 et 1 (pourcentage)
+   * !il faut que _idTache, _idUtilisateur existe, sinon erreur
+   * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
+   * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
+   * le champ listeSousTaches de la tache mere est update
+   * les champs listeTacheResponsable et listeTacheCollaborateur du responsable et du collaborateur sont automatiquement MAJ
+   * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
+   */
+   app.post('/Ajout/Tache', async (req,res) => {
+     if (!req.body._idTache || !req.body._idUtilisateur || !req.body.periodeDebut || !req.body.periodeFin || !req.body.chargeEffectue || !req.body.chargeRestante || !req.body.avancementFinal ) {
+       res.json({erreur: "Requete non valide. veuillez remplir les champs _idTache, _idUtilisateur, periodeDebut, periodeFin, chargeEffectue, chargeRestante, avancementInitial et avancementFinal", success: false});
+       return;
+     }
+
+     let DataTache;
+     let DataUtilisateur;
+     try {
+       DataTache = await TachesSchema.findById(req.body._idTache);
+       DataUtilisateur = await UtilisateursSchema.findById(req.body._idUtilisateur);
+       if (!DataTache) {
+           res.json({erreur: "La tache  "+req.body._idTache+" n'existe pas dans la base de donnée. Veuillez rentrer une id de tache existante", success: false});
+           return;
+       }
+       if (!DataUtilisateur) {
+           res.json({erreur: "L'utilisateur  "+req.body._idUtilisateur+" n'existe pas dans la base de donnée. Veuillez rentrer un utilisateur existant", success: false});
+           return;
+       }
+     } catch (e) {
+       res.json({erreur: "Une erreur est survenue lors de la recherche de la tache / utilisateur ", stack: e, success: false});
+       return;
+     }
+
+     try {
+       req.body.periodeDebut = new Date(req.body.periodeDebut);
+       req.body.periodeFin = new Date(req.body.periodeFin);
+     } catch (e) {
+       res.json({erreur: "Une erreur est survenue lors du parsage des dates. Il faut des objet Date()", stack: e, success: false});
+       return;
+     }
+
+     try {
+       var NewRapport = new Rapports_Activites({
+         _idUtilisateur: req.body._idUtilisateur,
+         _idTache: req.body._idTache,
+         emailUtilisateur: DataUtilisateur.email,
+         dateDeSaisie: new Date(),
+         periodeDebut: Date,
+         periodeFin: Date,
+         chargeEffectue: Number,
+         chargeRestante: Number, //=chargeEffectue * (1-avancementFinal)/avancementEffectué)
+         avancementInitial: Number, //entre 0 et 1 (pourcentage)
+         avancementEffectue: Number,
+         avancementFinal: Number,
+         commentaire: String,
+       });
+     } catch (e) {
+
+     }
+
+
+
+
+
+
+
+   });
+
+
 
   /** Ajout d'un Tache
    * requiert un champ :

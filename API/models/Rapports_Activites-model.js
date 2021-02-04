@@ -9,8 +9,8 @@ const Rapports_Activites = mongoose.Schema({
   periodeFin: Date,
   chargeEffectue: Number,
   chargeRestante: Number, //=chargeEffectue * (1-avancementFinal)/avancementEffectué)
-  avancecementInitial: Number, //entre 0 et 1 (pourcentage)
-  avancementEffectué: Number,
+  avancementInitial: Number, //entre 0 et 1 (pourcentage)
+  avancementEffectue: Number,
   avancementFinal: Number,
   commentaire: String,
 });
