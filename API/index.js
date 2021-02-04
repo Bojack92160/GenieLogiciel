@@ -17,6 +17,7 @@ app.use(bodyParser.json()) //permet d afficher dans la console les posts data re
 
 require('./path/Search.js')(app);
 require('./path/Add.js')(app);
+require('./path/Delete.js')(app);
 
 //routes
 app.get('/', (req,res) => {
