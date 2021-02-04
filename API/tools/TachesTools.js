@@ -8,6 +8,9 @@ const NotificationsSchema = require('./../models/Notifications-model.js');
 
 module.exports = {
 
+  /**  renvoi un string contenant le chemin de cette Tache SANS SON TITRE
+   * throw erreur si l'un des parents n'est pas accessible (mauvais id)
+   */
   getChemin: async function(id){
     let chemin = "";
     while (true) {
@@ -27,6 +30,14 @@ module.exports = {
       DataMere = false;
     }
     return chemin;
+  },
+
+  /**
+   *
+   */
+  updateProjet: async function(idTache){
+
+
   }
 
 

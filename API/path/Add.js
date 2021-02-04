@@ -30,7 +30,7 @@ module.exports = function(app){
    */
    app.post('/Ajout/Tache', async (req,res) => {
      if (!req.body._idTache || !req.body._idUtilisateur || !req.body.periodeDebut || !req.body.periodeFin || !req.body.chargeEffectue || !req.body.chargeRestante || !req.body.avancementFinal ) {
-       res.json({erreur: "Requete non valide. veuillez remplir les champs _idTache, _idUtilisateur, periodeDebut, periodeFin, chargeEffectue, chargeRestante, avancementInitial et avancementFinal", success: false});
+       res.json({erreur: "Requete non valide. veuillez remplir les champs _idTache, _idUtilisateur, periodeDebut, periodeFin, chargeEffectue, chargeRestante et avancementFinal", success: false});
        return;
      }
 
@@ -42,6 +42,20 @@ module.exports = function(app){
        if (!DataTache) {
            res.json({erreur: "La tache  "+req.body._idTache+" n'existe pas dans la base de donnée. Veuillez rentrer une id de tache existante", success: false});
            return;
+       } else {
+         if (DataTache.listeSousTaches.length>0) {
+           res.json({erreur: "Impossible de remplir un rapport sur cette tache, elle possède au moin une sous tache (une tache doit etre du plus bas niveau pour pouvoir saisir des rapports)", success: false});
+           return;
+         }
+         if (DataTache.prédécesseurs.length) {
+           for (var i = 0; i < DataTache.prédécesseurs.length; i++) {
+             let DataTachePredec = await TachesSchema.findById(DataTache.prédécesseurs[i]);
+             if (DataTachePredec && DataTachePredec.dataAvancement.pourcent<1) {
+               res.json({erreur: "Impossible de remplir un rapport sur cette tache, elle possède au moin un prédécesseur qui n'est pas finit ("+DataTachePredec.titre")", success: false});
+               return;
+             }
+           }
+         }
        }
        if (!DataUtilisateur) {
            res.json({erreur: "L'utilisateur  "+req.body._idUtilisateur+" n'existe pas dans la base de donnée. Veuillez rentrer un utilisateur existant", success: false});
@@ -66,17 +80,18 @@ module.exports = function(app){
          _idTache: req.body._idTache,
          emailUtilisateur: DataUtilisateur.email,
          dateDeSaisie: new Date(),
-         periodeDebut: Date,
-         periodeFin: Date,
-         chargeEffectue: Number,
-         chargeRestante: Number, //=chargeEffectue * (1-avancementFinal)/avancementEffectué)
-         avancementInitial: Number, //entre 0 et 1 (pourcentage)
-         avancementEffectue: Number,
-         avancementFinal: Number,
-         commentaire: String,
+         periodeDebut: req.body.periodeDebut,
+         periodeFin: req.body.periodeFin,
+         chargeEffectue: req.body.chargeEffectue,
+         chargeRestante: req.body.chargeRestante, //=chargeEffectue * (1-avancementFinal)/avancementEffectué)
+         avancementInitial: DataTache.dataAvancement.pourcent, //entre 0 et 1 (pourcentage)
+         avancementEffectue: req.body.avancementFinal-DataTache.dataAvancement.pourcent,
+         avancementFinal: req.body.avancementFinal,
+         commentaire: req.body.commentaire ? req.body.commentaire : "",
        });
      } catch (e) {
-
+       res.json({erreur: "Une erreur est survenue", stack: e, success: false});
+       return;
      }
 
 
@@ -201,8 +216,8 @@ module.exports = function(app){
         dataAvancement: {
           pourcent: 0, //entre 0 et 1
           chargeConsommé: 0, //Somme des soustaches
-          chargeRestante: 0, //Somme des soustaches
-          chargeInitiale: 0, //Somme des soustaches
+          chargeRestante: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches //TODO TO UPDATE
+          chargeInitiale: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches
           chargeEffective: 0, //Somme des soustaches
         },
         prédécesseurs: req.body.predecesseurs ? req.body.predecesseurs : [],
@@ -222,6 +237,7 @@ module.exports = function(app){
     } catch (e) {
       console.error(e);
       res.json({erreur: "Une erreur est survenue", stack: e, success: false});
+      return;
     }
   })
 

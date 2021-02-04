@@ -15,7 +15,7 @@ const Taches = mongoose.Schema({
   collaborateur: String,
   dataAvancement: {
   	pourcent: Number, //entre 0 et 1
-  	chargeConsommé: Number, //Somme des soustaches
+  	chargeConsomme: Number, //Somme des soustaches
   	chargeRestante: Number, //Somme des soustaches
   	chargeInitiale: Number, //Somme des soustaches
   	chargeEffective: Number, //Somme des soustaches
