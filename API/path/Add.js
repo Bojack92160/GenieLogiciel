@@ -9,6 +9,7 @@ const Rapports_Activites = require('./../models/Rapports_Activites-model.js');
 
 var TachesTools = require('./../tools/TachesTools.js');
 var NotificationTools = require('./../tools/NotificationTools.js');
+require('./../toolsDatePrototypes.js');
 
 module.exports = function(app){
 
@@ -79,11 +80,12 @@ module.exports = function(app){
      }
 
      try {
+       let DateDeSaisie = new Date();
        var NewRapport = new Rapports_Activites({
          _idUtilisateur: req.body._idUtilisateur,
          _idTache: req.body._idTache,
          emailUtilisateur: DataUtilisateur.email,
-         dateDeSaisie: new Date(),
+         dateDeSaisie: DateDeSaisie,
          periodeDebut: req.body.periodeDebut,
          periodeFin: req.body.periodeFin,
          chargeEffectue: req.body.chargeEffectue,
@@ -98,13 +100,17 @@ module.exports = function(app){
        DataTache.dataAvancement.chargeConsomme += req.body.chargeEffectue;
        DataTache.dataAvancement.chargeRestante = req.body.chargeRestante;
        DataTache.dataAvancement.chargeEffective = DataTache.dataAvancement.chargeConsomme+req.body.chargeRestante;
+       DataTache.dateFinEffect.setDate(DateDeSaisie.getDate()+DataTache.dataAvancement.chargeRestante);  //nouvelle date effective = date de saisie + chargeRestante
+       if (DataTache.dateFinEffect>DataTache.dateFinInit) {
+         await NotificationTools.sendSystemNotification(DataTache.responsable, "la tache "+DataTache.chemin+DataTache.titre+" a du retard. date de fin effective:"+DataTache.dateFinEffect.getOKLMDate()+", date de fin initiale:"+DataTache.dateFinInit.getOKLMDate());
+       }
        await DataTache.save();
        await NewRapport.save();
        let result = await TachesTools.updateProjetFromTache(req.body._idTache);
        if (!result) {
          res.json({erreur: "Une erreur est survenue dans l update des taches mere!", success:true});
        } else {
-         res.json({erreur: "Rapport soumit et projet updater avec succes!", success:true});
+         res.json({message: "Rapport soumit et projet updater avec succes!", success:true});
        }
      } catch (e) {
        console.error(e);
@@ -131,10 +137,10 @@ module.exports = function(app){
    * @dateFinInit
    * @_idMere
    * @collaborateur //si besoin! pas besoin si elle contiendra des sous taches plus tard
-   * @chargeInitiale //si besoin
+   * @chargeInitiale //si besoin! pas besoin si elle contiendra des sous taches plus tard (qui du coup fourniront les données)
    * !il faut que _idMere existe, sinon erreur
    * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
-   * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
+   * !il faut que le collaborateur existe dans Utilisateur
    * le champ listeSousTaches de la tache mere est update
    * les champs listeTacheResponsable et listeTacheCollaborateur du responsable et du collaborateur sont automatiquement MAJ
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
@@ -195,8 +201,8 @@ module.exports = function(app){
     }
 
     //On verifie que le collaborateur existe bien et bon role
+    let DataCollaborateur;
     if (req.body.collaborateur) {
-      let DataCollaborateur;
       try {
         DataCollaborateur = await UtilisateursSchema.findOne({email: req.body.collaborateur});
         if (!DataCollaborateur) {
@@ -242,7 +248,7 @@ module.exports = function(app){
         collaborateur: req.body.collaborateur ? req.body.collaborateur : "",
         dataAvancement: {
           pourcent: 0, //entre 0 et 1
-          chargeConsommé: 0, //Somme des soustaches
+          chargeConsomme: 0, //Somme des soustaches
           chargeRestante: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches
           chargeInitiale: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches
           chargeEffective: 0, //Somme des soustaches
@@ -263,7 +269,9 @@ module.exports = function(app){
       await DataMere.save();
       await TachesTools.updateProjetFromTache(ID);
       await NotificationTools.sendSystemNotification(DataResponsable.email, "Une tache vient d'etre crééer et vous etes le responsable! ("+Chemin+req.body.titre+")");
-      await NotificationTools.sendSystemNotification(DataCollaborateur.email, "Une tache vient d'etre crééer et vous etes le collaborateur! ("+Chemin+req.body.titre+")");
+      if (req.body.collaborateur) {
+        await NotificationTools.sendSystemNotification(DataCollaborateur.email, "Une tache vient d'etre crééer et vous etes le collaborateur! ("+Chemin+req.body.titre+")");
+      }
       res.json({message: "La tache a bien été sauvegardé", success: true});
     } catch (e) {
       console.error(e);
@@ -412,7 +420,7 @@ module.exports = function(app){
         listeSousTaches: [],
         dataAvancement: {
           pourcent: 0, //entre 0 et 1
-          chargeConsommé: 0, //Somme des soustaches
+          chargeConsomme: 0, //Somme des soustaches
           chargeRestante: 0, //Somme des soustaches
           chargeInitiale: 0, //Somme des soustaches
           chargeEffective: 0, //Somme des soustaches

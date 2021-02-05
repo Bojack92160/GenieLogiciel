@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+require('./DatePrototypes.js');
 const UtilisateursSchema = require('./../models/Utilisateurs-model.js');
 const ClientsSchema = require('./../models/Clients-model.js');
 const ProjetsSchema = require('./../models/Projets-model.js');
@@ -78,7 +79,7 @@ module.exports = {
           if (DataTacheMere.dateFinEffect<DataSousTache.dateFinEffect) {
             DataTacheMere.dateFinEffect = new Date(DataSousTache.dateFinEffect);
             if (DataTacheMere.dateFinEffect>DataTacheMere.dateFinInit) {
-              await NotificationTools.sendSystemNotification(DataTacheMere.responsable, "la tache "+DataTacheMere.chemin+DataTacheMere.titre+" a du retard. date de fin effective:"+DataTacheMere.dateFinEffect+", date de fin initiale:",DataTacheMere.dateFinInit);
+              await NotificationTools.sendSystemNotification(DataTacheMere.responsable, "la tache "+DataTacheMere.chemin+DataTacheMere.titre+" a du retard. date de fin effective:"+DataTacheMere.dateFinEffect.getOKLMDate()+", date de fin initiale:"+DataTacheMere.dateFinInit.getOKLMDate());
             }
           }
 
