@@ -28,7 +28,7 @@ module.exports = function(app){
    * les champs listeTacheResponsable et listeTacheCollaborateur du responsable et du collaborateur sont automatiquement MAJ
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
-   app.post('/Ajout/Tache', async (req,res) => {
+   app.post('/Ajout/Rapport_Activite', async (req,res) => {
      if (!req.body._idTache || !req.body._idUtilisateur || !req.body.periodeDebut || !req.body.periodeFin || !req.body.chargeEffectue || !req.body.chargeRestante || !req.body.avancementFinal ) {
        res.json({erreur: "Requete non valide. veuillez remplir les champs _idTache, _idUtilisateur, periodeDebut, periodeFin, chargeEffectue, chargeRestante et avancementFinal", success: false});
        return;
@@ -42,6 +42,9 @@ module.exports = function(app){
        if (!DataTache) {
            res.json({erreur: "La tache  "+req.body._idTache+" n'existe pas dans la base de donnée. Veuillez rentrer une id de tache existante", success: false});
            return;
+       } else if (!DataUtilisateur) {
+         res.json({erreur: "L'utilisateur  "+req.body._idUtilisateur+" n'existe pas dans la base de donnée. Veuillez rentrer un utilisateur existant", success: false});
+         return;
        } else {
          if (DataTache.listeSousTaches.length>0) {
            res.json({erreur: "Impossible de remplir un rapport sur cette tache, elle possède au moin une sous tache (une tache doit etre du plus bas niveau pour pouvoir saisir des rapports)", success: false});
@@ -51,17 +54,18 @@ module.exports = function(app){
            for (var i = 0; i < DataTache.prédécesseurs.length; i++) {
              let DataTachePredec = await TachesSchema.findById(DataTache.prédécesseurs[i]);
              if (DataTachePredec && DataTachePredec.dataAvancement.pourcent<1) {
-               res.json({erreur: "Impossible de remplir un rapport sur cette tache, elle possède au moin un prédécesseur qui n'est pas finit ("+DataTachePredec.titre")", success: false});
+               res.json({erreur: "Impossible de remplir un rapport sur cette tache, elle possède au moin un prédécesseur qui n'est pas finit ("+DataTachePredec.titre+")", success: false});
                return;
              }
            }
          }
        }
-       if (!DataUtilisateur) {
-           res.json({erreur: "L'utilisateur  "+req.body._idUtilisateur+" n'existe pas dans la base de donnée. Veuillez rentrer un utilisateur existant", success: false});
-           return;
+       if (DataUtilisateur.email != DataTache.collaborateur) {
+         res.json({erreur: "Action impossible! L'utilisateur qui souhaite remplir le rapport d'activité de cette tache n'est pas le collaborateur assigné à cette tache.", success: false});
+         return;
        }
      } catch (e) {
+       console.error(e);
        res.json({erreur: "Une erreur est survenue lors de la recherche de la tache / utilisateur ", stack: e, success: false});
        return;
      }
@@ -89,7 +93,21 @@ module.exports = function(app){
          avancementFinal: req.body.avancementFinal,
          commentaire: req.body.commentaire ? req.body.commentaire : "",
        });
+
+       DataTache.dataAvancement.pourcent = req.body.avancementFinal;
+       DataTache.dataAvancement.chargeConsomme += req.body.chargeEffectue;
+       DataTache.dataAvancement.chargeRestante = req.body.chargeRestante;
+       DataTache.dataAvancement.chargeEffective = DataTache.dataAvancement.chargeConsomme+req.body.chargeRestante;
+       await DataTache.save();
+       await NewRapport.save();
+       let result = await TachesTools.updateProjetFromTache(req.body._idTache);
+       if (!result) {
+         res.json({erreur: "Une erreur est survenue dans l update des taches mere!", success:true});
+       } else {
+         res.json({erreur: "Rapport soumit et projet updater avec succes!", success:true});
+       }
      } catch (e) {
+       console.error(e);
        res.json({erreur: "Une erreur est survenue", stack: e, success: false});
        return;
      }
@@ -112,7 +130,8 @@ module.exports = function(app){
    * @dateDebutInit
    * @dateFinInit
    * @_idMere
-   * @collaborateur
+   * @collaborateur //si besoin! pas besoin si elle contiendra des sous taches plus tard
+   * @chargeInitiale //si besoin
    * !il faut que _idMere existe, sinon erreur
    * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
    * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
@@ -121,8 +140,8 @@ module.exports = function(app){
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
   app.post('/Ajout/Tache', async (req,res) => {
-    if (!req.body.titre || !req.body.responsable || !req.body.description || !req.body.dateDebutInit || !req.body.dateFinInit || !req.body._idMere || !req.body.collaborateur) {
-      res.json({erreur: "Requete non valide. veuillez remplir les champs titre, responsable, mdp, description, dateDebutInit, dateFinInit, _idMere et collaborateur", success: false});
+    if (!req.body.titre || !req.body.responsable || !req.body.description || !req.body.dateDebutInit || !req.body.dateFinInit || !req.body._idMere) {
+      res.json({erreur: "Requete non valide. veuillez remplir les champs titre, responsable, mdp, description, dateDebutInit, dateFinInit, _idMere", success: false});
       return;
     }
 
@@ -137,6 +156,10 @@ module.exports = function(app){
           res.json({erreur: "Le projet/tache mere "+req.body._idMere+" n'existe pas dans la base de donnée. Veuillez rentrer un projet/tache mere existant", success: false});
           return;
         } else {
+          if (DataMere.collaborateur != "") {
+            res.json({erreur: "Impossible de creer une tache fille d'une tache contenant un collaborateur. Si la tache mere possède un collaborateur, cela suppose qu'elle est de niveau le plus bas possible, par conséquent, elle ne peut pas posséder de sous taches.", success: false});
+            return;
+          }
           Niveau = DataMere.niveau+1;
           if (Niveau>3) {
             res.json({erreur: "Impossible de creer une tache fille de niveau 4, le niveau d'imbriquation maximale étant 3", success: false});
@@ -153,6 +176,7 @@ module.exports = function(app){
     }
 
     //On verifie que le responsable existe bien et bon role
+
     let DataResponsable;
     try {
       DataResponsable = await UtilisateursSchema.findOne({email: req.body.responsable});
@@ -171,18 +195,21 @@ module.exports = function(app){
     }
 
     //On verifie que le collaborateur existe bien et bon role
-    let DataCollaborateur;
-    try {
-      DataCollaborateur = await UtilisateursSchema.findOne({email: req.body.collaborateur});
-      if (!DataCollaborateur) {
-        res.json({erreur: "Le collaborateur "+req.body.collaborateur+" n'existe pas dans la base de donnée. Veuillez rentrer un collaborateur existant", success: false});
+    if (req.body.collaborateur) {
+      let DataCollaborateur;
+      try {
+        DataCollaborateur = await UtilisateursSchema.findOne({email: req.body.collaborateur});
+        if (!DataCollaborateur) {
+          res.json({erreur: "Le collaborateur "+req.body.collaborateur+" n'existe pas dans la base de donnée. Veuillez rentrer un collaborateur existant", success: false});
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+        res.json({erreur: "Une erreur est survenue lors de la recherche du collaborateur", stack: e, success: false});
         return;
       }
-    } catch (e) {
-      console.error(e);
-      res.json({erreur: "Une erreur est survenue lors de la recherche du collaborateur", stack: e, success: false});
-      return;
     }
+
 
     //on convertit bien en Date
     try {
@@ -212,11 +239,11 @@ module.exports = function(app){
         chemin: Chemin,
         _idMere: DataMere._id,
         listeSousTaches: [],
-        collaborateur: req.body.collaborateur,
+        collaborateur: req.body.collaborateur ? req.body.collaborateur : "",
         dataAvancement: {
           pourcent: 0, //entre 0 et 1
           chargeConsommé: 0, //Somme des soustaches
-          chargeRestante: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches //TODO TO UPDATE
+          chargeRestante: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches
           chargeInitiale: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches
           chargeEffective: 0, //Somme des soustaches
         },
@@ -226,11 +253,15 @@ module.exports = function(app){
       await NewTache.save();
       DataMere.listeSousTaches.push(ID);
       DataResponsable.listeTacheResponsable.push(ID);
-      DataCollaborateur.listeTacheCollaborateur.push(ID);
+
+      if (req.body.collaborateur) {
+        DataCollaborateur.listeTacheCollaborateur.push(ID);
+        await DataCollaborateur.save();
+      }
 
       await DataResponsable.save();
-      await DataCollaborateur.save();
       await DataMere.save();
+      await TachesTools.updateProjetFromTache(ID);
       await NotificationTools.sendSystemNotification(DataResponsable.email, "Une tache vient d'etre crééer et vous etes le responsable! ("+Chemin+req.body.titre+")");
       await NotificationTools.sendSystemNotification(DataCollaborateur.email, "Une tache vient d'etre crééer et vous etes le collaborateur! ("+Chemin+req.body.titre+")");
       res.json({message: "La tache a bien été sauvegardé", success: true});

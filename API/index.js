@@ -24,8 +24,7 @@ app.get('/', (req,res) => {
 
 //TODO
 /*
-  Lorsqu on add une tache, Update datedebut/fin + chargeInitiale des sur taches
-  Lorsqu on add Rapport, update toute les surtaches
+  Lorsqu on add Rapport, update les DATES DE CETTE TACHE
 
 */
 

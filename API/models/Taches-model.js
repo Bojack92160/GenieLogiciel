@@ -24,7 +24,7 @@ const Taches = mongoose.Schema({
   sAlerte: {
       type: Boolean ,
       default: true
-    },
+    }
 });
 
 module.exports = mongoose.model('Taches', Taches);
