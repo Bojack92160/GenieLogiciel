@@ -2,8 +2,6 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-
-
 var UtilisateursSchema = require('./models/Utilisateurs-model.js');
 var ClientsSchema = require('./models/Clients-model.js');
 var ProjetsSchema = require('./models/Projets-model.js');
@@ -17,12 +15,18 @@ app.use(bodyParser.json()) //permet d afficher dans la console les posts data re
 
 require('./path/Search.js')(app);
 require('./path/Add.js')(app);
+require('./path/Delete.js')(app);
 
 //routes
 app.get('/', (req,res) => {
   res.send("project manager :)")
 })
 
+//TODO
+/*
+  Lorsqu on add Rapport, update les DATES DE CETTE TACHE
+
+*/
 
 
 /** Identification
