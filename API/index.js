@@ -51,11 +51,17 @@ app.post('/login', async (req,res) => {
   Response.dataUtilisateur = Utilisateur;
 
   for (var i = 0; i < Utilisateur.listeProjets.length; i++) {
-    await Response.dataProjects.push(await ProjetsSchema.findById(Utilisateur.listeProjets[i]))
+    let DataProjet = await ProjetsSchema.findById(Utilisateur.listeProjets[i])
+    if (DataProjet) {
+      await Response.dataProjects.push(DataProjet)
+    }
   }
 
   for (var i = 0; i < Utilisateur.listeNotifications.length; i++) {
-    await Response.dataNotifications.push(await NotificationsSchema.findById(Utilisateur.listeNotifications[i]))
+    let DataNotif = await NotificationsSchema.findById(Utilisateur.listeNotifications[i]);
+    if (DataNotif) {
+      await Response.dataNotifications.push(DataNotif)
+    }
   }
 
   res.json(Response);
