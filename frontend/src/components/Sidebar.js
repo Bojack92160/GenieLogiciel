@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import * as FAIcons from "react-icons/fa";
 import * as AIIcons from "react-icons/ai";
 import { Link } from "react-router-dom";
@@ -8,6 +8,24 @@ import { IconContext } from "react-icons";
 function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
   const showSideBar = () => setSideBar(!sideBar);
+  const escFunction = useCallback(
+    (event) => {
+      if (event) {
+        showSideBar();
+      }
+    },
+    [showSideBar]
+  );
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
+    document.addEventListener("click", escFunction, false);
+
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+      document.addEventListener("click", escFunction, false);
+    };
+  }, [escFunction]);
+
   return (
     <>
       <IconContext.Provider value={{ color: "#5060b8" }}>
