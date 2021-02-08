@@ -10,7 +10,8 @@ function Sidebar() {
   const showSideBar = () => setSideBar(!sideBar);
   const escFunction = useCallback(
     (event) => {
-      if (event) {
+      console.log(event);
+      if ((event.key === "Escape" || event.type === "click") && sideBar) {
         showSideBar();
       }
     },
@@ -18,11 +19,10 @@ function Sidebar() {
   );
   useEffect(() => {
     document.addEventListener("keydown", escFunction, false);
-    document.addEventListener("click", escFunction, false);
-
+    //document.addEventListener("click", escFunction, false);
     return () => {
       document.removeEventListener("keydown", escFunction, false);
-      document.addEventListener("click", escFunction, false);
+      //document.removeEventListener("click", escFunction, false);
     };
   }, [escFunction]);
 

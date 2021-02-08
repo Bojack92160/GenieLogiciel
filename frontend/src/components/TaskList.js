@@ -6,7 +6,7 @@ function TaskList(props) {
     <>
       {props.data.map((item, index) => {
         return (
-          <Col lg={4} sm={12}>
+          <Col lg={4} sm={12} key={index}>
             <Card>
               <Card.Body>
                 <Card.Title>{item.name}</Card.Title>

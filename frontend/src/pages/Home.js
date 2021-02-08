@@ -5,19 +5,36 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import TaskList from "../components/TaskList";
 import { TasksData } from "../components/TasksData";
+import { FcTimeline } from "react-icons/fc";
+//test pour voir comment importer des fonctions
+import { test } from "../testfunc";
+function yes(name) {
+  console.log("yes");
+}
 function Home() {
   const [isGantt, setMode] = useState(false);
   const changeMode = () => setMode(!isGantt);
+  const nom = "mathieu";
   if (isGantt) {
     return (
       <div className="home">
+        {/* test pour voir comment marche des fonctions avec params */}
+        <button
+          onClick={() => {
+            test(nom);
+          }}
+        ></button>
         <Container>
           <Row>
-            <Col lg={12}>
+            <Col lg={4}>
               <div className="test">
-                <button className="test" onClick={changeMode}></button>
+                <button onClick={changeMode}>
+                  <FcTimeline />
+                </button>
               </div>
             </Col>
+            <Col lg={4} />
+            <Col lg={4} />
           </Row>
           <Row>
             <TaskList data={TasksData} />
@@ -30,13 +47,14 @@ function Home() {
       <div className="home">
         <Container>
           <Row>
-            <Col lg={4} />
-
             <Col lg={4}>
               <div className="test">
-                <button onClick={changeMode}></button>
+                <button onClick={changeMode}>
+                  <FcTimeline />
+                </button>
               </div>
             </Col>
+            <Col lg={4} />
             <Col lg={4} />
           </Row>
           <Row>
