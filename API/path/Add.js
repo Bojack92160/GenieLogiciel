@@ -9,7 +9,7 @@ const Rapports_Activites = require('./../models/Rapports_Activites-model.js');
 
 var TachesTools = require('./../tools/TachesTools.js');
 var NotificationTools = require('./../tools/NotificationTools.js');
-require('./../toolsDatePrototypes.js');
+require('./../tools/DatePrototypes.js');
 
 module.exports = function(app){
 
