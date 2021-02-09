@@ -2,6 +2,7 @@ import React from "react";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 function TaskList(props) {
+  if (!props.data || props.data === 0) return <p>pas de taches</p>;
   return (
     <>
       {props.data.map((item, index) => {

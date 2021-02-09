@@ -1,4 +1,4 @@
-export const TasksData = [
+export const td = [
   {
     cName: "taskitem",
     name: "task1",

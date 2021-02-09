@@ -4,14 +4,14 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import TaskList from "../components/TaskList";
-import { TasksData } from "../components/TasksData";
+
 import { FcTimeline } from "react-icons/fc";
 //test pour voir comment importer des fonctions
 import { test } from "../testfunc";
 function yes(name) {
   console.log("yes");
 }
-function Home() {
+function Home(props) {
   const [isGantt, setMode] = useState(false);
   const changeMode = () => setMode(!isGantt);
   const nom = "mathieu";
@@ -37,7 +37,7 @@ function Home() {
             <Col lg={4} />
           </Row>
           <Row>
-            <TaskList data={TasksData} />
+            <TaskList data={props.data} />
           </Row>
         </Container>
       </div>
