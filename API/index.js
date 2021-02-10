@@ -18,6 +18,7 @@ app.use(bodyParser.json()) //permet d afficher dans la console les posts data re
 require('./path/Search.js')(app);
 require('./path/Add.js')(app);
 require('./path/Delete.js')(app);
+require('./path/Change.js')(app);
 
 //routes
 app.get('/', (req,res) => {
@@ -26,7 +27,6 @@ app.get('/', (req,res) => {
 
 //TODO
 /*
-  Lorsqu on add Rapport, update les DATES DE CETTE TACHE
 
 */
 
