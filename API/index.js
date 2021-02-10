@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+const cors = require('cors');
 
 var UtilisateursSchema = require('./models/Utilisateurs-model.js');
 var ClientsSchema = require('./models/Clients-model.js');
@@ -11,6 +12,7 @@ const connectionString = 'mongodb+srv://dbuser:dbuser@projetgl.9eaqw.mongodb.net
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json()) //permet d afficher dans la console les posts data req.body
 
 require('./path/Search.js')(app);
