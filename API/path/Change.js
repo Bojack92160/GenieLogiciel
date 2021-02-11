@@ -155,7 +155,7 @@ module.exports = function(app){
   });
 
 
-  /** Pour change le champ 'collaborateur' d'une tache
+  /** Pour changer le champ 'collaborateur' d'une tache
   * nécessite les champs:
    * @idTache
    * @emailNewCollaborateur
@@ -229,5 +229,58 @@ module.exports = function(app){
       return;
     }
   });
+
+    app.post("/Change/DataUtilisateur", async (req, res) => {
+      if (!req.body._idUtilisateur) {
+        res.json({erreur: "Requete non valide. veuillez remplir les champs _idUtilisateur", success: false});
+        return;
+      }
+
+      let DataUtilisateur;
+      try {
+          DataUtilisateur = await UtilisateursSchema.findById(req.body._idUtilisateur);
+          if (!DataUtilisateur) {
+            res.json({
+              erreur: "Aucun utilsateur ne correspond a cet id (" + req.body._idUtilisateur + ")",
+              success: false,
+            });
+            return;
+          }
+      } catch (e) {
+        console.error(e);
+        res.json({ erreur: "Une erreur est survenue", stack: e, success: false });
+        return;
+      }
+
+      if (req.body.nom) {
+        DataUtilisateur.nom = req.body.nom;
+      }
+      if (req.body.prenom) {
+        DataUtilisateur.prenom = req.body.prenom;
+      }
+      if (req.body.mdp) {
+        DataUtilisateur.mdp = req.body.mdp;
+      }
+      if (req.body.role) {
+        if (req.body.role!="administrateur" && req.body.role!="responsable de projet" && req.body.role!="collaborateur") {
+          res.json({erreur: "Champ 'role' non valide. il ne peut prendre que les valeurs 'administrateur', 'responsable de projet' ou 'collaborateur' (tout en minuscule!)", success: false});
+          return;
+        }
+        DataUtilisateur.role = req.body.role;
+      }
+      if (req.body.tel) {
+        if (typeof req.body.tel == 'number') {
+          DataUtilisateur.tel = req.body.tel;
+        } else {
+          res.json({ erreur: "le champ 'tel' doit etre de type 'number'", stack: e, success: false });
+          return;
+        }
+      }
+
+      await DataUtilisateur.save();
+      await NotificationTools.sendSystemNotification(DataUtilisateur.email, "Vos informations personnelles ont été modifié");
+      res.json({erreur: "l'utilisateur a bien été modifié!", success: false});
+      return;
+    });
 
 }
