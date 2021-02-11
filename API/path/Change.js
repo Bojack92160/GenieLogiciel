@@ -230,9 +230,19 @@ module.exports = function(app){
     }
   });
 
+  /** Pour changer les datas d'un utilisateur
+  * nécessite le champs:
+  * @_idUtilisateur
+  * peut contenir les champs:
+  * @nom
+  * @prenom
+  * @mdp
+  * @role
+  * @tel
+  */
     app.post("/Change/DataUtilisateur", async (req, res) => {
       if (!req.body._idUtilisateur) {
-        res.json({erreur: "Requete non valide. veuillez remplir les champs _idUtilisateur", success: false});
+        res.json({erreur: "Requete non valide. veuillez remplir le champs _idUtilisateur", success: false});
         return;
       }
 
@@ -266,6 +276,10 @@ module.exports = function(app){
           res.json({erreur: "Champ 'role' non valide. il ne peut prendre que les valeurs 'administrateur', 'responsable de projet' ou 'collaborateur' (tout en minuscule!)", success: false});
           return;
         }
+        if (req.body.role=="collaborateur" && (DataUtilisateur.listeProjets.length>0 || DataUtilisateur.listeProjets.listeTacheResponsable>0)) {
+          res.json({erreur: "Impossible de mettre son role a collaborateur tant que cet utilisateur est responsable de projets/taches!", success: false});
+          return;
+        }
         DataUtilisateur.role = req.body.role;
       }
       if (req.body.tel) {
@@ -279,7 +293,7 @@ module.exports = function(app){
 
       await DataUtilisateur.save();
       await NotificationTools.sendSystemNotification(DataUtilisateur.email, "Vos informations personnelles ont été modifié");
-      res.json({erreur: "l'utilisateur a bien été modifié!", success: false});
+      res.json({message: "l'utilisateur a bien été modifié!", success: true});
       return;
     });
 
