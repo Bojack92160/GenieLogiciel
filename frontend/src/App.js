@@ -13,8 +13,8 @@ const user = { email: "Admin@gmail.com", mdp: "Admin" };
 function App() {
   const HomeLoading = loading(Home);
   const [appState, setAppState] = useState({
-    loading: true,
-    user: null,
+    loading: false,
+    userData: null,
   });
   useEffect(() => {
     setAppState({ loading: true });
@@ -31,15 +31,12 @@ function App() {
       body: raw,
       redirect: "follow",
     };
-    //test
-    console.log(reqOptions);
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
-      .then((res) => console.log(res))
       .then((repos) => {
-        setAppState({ loading: false, repos: repos });
+        console.log(repos);
+        setAppState({ loading: false, userData: repos.dataNotifications });
       });
-    console.log(appState.repos);
   }, [setAppState]);
   return (
     <div className="App">
@@ -49,7 +46,10 @@ function App() {
           <Route
             path="/"
             render={() => (
-              <HomeLoading isLoading={appState.loading} data={td} />
+              <HomeLoading
+                isLoading={appState.loading}
+                data={appState.userData}
+              />
             )}
           />
           <Route path="/projects" component={Projects} />
