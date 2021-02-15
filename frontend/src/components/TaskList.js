@@ -8,7 +8,7 @@ function TaskList(props) {
       {props.data.map((item, index) => {
         return (
           <Col lg={4} sm={12} key={index}>
-            <Card>
+            <Card style={{ marginTop: "10px" }}>
               <Card.Body>
                 <Card.Title>{item.name}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">
