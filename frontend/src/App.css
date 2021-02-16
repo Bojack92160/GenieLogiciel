@@ -7,3 +7,7 @@
 .test {
   margin-bottom: 10px;
 }
+
+.MuiPaper-elevation1 {
+  box-shadow: none !important;
+}
