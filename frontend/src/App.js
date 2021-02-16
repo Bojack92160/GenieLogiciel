@@ -9,6 +9,9 @@ import Notifs from "./pages/Notifs";
 import Settings from "./pages/Settings";
 import { td } from "./components/TasksData";
 import loading from "./components/Loading";
+
+import LoginForm from "./components/loginForm";
+import SignUp from "./components/SignUp";
 const user = { email: "Admin@gmail.com", mdp: "Admin" };
 function App() {
   const HomeLoading = loading(Home);
@@ -49,36 +52,47 @@ function App() {
       .catch((error) => console.log("error", error));
   }, [setAppState]);
   return (
-    <div className="App">
-      <Router>
-        <Sidebar />
-        <Switch>
-          <Route
-            path="/"
-            exact
-            render={() => (
-              <HomeLoading
-                isLoading={appState.loading}
-                Userdata={appState.userData}
-                tasks={appState.tasksData}
-              />
-            )}
-          />
-          <Route
-            path="/projects"
-            render={() => (
-              <Projects
-                Userdata={appState.userData}
-                projects={appState.projectsData}
-              />
-            )}
-          />
-          <Route path="/notifications" component={Notifs} />
-          <Route path="/explore" component={Explore} />
-          <Route path="/settings" component={Settings} />
-        </Switch>
-      </Router>
-    </div>
+    <React.Fragment>
+      <main className="App">
+        <Router>
+          <Switch>
+            <Route
+              exact
+              path="/"
+              exact
+              render={() => (
+                <HomeLoading
+                  isLoading={appState.loading}
+                  Userdata={appState.userData}
+                  tasks={appState.tasksData}
+                />
+              )}
+            />
+            <Route
+              path="/projects"
+              render={() => (
+                <Projects
+                  Userdata={appState.userData}
+                  projects={appState.projectsData}
+                />
+              )}
+            />
+            <Route path="/notifications" component={Notifs} />
+            <Route path="/explore" component={Explore} />
+            <Route path="/settings" component={Settings} />
+            <Route exact path="/login" component={LoginForm} />
+            <Route exact path="/signup" component={SignUp} />
+            <div>
+              <Sidebar />
+              <Route exact path="/projects" component={Projects} />
+              <Route exact path="/notifications" component={Notifs} />
+              <Route exact path="/explore" component={Explore} />
+              <Route exact path="/settings" component={Settings} />
+            </div>
+          </Switch>
+        </Router>
+      </main>
+    </React.Fragment>
   );
 }
 
