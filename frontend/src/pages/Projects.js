@@ -147,4 +147,4 @@ function Projects(props) {
   }
 }
 
-export default withStyles(useStyles)(Projects);
+export default Projects;

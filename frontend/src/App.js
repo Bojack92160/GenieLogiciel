@@ -55,6 +55,8 @@ function App() {
     <React.Fragment>
       <main className="App">
         <Router>
+          <Sidebar />
+
           <Switch>
             <Route
               exact
@@ -82,13 +84,6 @@ function App() {
             <Route path="/settings" component={Settings} />
             <Route exact path="/login" component={LoginForm} />
             <Route exact path="/signup" component={SignUp} />
-            <div>
-              <Sidebar />
-              <Route exact path="/projects" component={Projects} />
-              <Route exact path="/notifications" component={Notifs} />
-              <Route exact path="/explore" component={Explore} />
-              <Route exact path="/settings" component={Settings} />
-            </div>
           </Switch>
         </Router>
       </main>
