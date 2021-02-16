@@ -15,6 +15,9 @@ function App() {
   const [appState, setAppState] = useState({
     loading: false,
     userData: null,
+    notifsData: null,
+    projectsData: null,
+    tasksData: null,
   });
   useEffect(() => {
     setAppState({ loading: true });
@@ -33,10 +36,17 @@ function App() {
     };
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
-      .then((repos) => {
-        console.log(repos);
-        setAppState({ loading: false, userData: repos.dataNotifications });
-      });
+      .then((data) => {
+        console.log(data);
+        setAppState({
+          loading: false,
+          userData: data.dataUtilisateur,
+          notifsData: data.dataNotifications,
+          projectsData: data.dataProjects,
+          tasksData: data.dataTaches,
+        });
+      })
+      .catch((error) => console.log("error", error));
   }, [setAppState]);
   return (
     <div className="App">
@@ -45,14 +55,24 @@ function App() {
         <Switch>
           <Route
             path="/"
+            exact
             render={() => (
               <HomeLoading
                 isLoading={appState.loading}
-                data={appState.userData}
+                Userdata={appState.userData}
+                tasks={appState.tasksData}
               />
             )}
           />
-          <Route path="/projects" component={Projects} />
+          <Route
+            path="/projects"
+            render={() => (
+              <Projects
+                Userdata={appState.userData}
+                projects={appState.projectsData}
+              />
+            )}
+          />
           <Route path="/notifications" component={Notifs} />
           <Route path="/explore" component={Explore} />
           <Route path="/settings" component={Settings} />
