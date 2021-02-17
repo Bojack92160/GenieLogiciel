@@ -4,12 +4,10 @@ import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import ProgressBar from "react-bootstrap/ProgressBar";
 function TaskList(props) {
-  var date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
   if (!props.tasks || props.tasks === 0) return <p>pas de taches</p>;
   return (
     <>
       {props.tasks.map((item, index) => {
-        console.log(item);
         return (
           <Col lg={4} sm={12} key={index}>
             <Card style={{ marginTop: "10px" }}>
