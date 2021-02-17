@@ -1,7 +1,3 @@
 
-
-
-
-
-let t = new Date();
-console.log(t.getOKLMDate());
+let t = 0;
+console.log(isNaN(t));
