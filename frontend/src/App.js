@@ -40,7 +40,7 @@ function App() {
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        //console.log(data);
         setAppState({
           loading: false,
           userData: data.dataUtilisateur,
@@ -61,7 +61,6 @@ function App() {
             <Route
               exact
               path="/"
-              exact
               render={() => (
                 <HomeLoading
                   isLoading={appState.loading}
@@ -79,7 +78,10 @@ function App() {
                 />
               )}
             />
-            <Route path="/notifications" component={Notifs} />
+            <Route
+              path="/notifications"
+              render={() => <Notifs notifs={appState.notifsData} />}
+            />
             <Route path="/explore" component={Explore} />
             <Route path="/settings" component={Settings} />
             <Route exact path="/login" component={LoginForm} />
