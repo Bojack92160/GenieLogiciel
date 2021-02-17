@@ -33,9 +33,64 @@ module.exports = {
     return chemin;
   },
 
+  /** si une tache/projet est a 100% d'avancement, elle disparait des listes du responsable/collaborateur
+   * FONCTIONNE AVEC TACHE ET PROJET!!
+   */
+  closeTacheFinished: async function(idTache){
+    console.log("---------------DEBUG----------------");
+    try {
+      let Data = await TachesSchema.findById(idTache);
+      if (!Data) {
+        Data = await ProjetsSchema.findById(idTache);
+        if (!Data) {
+          return false;
+        }
+      }
+      console.log("Data", Data);
+      if (Data.dataAvancement.pourcent>=1) {
+        let DataResponsable = await UtilisateursSchema.findOne({email: Data.responsable});
+        if (!DataResponsable) {
+          return false;
+        }
+        if (DataResponsable.listeTacheResponsable.indexOf(Data._id)!=-1) {
+          DataResponsable.listeTacheResponsable.splice(DataResponsable.listeTacheResponsable.indexOf(Data._id),1);
+          DataResponsable.listeTachesTermines.push(Data._id);
+          await DataResponsable.save()
+          await NotificationTools.sendSystemNotification(DataResponsable.email, "la tache "+Data.chemin+Data.titre+" vient d'etre termine!");
+        } else if (DataResponsable.listeProjets.indexOf(Data._id)!=-1) {
+          DataResponsable.listeProjets.splice(DataResponsable.listeTacheResponsable.indexOf(Data._id),1);
+          DataResponsable.listePojetsTermines.push(Data._id);
+          await DataResponsable.save()
+          await NotificationTools.sendSystemNotification(DataResponsable.email, "le projet "+Data.titre+" vient d'etre termine!");
+        }
+        if (Data.collaborateur && Data.collaborateur != "") {
+          let DataCollaborateur = await UtilisateursSchema.findOne({email: Data.collaborateur});
+          console.log("DataCollaborateur", DataCollaborateur);
+          if (!DataCollaborateur) {
+            return false;
+          }
+          if (DataCollaborateur.listeTacheCollaborateur.indexOf(Data._id)!=-1) {
+            DataCollaborateur.listeTacheCollaborateur.splice(DataCollaborateur.listeTacheCollaborateur.indexOf(Data._id),1);
+            DataCollaborateur.listeTachesTermines.push(Data._id);
+            await DataCollaborateur.save()
+            await NotificationTools.sendSystemNotification(DataCollaborateur.email, "la tache "+Data.chemin+Data.titre+" vient d'etre termine!");
+          }
+        }
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+    return true;
+
+  },
+
   /** Update les parents de cette tache en fonction de cette tache :
    * Update le dataAvancement
-   * Update les dateDebutEffect/FinEffect SI depacement! + envoi une notification au responsable de la tache/projet en question
+   * Update les dateDebutEffect/FinEffect SI depacement! + envoi une notification au responsable de la tache/projet en question (et collab si existant)
    */
   updateProjetFromTache: async function(idTache){
     try {
@@ -45,9 +100,7 @@ module.exports = {
       let KeepGoing = true;
 
       while (KeepGoing) {
-        console.log("boucle", DataTacheFille);
         let DataTacheMere = await TachesSchema.findById(IdMere);
-        console.log("DataTacheMere debut", DataTacheMere);
         if (!DataTacheMere) {
           DataTacheMere = await ProjetsSchema.findById(IdMere);
           if (!DataTacheMere) {
@@ -66,7 +119,6 @@ module.exports = {
          DataTacheMere.dataAvancement.chargeEffective = 0;
         for (var i = 0; i < DataTacheMere.listeSousTaches.length; i++) {
           let DataSousTache = await TachesSchema.findById(DataTacheMere.listeSousTaches[i]);
-          console.log("soustache",i,DataSousTache);
           if (!DataSousTache) {
             console.error("[updateProjet] impossible de trouver la soustaches pour le dataAvancement ");
             return false;
@@ -92,9 +144,11 @@ module.exports = {
           DataTacheMere.dataAvancement.chargeEffective += DataSousTache.dataAvancement.chargeEffective;
         }
         DataTacheMere.dataAvancement.pourcent = SommeDesPourcent/NombreDeFille;
+        if (DataTacheMere.dataAvancement.pourcent>=1) {
+          closeTacheFinished(DataTacheMere._id);
+        }
 
         //on monte d'un niveau
-        console.log("DataTacheMere fin", DataTacheMere);
         await DataTacheMere.save()
         if (KeepGoing) {
           IdMere = DataTacheMere._idMere;
@@ -108,9 +162,54 @@ module.exports = {
     }
 
   }
+}
 
 
-
-
+async function closeTacheFinished(idTache){
+  try {
+    let Data = await TachesSchema.findById(idTache);
+    if (!Data) {
+      Data = await ProjetsSchema.findById(idTache);
+      if (!Data) {
+        return false;
+      }
+    }
+    if (Data.dataAvancement.pourcent>=1) {
+      let DataResponsable = await UtilisateursSchema.findOne({email: Data.responsable});
+      if (!DataResponsable) {
+        return false;
+      }
+      if (DataResponsable.listeTacheResponsable.indexOf(Data._id)!=-1) {
+        DataResponsable.listeTacheResponsable.splice(DataResponsable.listeTacheResponsable.indexOf(Data._id),1);
+        DataResponsable.listeTachesTermines.push(Data._id);
+        await DataResponsable.save()
+        await NotificationTools.sendSystemNotification(DataResponsable.email, "la tache "+Data.chemin+Data.titre+" vient d'etre termine!");
+      } else if (DataResponsable.listeProjets.indexOf(Data._id)!=-1) {
+        DataResponsable.listeProjets.splice(DataResponsable.listeTacheResponsable.indexOf(Data._id),1);
+        DataResponsable.listePojetsTermines.push(Data._id);
+        await DataResponsable.save()
+        await NotificationTools.sendSystemNotification(DataResponsable.email, "le projet "+Data.titre+" vient d'etre termine!");
+      }
+      if (Data.collaborateur && Data.collaborateur != "") {
+        let DataCollaborateur = await UtilisateursSchema.findOne({email: Data.responsable});
+        if (!DataCollaborateur) {
+          return false;
+        }
+        if (DataCollaborateur.listeTacheCollaborateur.indexOf(Data._id)!=-1) {
+          DataCollaborateur.listeTacheCollaborateur.splice(DataCollaborateur.listeTacheCollaborateur.indexOf(Data._id),1);
+          DataCollaborateur.listeTachesTermines.push(Data._id);
+          await DataCollaborateur.save()
+          await NotificationTools.sendSystemNotification(DataCollaborateur.email, "la tache "+Data.chemin+Data.titre+" vient d'etre termine!");
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+  return true;
 
 }

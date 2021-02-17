@@ -6,31 +6,20 @@ import Container from "react-bootstrap/Container";
 import TaskList from "../components/TaskList";
 import { Chart } from "react-google-charts";
 import { FcTimeline } from "react-icons/fc";
-function Projects(props) {
+function Project(props) {
   const [isGantt, setMode] = useState(false);
   const changeMode = () => setMode(!isGantt);
   // const nom = "mathieu";
-  if (!props.projects || props.projects.length === 0)
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <p>pas de projets</p>
-      </div>
-    );
+  if (!props.projects || props.projects === 0) return <p>pas de projets</p>;
   if (isGantt) {
     return (
       <div className="home">
         {/* test pour voir comment marche des fonctions avec params */}
         {/* <button
-              onClick={() => {
-                test(nom);
-              }}
-            ></button> */}
+          onClick={() => {
+            test(nom);
+          }}
+        ></button> */}
         <Container>
           <Row>
             <Col lg={4}>
@@ -43,9 +32,9 @@ function Projects(props) {
             <Col lg={4} />
             <Col lg={4} />
           </Row>
-          <>
+          <Row>
             <TaskList tasks={props.projects} />
-          </>
+          </Row>
         </Container>
       </div>
     );
@@ -147,4 +136,4 @@ function Projects(props) {
   }
 }
 
-export default Projects;
+export default Project;

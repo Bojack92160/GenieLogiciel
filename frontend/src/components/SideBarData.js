@@ -17,7 +17,7 @@ export const SideBarData = [
   },
   {
     title: "Notifications",
-    path: "/notifs",
+    path: "/notifications",
     icon: <AIIcons.AiOutlineBell />,
     cName: "nav-text",
   },

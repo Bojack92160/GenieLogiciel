@@ -9,8 +9,10 @@ const Utilisateurs = mongoose.Schema({
   tel: Number,
   listeProjets: [String], //si responsable
   listeTacheResponsable: [String], //tache où il est responsable
-  listeTacheCollaborateur: [String], //tache où il est collaborateur 
+  listeTacheCollaborateur: [String], //tache où il est collaborateur
   listeNotifications: [String],
+  listePojetsTermines: [String],
+  listeTachesTermines: [String],
   listeTacheCommencés: [{
     _id: String,
     dateDebut: Date

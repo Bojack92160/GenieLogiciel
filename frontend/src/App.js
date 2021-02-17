@@ -10,14 +10,17 @@ import Settings from "./pages/Settings";
 import { td } from "./components/TasksData";
 import loading from "./components/Loading";
 
-import LoginForm from './components/loginForm';
-import SignUp from './components/SignUp';
+import LoginForm from "./components/loginForm";
+import SignUp from "./components/SignUp";
 const user = { email: "Admin@gmail.com", mdp: "Admin" };
 function App() {
   const HomeLoading = loading(Home);
   const [appState, setAppState] = useState({
     loading: false,
     userData: null,
+    notifsData: null,
+    projectsData: null,
+    tasksData: null,
   });
   useEffect(() => {
     setAppState({ loading: true });
@@ -36,44 +39,58 @@ function App() {
     };
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
-      .then((repos) => {
-        console.log(repos);
-        setAppState({ loading: false, userData: repos.dataNotifications });
-      });
+      .then((data) => {
+        //console.log(data);
+        setAppState({
+          loading: false,
+          userData: data.dataUtilisateur,
+          notifsData: data.dataNotifications,
+          projectsData: data.dataProjects,
+          tasksData: data.dataTaches,
+        });
+      })
+      .catch((error) => console.log("error", error));
   }, [setAppState]);
   return (
     <React.Fragment>
-      < main className="App">
-      <Router>
-       
-        <Switch>
-          <Route exact
-            path="/"
-            render={() => (
-              <HomeLoading
-                isLoading={appState.loading}
-                data={appState.userData}
-              />
-            )}
-          />
-          <Route exact path="/login" component={LoginForm} />
-          <Route exact path="/signup" component={SignUp} />
-          <div>
+      <main className="App">
+        <Router>
           <Sidebar />
-          <Route exact path="/projects" component={Projects} />
-          <Route exact path="/notifications" component={Notifs} />
-          <Route exact path="/explore" component={Explore} />
-          <Route exact path="/settings" component={Settings} />
-          </div>
-          
-          
-        </Switch>
-      </Router>
-    </main>
+
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => (
+                <HomeLoading
+                  isLoading={appState.loading}
+                  Userdata={appState.userData}
+                  tasks={appState.tasksData}
+                />
+              )}
+            />
+            <Route
+              path="/projects"
+              render={() => (
+                <Projects
+                  Userdata={appState.userData}
+                  projects={appState.projectsData}
+                />
+              )}
+            />
+            <Route
+              path="/notifications"
+              render={() => <Notifs notifs={appState.notifsData} />}
+            />
+            <Route path="/explore" component={Explore} />
+            <Route path="/settings" component={Settings} />
+            <Route exact path="/login" component={LoginForm} />
+            <Route exact path="/signup" component={SignUp} />
+          </Switch>
+        </Router>
+      </main>
     </React.Fragment>
-    
   );
 }
-
 
 export default App;

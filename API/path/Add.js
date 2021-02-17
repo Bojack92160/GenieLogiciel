@@ -30,7 +30,7 @@ module.exports = function(app){
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
    app.post('/Ajout/Rapport_Activite', async (req,res) => {
-     if (!req.body._idTache || !req.body._idUtilisateur || !req.body.periodeDebut || !req.body.periodeFin || !req.body.chargeEffectue || !req.body.chargeRestante || !req.body.avancementFinal ) {
+     if (!req.body._idTache || !req.body._idUtilisateur || !req.body.periodeDebut || !req.body.periodeFin || isNaN(req.body.chargeEffectue) || isNaN(req.body.chargeRestante) || isNaN(req.body.avancementFinal) ) {
        res.json({erreur: "Requete non valide. veuillez remplir les champs _idTache, _idUtilisateur, periodeDebut, periodeFin, chargeEffectue, chargeRestante et avancementFinal", success: false});
        return;
      }
@@ -102,7 +102,11 @@ module.exports = function(app){
        DataTache.dataAvancement.chargeEffective = DataTache.dataAvancement.chargeConsomme+req.body.chargeRestante;
        DataTache.dateFinEffect.setDate(DateDeSaisie.getDate()+DataTache.dataAvancement.chargeRestante);  //nouvelle date effective = date de saisie + chargeRestante
        if (DataTache.dateFinEffect>DataTache.dateFinInit) {
-         await NotificationTools.sendSystemNotification(DataTache.responsable, "la tache "+DataTache.chemin+DataTache.titre+" a du retard. date de fin effective:"+DataTache.dateFinEffect.getOKLMDate()+", date de fin initiale:"+DataTache.dateFinInit.getOKLMDate());
+         await NotificationTools.sendSystemNotification(DataTache.responsable, "la tache "+DataTache.chemin+DataTache.titre+" a du retard. date de fin effective:"+DataTache.dateFinEffect.toLocaleDateString()+", date de fin initiale:"+DataTache.dateFinInit.toLocaleDateString());
+       }
+       //verification que tache terminée
+       if (DataTache.dataAvancement.pourcent>=1) {
+         await TachesTools.closeTacheFinished(DataTache._id)
        }
        await DataTache.save();
        await NewRapport.save();
@@ -261,6 +265,7 @@ module.exports = function(app){
       DataResponsable.listeTacheResponsable.push(ID);
 
       if (req.body.collaborateur) {
+        console.log("on save le collaborateur", DataCollaborateur);
         DataCollaborateur.listeTacheCollaborateur.push(ID);
         await DataCollaborateur.save();
       }
@@ -408,7 +413,7 @@ module.exports = function(app){
       //on créé l'id manuellement pour le sauvegardé
       let ID = mongoose.Types.ObjectId();
       // On crée une instance du Model
-      var NewProjet = new ProjetsSchema({
+      let NewProjet = new ProjetsSchema({
         _id: ID,
         titre: req.body.titre,
         responsable: req.body.responsable,
@@ -430,8 +435,8 @@ module.exports = function(app){
       await NewProjet.save();
       DataResponsable.listeProjets.push(ID);
       DataClient.listeProjets.push(ID);
-      await DataResponsable.save()
-      await DataClient.save()
+      await DataResponsable.save();
+      await DataClient.save();
 
       res.json({message: "Le projet a bien été sauvegardé", success: true});
     } catch (e) {
@@ -486,7 +491,11 @@ module.exports = function(app){
         role: req.body.role,
         tel: req.body.tel,
         listeProjets: [],
+        listeTacheResponsable: [],
+        listeTacheCollaborateur: [],
         listeNotifications: [],
+        listePojetsTermines: [],
+        listeTachesTermines: [],
         listeTacheCommencés: []
       });
 
