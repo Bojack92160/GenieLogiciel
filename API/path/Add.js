@@ -408,7 +408,7 @@ module.exports = function(app){
       //on créé l'id manuellement pour le sauvegardé
       let ID = mongoose.Types.ObjectId();
       // On crée une instance du Model
-      var NewProjet = new ProjetsSchema({
+      let NewProjet = new ProjetsSchema({
         _id: ID,
         titre: req.body.titre,
         responsable: req.body.responsable,
@@ -430,8 +430,8 @@ module.exports = function(app){
       await NewProjet.save();
       DataResponsable.listeProjets.push(ID);
       DataClient.listeProjets.push(ID);
-      await DataResponsable.save()
-      await DataClient.save()
+      await DataResponsable.save();
+      await DataClient.save();
 
       res.json({message: "Le projet a bien été sauvegardé", success: true});
     } catch (e) {
@@ -486,7 +486,11 @@ module.exports = function(app){
         role: req.body.role,
         tel: req.body.tel,
         listeProjets: [],
+        listeTacheResponsable: [],
+        listeTacheCollaborateur: [],
         listeNotifications: [],
+        listePojetsTermines: [],
+        listeTachesTermines: [],
         listeTacheCommencés: []
       });
 

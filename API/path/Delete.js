@@ -83,12 +83,43 @@ app.post("/Supprime/Utilisateur", async (req, res) => {
 
   res.json({ message: "l'utilisateur a bien été supprimé de la base de donnée", success:true});
   return;
-})
+});
 
+/** Supprime un client
+* necessite le champ:
+* @id
+ * Il faut que le client n'ai aucun projet un cours
+ */
+app.post("/Supprime/Client", async (req, res) => {
 
+  if (!req.body.id) {
+    res.json({erreur: "Requete non valide. veuillez remplir le champs id", success: false});
+    return;
+  }
 
+  let ClientData;
+  try {
+    ClientData = await ClientsSchema.findById(req.body.id);
+    console.log(ClientData);
+    if (!ClientData) {
+      res.json({erreur: "Ce client n'existe pas. Veuillez renseignez l'id d'un client existant", success: false});
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+    res.json({erreur: "Une erreur est survenue lors du findById", stack:e, success: false});
+    return;
+  }
 
+  //verif que le client n'a pas de projet
+  if (ClientData.listeProjets.length>0) {
+    res.json({erreur: "Vous ne pouvez pas supprimez un client ayant des projets en cours!", success: false});
+    return;
+  }
 
-
+  await ClientsSchema.findByIdAndDelete(req.body.id);
+  res.json({message: "Le client a été supprimé avec succes!", success: true});
+  return;
+});
 
 }
