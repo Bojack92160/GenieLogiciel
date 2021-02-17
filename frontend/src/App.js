@@ -9,12 +9,18 @@ import Notifs from "./pages/Notifs";
 import Settings from "./pages/Settings";
 import { td } from "./components/TasksData";
 import loading from "./components/Loading";
+
+import LoginForm from "./components/loginForm";
+import SignUp from "./components/SignUp";
 const user = { email: "Admin@gmail.com", mdp: "Admin" };
 function App() {
   const HomeLoading = loading(Home);
   const [appState, setAppState] = useState({
-    loading: true,
-    user: null,
+    loading: false,
+    userData: null,
+    notifsData: null,
+    projectsData: null,
+    tasksData: null,
   });
   useEffect(() => {
     setAppState({ loading: true });
@@ -31,34 +37,57 @@ function App() {
       body: raw,
       redirect: "follow",
     };
-    //test
-    console.log(reqOptions);
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
-      .then((res) => console.log(res))
-      .then((repos) => {
-        setAppState({ loading: false, repos: repos });
-      });
-    console.log(appState.repos);
+      .then((data) => {
+        console.log(data);
+        setAppState({
+          loading: false,
+          userData: data.dataUtilisateur,
+          notifsData: data.dataNotifications,
+          projectsData: data.dataProjects,
+          tasksData: data.dataTaches,
+        });
+      })
+      .catch((error) => console.log("error", error));
   }, [setAppState]);
   return (
-    <div className="App">
-      <Router>
-        <Sidebar />
-        <Switch>
-          <Route
-            path="/"
-            render={() => (
-              <HomeLoading isLoading={appState.loading} data={td} />
-            )}
-          />
-          <Route path="/projects" component={Projects} />
-          <Route path="/notifications" component={Notifs} />
-          <Route path="/explore" component={Explore} />
-          <Route path="/settings" component={Settings} />
-        </Switch>
-      </Router>
-    </div>
+    <React.Fragment>
+      <main className="App">
+        <Router>
+          <Sidebar />
+
+          <Switch>
+            <Route
+              exact
+              path="/"
+              exact
+              render={() => (
+                <HomeLoading
+                  isLoading={appState.loading}
+                  Userdata={appState.userData}
+                  tasks={appState.tasksData}
+                />
+              )}
+            />
+            <Route
+              path="/projects"
+              render={() => (
+                <Projects
+                  Userdata={appState.userData}
+                  projects={appState.projectsData}
+                />
+              )}
+            />
+            <Route path="/notifications" component={Notifs} />
+            <Route path="/explore" component={Explore} />
+            <Route path="/settings" component={Settings} />
+            <Route exact path="/login" component={LoginForm} />
+            <Route exact path="/signup" component={SignUp} />
+          </Switch>
+        </Router>
+      </main>
+    </React.Fragment>
   );
 }
 
