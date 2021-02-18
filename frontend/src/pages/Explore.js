@@ -6,12 +6,13 @@ import { Autorenew } from "@material-ui/icons";
 import ProjectDisplaySelection from "../components/ProjectDisplaySelection";
 import CollabDisplaySelection from "../components/CollabDisplaySelection";
 import IdDisplaySelection from './../components/IdDisplaySelection';
+import TaskDisplaySelection from './../components/TaskDisplaySelection';
 
 const useStyles = makeStyles({
     dropDown: {
        
         margin: "2rem auto", 
-        width: "90%"
+        width: "90%",
         // marginLeft: auto,
         // marginRight: auto
         
@@ -80,6 +81,7 @@ function Explore() {
           </Form.Control>
         </Form.Group>
         </div>
+        <TaskDisplaySelection/>
       </>
     );
   }
