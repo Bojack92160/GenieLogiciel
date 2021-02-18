@@ -7,12 +7,12 @@ const useStyles = makeStyles({
       display: "flex"
     },
     searchField:{
-
+        
     }
   });
 
 
-const ClientDisplaySelection = (props) => {
+const ProjectDisplaySelection = (props) => {
     const classes = useStyles();
 
     return (
@@ -22,19 +22,16 @@ const ClientDisplaySelection = (props) => {
             aria-label="Search" />
             </div>
             <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="email"
+            <input type="search" id="form1" className="form-control" placeholder="titre"
             aria-label="Search" />
             </div>
             <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="entreprise"
+            <input type="search" id="form1" className="form-control" placeholder="date"
             aria-label="Search" />
             </div>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="téléphone"
-            aria-label="Search" />
-            </div>
+            
         </div>
     )
 }
 
-export default ClientDisplaySelection
+export default ProjectDisplaySelection

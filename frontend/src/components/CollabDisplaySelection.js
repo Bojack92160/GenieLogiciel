@@ -12,7 +12,7 @@ const useStyles = makeStyles({
   });
 
 
-const ClientDisplaySelection = (props) => {
+const CollabDisplaySelection = (props) => {
     const classes = useStyles();
 
     return (
@@ -22,19 +22,20 @@ const ClientDisplaySelection = (props) => {
             aria-label="Search" />
             </div>
             <div className={classes.searchField}>
+            <input type="search" id="form1" className="form-control" placeholder="nom"
+            aria-label="Search" />
+            </div>
+            <div className={classes.searchField}>
+            <input type="search" id="form1" className="form-control" placeholder="prenom"
+            aria-label="Search" />
+            </div>
+            <div className={classes.searchField}>
             <input type="search" id="form1" className="form-control" placeholder="email"
             aria-label="Search" />
             </div>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="entreprise"
-            aria-label="Search" />
-            </div>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="téléphone"
-            aria-label="Search" />
-            </div>
+            
         </div>
     )
 }
 
-export default ClientDisplaySelection
+export default CollabDisplaySelection

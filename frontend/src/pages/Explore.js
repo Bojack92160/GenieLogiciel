@@ -1,7 +1,29 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Form from "react-bootstrap/Form";
+import { makeStyles } from '@material-ui/core/styles';
+import ClientDisplaySelection from './../components/ClientDisplaySelection';
+import { Autorenew } from "@material-ui/icons";
+import ProjectDisplaySelection from "../components/ProjectDisplaySelection";
+import CollabDisplaySelection from "../components/CollabDisplaySelection";
+import IdDisplaySelection from './../components/IdDisplaySelection';
+
+const useStyles = makeStyles({
+    dropDown: {
+       
+        margin: "2rem auto", 
+        width: "90%"
+        // marginLeft: auto,
+        // marginRight: auto
+        
+      },
+      test:{
+          width:"100%"
+      }
+    });
 
 function Explore() {
+    const classes = useStyles();
+    
   const [searchMode, setSearchMode] = useState("Projects");
   const handleChange = (e) => {
     setSearchMode(e.target.value);
@@ -9,8 +31,8 @@ function Explore() {
   if (searchMode === "Clients") {
     return (
       <>
-        <div>Clients</div>
-        <Form.Group controlId="exampleForm.ControlSelect1">
+       <div className={classes.dropDown}>
+       <Form.Group className={classes.test} controlId="exampleForm.ControlSelect1">
           <Form.Control as="select" onChange={handleChange}>
             <option>Projets</option>
             <option>Tâches</option>
@@ -19,13 +41,17 @@ function Explore() {
             <option>Tout par ID</option>
           </Form.Control>
         </Form.Group>
+        </div> 
+        
+
+        <ClientDisplaySelection/>
       </>
     );
   }
   if (searchMode === "Projets") {
     return (
       <>
-        <div>Projets</div>
+        <div className={classes.dropDown}>
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Control as="select" onChange={handleChange}>
             <option selected={true}>Projets</option>
@@ -35,13 +61,15 @@ function Explore() {
             <option>Tout par ID</option>
           </Form.Control>
         </Form.Group>
+        </div>
+        <ProjectDisplaySelection/>
       </>
     );
   }
   if (searchMode === "Tâches") {
     return (
       <>
-        <div>Tâches</div>
+        <div className={classes.dropDown}>
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Control as="select" onChange={handleChange}>
             <option>Projets</option>
@@ -51,13 +79,14 @@ function Explore() {
             <option>Tout par ID</option>
           </Form.Control>
         </Form.Group>
+        </div>
       </>
     );
   }
   if (searchMode === "Utilisateurs") {
     return (
       <>
-        <div>Utilisateurs</div>
+       <div className={classes.dropDown}>
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Control as="select" onChange={handleChange}>
             <option>Projets</option>
@@ -67,13 +96,15 @@ function Explore() {
             <option>Tout par ID</option>
           </Form.Control>
         </Form.Group>
+        </div>
+        <CollabDisplaySelection/>
       </>
     );
   }
   if (searchMode === "Tout par ID") {
     return (
       <>
-        <div>Tout par ID</div>
+        <div className={classes.dropDown}>
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Control as="select" onChange={handleChange}>
             <option>Projets</option>
@@ -83,6 +114,8 @@ function Explore() {
             <option selected={true}>Tout par ID</option>
           </Form.Control>
         </Form.Group>
+        </div>
+        <IdDisplaySelection/>
       </>
     );
   }
