@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 import Explore from "./pages/Explore";
 import Notifs from "./pages/Notifs";
+import Settings from "./pages/Settings";
+import { td } from "./components/TasksData";
 import loading from "./components/Loading";
 
 import LoginForm from "./components/loginForm";
@@ -23,7 +25,7 @@ function App() {
   });
   useEffect(() => {
     setAppState({ loading: true });
-    const apiUrl = "https://api.bojack.vercel.app/login";
+    const apiUrl = "http://localhost:3001/login";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -32,14 +34,13 @@ function App() {
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
-      mode: "cors",
       body: raw,
       redirect: "follow",
     };
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        //console.log(data);
         setAppState({
           loading: false,
           userData: data.dataUtilisateur,

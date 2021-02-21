@@ -71,7 +71,7 @@ function ProjectsList(props) {
       </>
     );
   } else {
-    return <Project project={state.item}></Project>;
+    return <Project project={state.item} user={props.user}></Project>;
   }
 }
 

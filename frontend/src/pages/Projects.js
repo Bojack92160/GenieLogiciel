@@ -1,10 +1,13 @@
-import { React } from "react";
+import { React, useState } from "react";
 
 import ProjectsList from "../components/ProjectsList";
 import Container from "react-bootstrap/Container";
 import * as AIIcons from "react-icons/ai";
+import "./test.css";
 function Projects(props) {
-  console.log(props);
+  const [state, setstate] = useState({ isPro: false });
+  console.log(props.Userdata.role);
+
   if (!props.projects || props.projects.length === 0)
     return (
       <div
@@ -17,30 +20,57 @@ function Projects(props) {
         <p>pas de projets</p>
       </div>
     );
+  if (
+    props.Userdata.role === "administrateur" ||
+    props.Userdata.role === "responsable de projet"
+  ) {
+    return (
+      <div className="home">
+        {/* test pour voir comment marche des fonctions avec params */}
+        {/* <button
+                onClick={() => {
+                  test(nom);
+                }}
+              ></button> */}
+        <Container>
+          <>
+            <ProjectsList tasks={props.projects} user={props.Userdata} />
 
-  return (
-    <div className="home">
-      {/* test pour voir comment marche des fonctions avec params */}
-      {/* <button
+            {/* <div
+              style={{ position: "fixed", bottom: 10, right: 20 }}
               onClick={() => {
-                test(nom);
+                if (!state.isPro) {
+                  console.log("on est en projet");
+                }
               }}
-            ></button> */}
-      <Container>
-        <>
-          <ProjectsList tasks={props.projects} />
-          <div
-            style={{ position: "absolute", bottom: 10, right: 10 }}
-            onClick={() => {
-              alert("do stuff");
-            }}
-          >
-            <AIIcons.AiFillPlusCircle></AIIcons.AiFillPlusCircle>
-          </div>
-        </>
-      </Container>
-    </div>
-  );
+            >
+              <AIIcons.AiFillPlusCircle
+                className="test_hover"
+                style={{ color: "#1a83ff" }}
+                size={40}
+              ></AIIcons.AiFillPlusCircle>
+            </div> */}
+          </>
+        </Container>
+      </div>
+    );
+  } else {
+    return (
+      <div className="home">
+        {/* test pour voir comment marche des fonctions avec params */}
+        {/* <button
+                onClick={() => {
+                  test(nom);
+                }}
+              ></button> */}
+        <Container>
+          <>
+            <ProjectsList tasks={props.projects} />
+          </>
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default Projects;
