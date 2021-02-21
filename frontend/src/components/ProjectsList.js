@@ -3,17 +3,21 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import GrosTaskList from "./GrosTaskList";
-function TaskList(props) {
-  const [state, setstate] = useState({ diving: true });
-  if (!props.tasks || props.tasks === 0) return <p>pas de taches3</p>;
-  if (state.diving) {
+import Button from "react-bootstrap/Button";
+import Project from "./Project";
+function ProjectsList(props) {
+  const [state, setstate] = useState({ mode: false, item: null });
+  const changeMode = (item) => {
+    setstate({ mode: true, item: item });
+  };
+  if (!props.tasks || props.tasks === 0) return <p>pas de taches</p>;
+  if (!state.mode) {
     return (
       <>
         {props.tasks.map((item, index) => {
           return (
             <Col lg={4} sm={12} key={index}>
-              <Card style={{ marginTop: "10px" }} onClick={() => {}}>
+              <Card style={{ marginTop: "10px" }}>
                 <Card.Body>
                   <Card.Title>{item.titre}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
@@ -45,13 +49,6 @@ function TaskList(props) {
                         {new Date(item.dateFinEffect).toLocaleDateString()}
                       </Col>
                     </Row>
-                    <Row>
-                      <Col>Charge restante</Col>
-                      <Col>{item.dataAvancement.chargeRestante}</Col>
-                      <Col>
-                        {new Date(item.dateFinEffect).toLocaleDateString()}
-                      </Col>
-                    </Row>
                   </Card.Text>
                   <Card.Text>
                     <ProgressBar
@@ -59,7 +56,13 @@ function TaskList(props) {
                       label={`${item.dataAvancement.pourcent}%`}
                     />
                   </Card.Text>
-                  <Card.Link href="#">Card Link</Card.Link>
+                  <Button
+                    onClick={() => {
+                      changeMode(item);
+                    }}
+                  >
+                    détails
+                  </Button>
                 </Card.Body>
               </Card>
             </Col>
@@ -68,8 +71,8 @@ function TaskList(props) {
       </>
     );
   } else {
-    return <GrosTaskList></GrosTaskList>;
+    return <Project project={state.item}></Project>;
   }
 }
 
-export default TaskList;
+export default ProjectsList;

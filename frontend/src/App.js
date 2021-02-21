@@ -12,7 +12,7 @@ import loading from "./components/Loading";
 
 import LoginForm from "./components/loginForm";
 import SignUp from "./components/SignUp";
-import ProjectForm from './components/ProjectForm';
+import ProjectForm from "./components/ProjectForm";
 const user = { email: "Admin@gmail.com", mdp: "Admin" };
 function App() {
   const HomeLoading = loading(Home);
@@ -86,6 +86,7 @@ function App() {
             <Route path="/explore" component={Explore} />
             <Route path="/settings" component={ProjectForm} />
             <Route exact path="/login" component={LoginForm} />
+            <Route exact path="/signup" component={SignUp} />
             <Route exact path="/signup" component={SignUp} />
           </Switch>
         </Router>

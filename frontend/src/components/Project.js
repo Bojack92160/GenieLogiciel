@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,12 +6,54 @@ import Container from "react-bootstrap/Container";
 import TaskList from "../components/TaskList";
 import { Chart } from "react-google-charts";
 import { FcTimeline } from "react-icons/fc";
+import Loading2 from "./Loading2";
+import GrosTaskList from "./GrosTaskList";
 function Project(props) {
-  const [isGantt, setMode] = useState(false);
-  const changeMode = () => setMode(!isGantt);
-  // const nom = "mathieu";
-  if (!props.projects || props.projects === 0) return <p>pas de projets</p>;
-  if (isGantt) {
+  const [state, setState] = useState({
+    mode: false,
+    loading: false,
+    tasks: [],
+  });
+  useEffect(() => {
+    setState({ loading: true, mode: state.mode, tasks: state.tasks });
+    const apiUrl = "https://api.bojack.vercel.app/Recherche/Tache";
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    for (const elem of props.project.listeSousTaches) {
+      setState({ loading: true });
+      const id = { id: elem };
+      const raw = JSON.stringify(id);
+      var reqOptions = {
+        method: "POST",
+        headers: myHeaders,
+        mode: "cors",
+        body: raw,
+        redirect: "follow",
+      };
+      fetch(apiUrl, reqOptions)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          const yes = Object.assign({}, ...data);
+          var test = state.tasks;
+          test.push(yes);
+          setState({
+            tasks: test,
+            mode: state.mode,
+            loading: false,
+          });
+        })
+        .then(() => {});
+    }
+  }, [setState]);
+  //console.log(state.tasks);
+  const changeMode = () =>
+    setState({ mode: !state.mode, loading: state.loading, tasks: state.tasks });
+  if (state.loading) {
+    return <Loading2></Loading2>;
+  } else if (!state.tasks || state.tasks === 0) {
+    return <p>pas de taches dans le proj</p>;
+  } else if (state.mode) {
     return (
       <div className="home">
         {/* test pour voir comment marche des fonctions avec params */}
@@ -33,7 +75,7 @@ function Project(props) {
             <Col lg={4} />
           </Row>
           <Row>
-            <TaskList tasks={props.projects} />
+            <GrosTaskList tasks={state.tasks} />
           </Row>
         </Container>
       </div>
