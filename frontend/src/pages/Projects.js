@@ -1,10 +1,10 @@
 import { React } from "react";
 
-import Container from "react-bootstrap/Container";
 import ProjectsList from "../components/ProjectsList";
-
+import Container from "react-bootstrap/Container";
+import * as AIIcons from "react-icons/ai";
 function Projects(props) {
-  // const nom = "mathieu";
+  console.log(props);
   if (!props.projects || props.projects.length === 0)
     return (
       <div
@@ -29,6 +29,14 @@ function Projects(props) {
       <Container>
         <>
           <ProjectsList tasks={props.projects} />
+          <div
+            style={{ position: "absolute", bottom: 10, right: 10 }}
+            onClick={() => {
+              alert("do stuff");
+            }}
+          >
+            <AIIcons.AiFillPlusCircle></AIIcons.AiFillPlusCircle>
+          </div>
         </>
       </Container>
     </div>

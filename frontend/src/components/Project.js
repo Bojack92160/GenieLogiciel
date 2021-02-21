@@ -3,7 +3,6 @@ import { React, useState, useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import TaskList from "../components/TaskList";
 import { Chart } from "react-google-charts";
 import { FcTimeline } from "react-icons/fc";
 import Loading2 from "./Loading2";
@@ -45,7 +44,7 @@ function Project(props) {
         })
         .then(() => {});
     }
-  }, [setState]);
+  }, [setState, props.project.listeSousTaches, state.mode, state.tasks]);
   //console.log(state.tasks);
   const changeMode = () =>
     setState({ mode: !state.mode, loading: state.loading, tasks: state.tasks });

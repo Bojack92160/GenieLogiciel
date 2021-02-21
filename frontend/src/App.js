@@ -6,8 +6,6 @@ import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 import Explore from "./pages/Explore";
 import Notifs from "./pages/Notifs";
-import Settings from "./pages/Settings";
-import { td } from "./components/TasksData";
 import loading from "./components/Loading";
 
 import LoginForm from "./components/loginForm";
@@ -41,7 +39,7 @@ function App() {
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
       .then((data) => {
-        //console.log(data);
+        console.log(data);
         setAppState({
           loading: false,
           userData: data.dataUtilisateur,
