@@ -1,15 +1,13 @@
 import { React, useState } from "react";
 
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import ProjectsList from "../components/ProjectsList";
 import Container from "react-bootstrap/Container";
-import TaskList from "../components/TaskList";
-import { Chart } from "react-google-charts";
-import { FcTimeline } from "react-icons/fc";
+import * as AIIcons from "react-icons/ai";
+import "./test.css";
 function Projects(props) {
-  const [isGantt, setMode] = useState(false);
-  const changeMode = () => setMode(!isGantt);
-  // const nom = "mathieu";
+  const [state, setstate] = useState({ isPro: false });
+  console.log(props.Userdata.role);
+
   if (!props.projects || props.projects.length === 0)
     return (
       <div
@@ -22,29 +20,36 @@ function Projects(props) {
         <p>pas de projets</p>
       </div>
     );
-  if (isGantt) {
+  if (
+    props.Userdata.role === "administrateur" ||
+    props.Userdata.role === "responsable de projet"
+  ) {
     return (
       <div className="home">
         {/* test pour voir comment marche des fonctions avec params */}
         {/* <button
-              onClick={() => {
-                test(nom);
-              }}
-            ></button> */}
+                onClick={() => {
+                  test(nom);
+                }}
+              ></button> */}
         <Container>
-          <Row>
-            <Col lg={4}>
-              <div className="test">
-                <button onClick={changeMode}>
-                  <FcTimeline />
-                </button>
-              </div>
-            </Col>
-            <Col lg={4} />
-            <Col lg={4} />
-          </Row>
           <>
-            <TaskList tasks={props.projects} />
+            <ProjectsList tasks={props.projects} user={props.Userdata} />
+
+            {/* <div
+              style={{ position: "fixed", bottom: 10, right: 20 }}
+              onClick={() => {
+                if (!state.isPro) {
+                  console.log("on est en projet");
+                }
+              }}
+            >
+              <AIIcons.AiFillPlusCircle
+                className="test_hover"
+                style={{ color: "#1a83ff" }}
+                size={40}
+              ></AIIcons.AiFillPlusCircle>
+            </div> */}
           </>
         </Container>
       </div>
@@ -52,95 +57,16 @@ function Projects(props) {
   } else {
     return (
       <div className="home">
+        {/* test pour voir comment marche des fonctions avec params */}
+        {/* <button
+                onClick={() => {
+                  test(nom);
+                }}
+              ></button> */}
         <Container>
-          <Row>
-            <Col lg={4}>
-              <div className="test">
-                <button onClick={changeMode}>
-                  <FcTimeline />
-                </button>
-              </div>
-            </Col>
-            <Col lg={4} />
-            <Col lg={4} />
-          </Row>
-          <Row>
-            <Col lg={12}>
-              <Chart
-                width={"100%"}
-                height={"400px"}
-                chartType="Gantt"
-                loader={<div>Loading Chart</div>}
-                data={[
-                  [
-                    { type: "string", label: "Task ID" },
-                    { type: "string", label: "Task Name" },
-                    { type: "date", label: "Start Date" },
-                    { type: "date", label: "End Date" },
-                    { type: "number", label: "Duration" },
-                    { type: "number", label: "Percent Complete" },
-                    { type: "string", label: "Dependencies" },
-                  ],
-                  [
-                    "Research",
-                    "Find sources",
-                    new Date(2015, 0, 1),
-                    new Date(2015, 0, 5),
-                    null,
-                    100,
-                    null,
-                  ],
-                  [
-                    "Research2",
-                    "Find sources",
-                    new Date(2015, 0, 1),
-                    new Date(2015, 0, 6),
-                    null,
-                    100,
-                    null,
-                  ],
-
-                  [
-                    "Write",
-                    "Write paper",
-                    null,
-                    new Date(2015, 0, 9),
-                    3 * 24 * 60 * 60 * 1000,
-                    25,
-                    "Research,Outline",
-                  ],
-                  [
-                    "Cite",
-                    "Create bibliography",
-                    null,
-                    new Date(2015, 0, 7),
-                    1 * 24 * 60 * 60 * 1000,
-                    20,
-                    "Research",
-                  ],
-                  [
-                    "Complete",
-                    "Hand in paper",
-                    null,
-                    new Date(2015, 0, 10),
-                    1 * 24 * 60 * 60 * 1000,
-                    0,
-                    "Cite,Write",
-                  ],
-                  [
-                    "Outline",
-                    "Outline paper",
-                    null,
-                    new Date(2015, 0, 6),
-                    1 * 24 * 60 * 60 * 1000,
-                    100,
-                    "Research",
-                  ],
-                ]}
-                rootProps={{ "data-testid": "1" }}
-              />
-            </Col>
-          </Row>
+          <>
+            <ProjectsList tasks={props.projects} />
+          </>
         </Container>
       </div>
     );

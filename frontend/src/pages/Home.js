@@ -1,11 +1,8 @@
-import { React, useState } from "react";
+import { React } from "react";
 
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import TaskList from "../components/TaskList";
-import { Chart } from "react-google-charts";
-import { FcTimeline } from "react-icons/fc";
 //test pour voir comment importer des fonctions
 //import { test } from "../testfunc";
 

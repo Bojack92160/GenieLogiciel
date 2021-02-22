@@ -9,7 +9,8 @@ var ProjetsSchema = require("./models/Projets-model.js");
 var TachesSchema = require("./models/Taches-model.js");
 var NotificationsSchema = require("./models/Notifications-model.js");
 
-const connectionString = "mongodb+srv://dbuser:dbuser@projetgl.9eaqw.mongodb.net/ProjetGl?retryWrites=true&w=majority";
+const connectionString =
+  "mongodb+srv://dbuser:dbuser@projetgl.9eaqw.mongodb.net/ProjetGl?retryWrites=true&w=majority";
 
 const app = express();
 
@@ -113,4 +114,4 @@ mongoose.connect(
   }
 );
 
-app.listen(3000);
+app.listen(3001);
