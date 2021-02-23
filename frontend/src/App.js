@@ -12,7 +12,7 @@ import loading from "./components/Loading";
 
 import LoginForm from "./components/loginForm";
 import SignUp from "./components/SignUp";
-import ProjectForm from './components/ProjectForm';
+import ProjectForm from "./components/ProjectForm";
 const user = { email: "Admin@gmail.com", mdp: "Admin" };
 function App() {
   const HomeLoading = loading(Home);
@@ -25,7 +25,7 @@ function App() {
   });
   useEffect(() => {
     setAppState({ loading: true });
-    const apiUrl = "https://api.bojack.vercel.app/login";
+    const apiUrl = "http://localhost:3001/login";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -34,7 +34,6 @@ function App() {
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
-      mode: "cors",
       body: raw,
       redirect: "follow",
     };
@@ -86,6 +85,7 @@ function App() {
             <Route path="/explore" component={Explore} />
             <Route path="/settings" component={ProjectForm} />
             <Route exact path="/login" component={LoginForm} />
+            <Route exact path="/signup" component={SignUp} />
             <Route exact path="/signup" component={SignUp} />
           </Switch>
         </Router>
