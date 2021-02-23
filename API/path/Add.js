@@ -110,7 +110,7 @@ module.exports = function(app){
        }
        //suppretion des taches commences
        DataUtilisateur.listeTacheCommencés = [];
-       
+
        await DataUtilisateur.save();
        await DataTache.save();
        await NewRapport.save();
@@ -441,7 +441,7 @@ module.exports = function(app){
       DataClient.listeProjets.push(ID);
       await DataResponsable.save();
       await DataClient.save();
-
+      await NotificationTools.sendSystemNotification(DataResponsable.responsable, "le projet "+req.body.titre+" vient d'etre créer et vous etes le responsable!");
       res.json({message: "Le projet a bien été sauvegardé", success: true});
     } catch (e) {
       console.error(e);
