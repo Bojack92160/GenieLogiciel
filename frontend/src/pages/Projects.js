@@ -4,10 +4,17 @@ import ProjectsList from "../components/ProjectsList";
 import Container from "react-bootstrap/Container";
 import * as AIIcons from "react-icons/ai";
 import "./test.css";
-function Projects(props) {
-  const [state, setstate] = useState({ isPro: false });
-  console.log(props.Userdata.role);
+import ProjectForm from "../components/ProjectForm";
 
+function Projects(props) {
+  const [state, setstate] = useState({ isPro: false, addproj: false });
+  const add = () => {
+    setstate({ isPro: state.isPro, addproj: true });
+  };
+  console.log(props.Userdata.role);
+  if (state.addproj) {
+    return <ProjectForm></ProjectForm>;
+  }
   if (!props.projects || props.projects.length === 0)
     return (
       <div
@@ -36,11 +43,12 @@ function Projects(props) {
           <>
             <ProjectsList tasks={props.projects} user={props.Userdata} />
 
-            {/* <div
+            <div
               style={{ position: "fixed", bottom: 10, right: 20 }}
               onClick={() => {
                 if (!state.isPro) {
                   console.log("on est en projet");
+                  add();
                 }
               }}
             >
@@ -49,7 +57,7 @@ function Projects(props) {
                 style={{ color: "#1a83ff" }}
                 size={40}
               ></AIIcons.AiFillPlusCircle>
-            </div> */}
+            </div>
           </>
         </Container>
       </div>

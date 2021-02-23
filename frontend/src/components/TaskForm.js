@@ -4,11 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 
-const getNow = () => {
-  const now = new Date();
-  console.log(now.toLocaleDateString());
-  return now.toLocaleDateString();
-};
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -26,13 +21,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProjectForm = () => {
+const TaskForm = (props) => {
   const handleEndChange = (e) => {
     setstate({
       titre: state.titre,
       description: state.description,
       responsable: state.responsable,
-      client: state.client,
+      Collaborateur: state.Collaborateur,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: e.target.value,
     });
@@ -42,7 +37,7 @@ const ProjectForm = () => {
       titre: state.titre,
       description: state.description,
       responsable: state.responsable,
-      client: state.client,
+      Collaborateur: state.Collaborateur,
       dateDebutInit: e.target.value,
       dateFinInit: state.dateFinInit,
     });
@@ -52,7 +47,7 @@ const ProjectForm = () => {
       titre: state.titre,
       description: state.description,
       responsable: state.responsable,
-      client: e.target.value,
+      Collaborateur: e.target.value,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: state.dateFinInit,
     });
@@ -62,7 +57,7 @@ const ProjectForm = () => {
       titre: state.titre,
       description: state.description,
       responsable: e.target.value,
-      client: state.client,
+      Collaborateur: state.Collaborateur,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: state.dateFinInit,
     });
@@ -72,7 +67,7 @@ const ProjectForm = () => {
       titre: state.titre,
       description: e.target.value,
       responsable: state.responsable,
-      client: state.client,
+      Collaborateur: state.Collaborateur,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: state.dateFinInit,
     });
@@ -82,7 +77,7 @@ const ProjectForm = () => {
       titre: e.target.value,
       description: state.description,
       responsable: state.responsable,
-      client: state.client,
+      Collaborateur: state.Collaborateur,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: state.dateFinInit,
     });
@@ -92,7 +87,7 @@ const ProjectForm = () => {
     titre: "",
     description: "",
     responsable: "",
-    client: "",
+    Collaborateur: "",
     dateDebutInit: "",
     dateFinInit: "",
     now: new Date(),
@@ -102,7 +97,7 @@ const ProjectForm = () => {
   const history = useHistory();
   return (
     <>
-      <h1>Créer un projet</h1>
+      {/* <h1>Créer un projet/tâche</h1> */}
       <form className={classes.root} noValidate autoComplete="off">
         <div>
           <TextField
@@ -184,10 +179,10 @@ const ProjectForm = () => {
             //margin="normal"
             required
             fullWidth
-            id="client"
-            label="Client"
-            name="client"
-            autoComplete="client"
+            id="Collaborateur"
+            label="Collaborateur"
+            name="Collaborateur"
+            autoComplete="Collaborateur"
             autoFocus
             onChange={handleClientChange}
           />
@@ -281,4 +276,4 @@ const ProjectForm = () => {
   );
 };
 
-export default ProjectForm;
+export default TaskForm;

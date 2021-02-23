@@ -23,7 +23,6 @@ function ProjectsList(props) {
                   <Card.Subtitle className="mb-2 text-muted">
                     <Row>
                       <Col>Responsable: {item.responsable}</Col>
-                      <Col>Réalisateur: {item.collaborateur}</Col>
                     </Row>
                   </Card.Subtitle>
                   <Card.Subtitle className="mb-12 text-muted">
