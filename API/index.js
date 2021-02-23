@@ -1,7 +1,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-const cors = require("cors");
+var cors = require("cors");
 
 var UtilisateursSchema = require("./models/Utilisateurs-model.js");
 var ClientsSchema = require("./models/Clients-model.js");
@@ -21,6 +21,7 @@ require("./path/Search.js")(app);
 require("./path/Add.js")(app);
 require("./path/Delete.js")(app);
 require("./path/Change.js")(app);
+require("./path/Action.js")(app);
 
 //routes
 app.get("/", (req, res) => {

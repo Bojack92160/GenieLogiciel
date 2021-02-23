@@ -12,9 +12,11 @@
     { "src": "/Ajout/Utilisateur", "dest": "/" },
     { "src": "/Ajout/Client", "dest": "/" },
     { "src": "/Supprime/Utilisateur", "dest": "/" },
+    { "src": "/Supprime/Client", "dest": "/" },
     { "src": "/Change/ProjetResponsable", "dest": "/" },
     { "src": "/Change/TacheResponsable", "dest": "/" },
     { "src": "/Change/TacheCollaborateur", "dest": "/" },
+    { "src": "/Action/CommenceTache", "dest": "/" },
     { "src": "/login", "dest": "/" }
    ],
   "builds": [{ "src": "index.js", "use": "@now/node-server" }]
