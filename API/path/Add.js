@@ -108,6 +108,10 @@ module.exports = function(app){
        if (DataTache.dataAvancement.pourcent>=1) {
          await TachesTools.closeTacheFinished(DataTache._id)
        }
+       //suppretion des taches commences
+       DataUtilisateur.listeTacheCommencés = [];
+       
+       await DataUtilisateur.save();
        await DataTache.save();
        await NewRapport.save();
        let result = await TachesTools.updateProjetFromTache(req.body._idTache);
