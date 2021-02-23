@@ -5,7 +5,33 @@ const ProjetsSchema = require('./../models/Projets-model.js');
 const NotificationsSchema = require('./../models/Notifications-model.js');
 const TachesSchema = require('./../models/Taches-model.js');
 
+const TachesTools = require('./../tools/TachesTools.js');
+
 module.exports = function (app) {
+
+
+  /** Renvoi TOUTE les datas d'un projet
+   *  nécessite le champ:
+   * @id //id du projet
+   */
+  app.post("/Recherche/AllProjet", async (req, res) => {
+    if (!req.body.id) {
+      res.json({erreur: "Requete non valide. veuillez remplir le champs id", success: false});
+      return;
+    }
+
+    let DataProject
+    try {
+       DataProject = await TachesTools.getAllDataUnderTache(req.body.id);
+    } catch (e) {
+      console.error(e);
+      res.json({erreur: "Un erreur est survenue lors de la recupération des taches", success: false});
+      return;
+    }
+
+    res.json(DataProject);
+    return;
+  });
 
   /** Recherche pour projet.
    *  Champs possibles :

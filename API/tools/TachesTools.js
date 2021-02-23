@@ -9,6 +9,28 @@ var NotificationTools = require('./NotificationTools.js');
 
 module.exports = {
 
+  getAllDataUnderTache: async function(id){
+    let AllData = [];
+    let DataMere = await ProjetsSchema.findById(id);
+
+    if (!DataMere) {
+      DataMere = await TachesSchema.findById(id);
+      if (!DataMere) {
+        throw "impossible de récupérer la datamere";
+      }
+    }
+
+    AllData.push(DataMere);
+    let NewData = [];
+    for (var i = 0; i < DataMere.listeSousTaches.length; i++) {
+      NewData.push(await getAllDataUnderTache(DataMere.listeSousTaches[i]));
+    }
+    console.log("id", id, AllData, NewData);
+    AllData = AllData.concat(NewData);
+    AllData = AllData.flat(2);
+    return AllData;
+  },
+
   /**  renvoi un string contenant le chemin de cette Tache SANS SON TITRE
    * throw erreur si l'un des parents n'est pas accessible (mauvais id)
    */
@@ -211,5 +233,28 @@ async function closeTacheFinished(idTache){
     return false;
   }
   return true;
+}
 
+
+
+async function getAllDataUnderTache(id){
+  let AllData = [];
+  let DataMere = await ProjetsSchema.findById(id);
+
+  if (!DataMere) {
+    DataMere = await TachesSchema.findById(id);
+    if (!DataMere) {
+      throw "impossible de récupérer la datamere";
+    }
+  }
+
+  AllData.push(DataMere);
+  let NewData = [];
+  for (var i = 0; i < DataMere.listeSousTaches.length; i++) {
+    NewData.push(await getAllDataUnderTache(DataMere.listeSousTaches[i]));
+  }
+  console.log("id", id, AllData, NewData);
+  AllData = AllData.concat(NewData);
+  AllData = AllData.flat(2);
+  return AllData;
 }
