@@ -8,8 +8,10 @@ import { FcTimeline } from "react-icons/fc";
 import Loading2 from "./Loading2";
 import GrosTaskList from "./GrosTaskList";
 import * as AIIcons from "react-icons/ai";
+import TaskForm from "./TaskForm";
 import ProjectForm from "./ProjectForm";
 function Project(props) {
+  console.log("cette page");
   console.log(props);
   const [state, setState] = useState({
     mode: false,
@@ -27,6 +29,7 @@ function Project(props) {
     const apiUrl = "http://localhost:3001/Recherche/Tache";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    setState({ loaging: false });
     for (const elem of props.project.listeSousTaches) {
       setState({ loading: true });
       const id = { id: elem };
@@ -57,10 +60,36 @@ function Project(props) {
   //console.log(state.tasks);
   const changeMode = () =>
     setState({ mode: !state.mode, loading: state.loading, tasks: state.tasks });
+  if (state.add) {
+    return <TaskForm project={props.project}></TaskForm>;
+  }
   if (state.loading) {
     return <Loading2></Loading2>;
   } else if (!state.tasks || state.tasks === 0) {
-    return <p>pas de taches dans le proj</p>;
+    if (props.user.email === props.project.responsable) {
+      return (
+        <>
+          <p>pas de taches dans le proj</p>
+          <div
+            className="test_hover"
+            style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
+            onClick={() => {
+              if (!state.isPro2) {
+                setState({ add: true, tasks: state.tasks });
+                console.log("on est en tache");
+              }
+            }}
+          >
+            <AIIcons.AiFillPlusCircle
+              style={{ color: "red" }}
+              size={40}
+            ></AIIcons.AiFillPlusCircle>
+          </div>
+        </>
+      );
+    } else {
+      return <p>pas de taches dans le proj</p>;
+    }
   } else if (state.add) {
     return <ProjectForm></ProjectForm>;
   } else if (state.mode) {
@@ -197,7 +226,7 @@ function Project(props) {
             }}
           >
             <AIIcons.AiFillPlusCircle
-              style={{ color: "#1a83ff" }}
+              style={{ color: "red" }}
               size={40}
             ></AIIcons.AiFillPlusCircle>
           </div>
@@ -296,6 +325,21 @@ function Project(props) {
               />
             </Col>
           </Row>
+          <div
+            className="test_hover"
+            style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
+            onClick={() => {
+              if (!state.isPro2) {
+                setState({ add: true, tasks: state.tasks });
+                console.log("on est en tache");
+              }
+            }}
+          >
+            <AIIcons.AiFillPlusCircle
+              style={{ color: "#red" }}
+              size={40}
+            ></AIIcons.AiFillPlusCircle>
+          </div>
         </Container>
       </div>
     );

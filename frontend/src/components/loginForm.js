@@ -1,34 +1,33 @@
-import React from 'react';
-import {Button,CssBaseline,Checkbox,TextField,FormControlLabel,Link,Grid,Box,Typography,makeStyles,Container} from '@material-ui/core';
+import React from "react";
+import {
+  Button,
+  CssBaseline,
+  Checkbox,
+  TextField,
+  FormControlLabel,
+  Link,
+  Grid,
+  Box,
+  Typography,
+  makeStyles,
+  Container,
+} from "@material-ui/core";
 
 //import {LockOutlinedIcon} from '@material-ui/icons/LockOutlined';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Project Manager
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -36,18 +35,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const LoginForm = () => {
-    const classes = useStyles();
+  const classes = useStyles();
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-      
-        
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-         <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -83,25 +80,20 @@ const LoginForm = () => {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form> 
+        </form>
       </div>
       <Box mt={8}>
-        <Copyright />
+        <Typography variant="body2" color="textSecondary" align="center">
+          {"Copyright © "}
+          <Link color="inherit" href="https://material-ui.com/">
+            Project Manager
+          </Link>{" "}
+          {new Date().getFullYear()}
+          {"."}
+        </Typography>
       </Box>
     </Container>
   );
-}
- 
+};
+
 export default LoginForm;

@@ -1,18 +1,17 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
-const UtilisateursSchema = require('./../models/Utilisateurs-model.js');
-const ClientsSchema = require('./../models/Clients-model.js');
-const ProjetsSchema = require('./../models/Projets-model.js');
-const NotificationsSchema = require('./../models/Notifications-model.js');
-const TachesSchema = require('./../models/Taches-model.js');
-const Rapports_Activites = require('./../models/Rapports_Activites-model.js');
+const UtilisateursSchema = require("./../models/Utilisateurs-model.js");
+const ClientsSchema = require("./../models/Clients-model.js");
+const ProjetsSchema = require("./../models/Projets-model.js");
+const NotificationsSchema = require("./../models/Notifications-model.js");
+const TachesSchema = require("./../models/Taches-model.js");
+const Rapports_Activites = require("./../models/Rapports_Activites-model.js");
 
-var TachesTools = require('./../tools/TachesTools.js');
-var NotificationTools = require('./../tools/NotificationTools.js');
-require('./../tools/DatePrototypes.js');
+var TachesTools = require("./../tools/TachesTools.js");
+var NotificationTools = require("./../tools/NotificationTools.js");
+require("./../tools/DatePrototypes.js");
 
-module.exports = function(app){
-
+module.exports = function (app) {
   /** Ajout d'un Rapport_Activite
    * requiert un champ :
    * @_idTache
@@ -29,108 +28,173 @@ module.exports = function(app){
    * les champs listeTacheResponsable et listeTacheCollaborateur du responsable et du collaborateur sont automatiquement MAJ
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
-   app.post('/Ajout/Rapport_Activite', async (req,res) => {
-     if (!req.body._idTache || !req.body._idUtilisateur || !req.body.periodeDebut || !req.body.periodeFin || isNaN(req.body.chargeEffectue) || isNaN(req.body.chargeRestante) || isNaN(req.body.avancementFinal) ) {
-       res.json({erreur: "Requete non valide. veuillez remplir les champs _idTache, _idUtilisateur, periodeDebut, periodeFin, chargeEffectue, chargeRestante et avancementFinal", success: false});
-       return;
-     }
+  app.post("/Ajout/Rapport_Activite", async (req, res) => {
+    if (
+      !req.body._idTache ||
+      !req.body._idUtilisateur ||
+      !req.body.periodeDebut ||
+      !req.body.periodeFin ||
+      isNaN(req.body.chargeEffectue) ||
+      isNaN(req.body.chargeRestante) ||
+      isNaN(req.body.avancementFinal)
+    ) {
+      res.json({
+        erreur:
+          "Requete non valide. veuillez remplir les champs _idTache, _idUtilisateur, periodeDebut, periodeFin, chargeEffectue, chargeRestante et avancementFinal",
+        success: false,
+      });
+      return;
+    }
 
-     let DataTache;
-     let DataUtilisateur;
-     try {
-       DataTache = await TachesSchema.findById(req.body._idTache);
-       DataUtilisateur = await UtilisateursSchema.findById(req.body._idUtilisateur);
-       if (!DataTache) {
-           res.json({erreur: "La tache  "+req.body._idTache+" n'existe pas dans la base de donnée. Veuillez rentrer une id de tache existante", success: false});
-           return;
-       } else if (!DataUtilisateur) {
-         res.json({erreur: "L'utilisateur  "+req.body._idUtilisateur+" n'existe pas dans la base de donnée. Veuillez rentrer un utilisateur existant", success: false});
-         return;
-       } else {
-         if (DataTache.listeSousTaches.length>0) {
-           res.json({erreur: "Impossible de remplir un rapport sur cette tache, elle possède au moin une sous tache (une tache doit etre du plus bas niveau pour pouvoir saisir des rapports)", success: false});
-           return;
-         }
-         if (DataTache.prédécesseurs.length) {
-           for (var i = 0; i < DataTache.prédécesseurs.length; i++) {
-             let DataTachePredec = await TachesSchema.findById(DataTache.prédécesseurs[i]);
-             if (DataTachePredec && DataTachePredec.dataAvancement.pourcent<1) {
-               res.json({erreur: "Impossible de remplir un rapport sur cette tache, elle possède au moin un prédécesseur qui n'est pas finit ("+DataTachePredec.titre+")", success: false});
-               return;
-             }
-           }
-         }
-       }
-       if (DataUtilisateur.email != DataTache.collaborateur) {
-         res.json({erreur: "Action impossible! L'utilisateur qui souhaite remplir le rapport d'activité de cette tache n'est pas le collaborateur assigné à cette tache.", success: false});
-         return;
-       }
-     } catch (e) {
-       console.error(e);
-       res.json({erreur: "Une erreur est survenue lors de la recherche de la tache / utilisateur ", stack: e, success: false});
-       return;
-     }
+    let DataTache;
+    let DataUtilisateur;
+    try {
+      DataTache = await TachesSchema.findById(req.body._idTache);
+      DataUtilisateur = await UtilisateursSchema.findById(
+        req.body._idUtilisateur
+      );
+      if (!DataTache) {
+        res.json({
+          erreur:
+            "La tache  " +
+            req.body._idTache +
+            " n'existe pas dans la base de donnée. Veuillez rentrer une id de tache existante",
+          success: false,
+        });
+        return;
+      } else if (!DataUtilisateur) {
+        res.json({
+          erreur:
+            "L'utilisateur  " +
+            req.body._idUtilisateur +
+            " n'existe pas dans la base de donnée. Veuillez rentrer un utilisateur existant",
+          success: false,
+        });
+        return;
+      } else {
+        if (DataTache.listeSousTaches.length > 0) {
+          res.json({
+            erreur:
+              "Impossible de remplir un rapport sur cette tache, elle possède au moin une sous tache (une tache doit etre du plus bas niveau pour pouvoir saisir des rapports)",
+            success: false,
+          });
+          return;
+        }
+        if (DataTache.prédécesseurs.length) {
+          for (var i = 0; i < DataTache.prédécesseurs.length; i++) {
+            let DataTachePredec = await TachesSchema.findById(
+              DataTache.prédécesseurs[i]
+            );
+            if (
+              DataTachePredec &&
+              DataTachePredec.dataAvancement.pourcent < 1
+            ) {
+              res.json({
+                erreur:
+                  "Impossible de remplir un rapport sur cette tache, elle possède au moin un prédécesseur qui n'est pas finit (" +
+                  DataTachePredec.titre +
+                  ")",
+                success: false,
+              });
+              return;
+            }
+          }
+        }
+      }
+      if (DataUtilisateur.email != DataTache.collaborateur) {
+        res.json({
+          erreur:
+            "Action impossible! L'utilisateur qui souhaite remplir le rapport d'activité de cette tache n'est pas le collaborateur assigné à cette tache.",
+          success: false,
+        });
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+      res.json({
+        erreur:
+          "Une erreur est survenue lors de la recherche de la tache / utilisateur ",
+        stack: e,
+        success: false,
+      });
+      return;
+    }
 
-     try {
-       req.body.periodeDebut = new Date(req.body.periodeDebut);
-       req.body.periodeFin = new Date(req.body.periodeFin);
-     } catch (e) {
-       res.json({erreur: "Une erreur est survenue lors du parsage des dates. Il faut des objet Date()", stack: e, success: false});
-       return;
-     }
+    try {
+      req.body.periodeDebut = new Date(req.body.periodeDebut);
+      req.body.periodeFin = new Date(req.body.periodeFin);
+    } catch (e) {
+      res.json({
+        erreur:
+          "Une erreur est survenue lors du parsage des dates. Il faut des objet Date()",
+        stack: e,
+        success: false,
+      });
+      return;
+    }
 
-     try {
-       let DateDeSaisie = new Date();
-       var NewRapport = new Rapports_Activites({
-         _idUtilisateur: req.body._idUtilisateur,
-         _idTache: req.body._idTache,
-         emailUtilisateur: DataUtilisateur.email,
-         dateDeSaisie: DateDeSaisie,
-         periodeDebut: req.body.periodeDebut,
-         periodeFin: req.body.periodeFin,
-         chargeEffectue: req.body.chargeEffectue,
-         chargeRestante: req.body.chargeRestante, //=chargeEffectue * (1-avancementFinal)/avancementEffectué)
-         avancementInitial: DataTache.dataAvancement.pourcent, //entre 0 et 1 (pourcentage)
-         avancementEffectue: req.body.avancementFinal-DataTache.dataAvancement.pourcent,
-         avancementFinal: req.body.avancementFinal,
-         commentaire: req.body.commentaire ? req.body.commentaire : "",
-       });
+    try {
+      let DateDeSaisie = new Date();
+      var NewRapport = new Rapports_Activites({
+        _idUtilisateur: req.body._idUtilisateur,
+        _idTache: req.body._idTache,
+        emailUtilisateur: DataUtilisateur.email,
+        dateDeSaisie: DateDeSaisie,
+        periodeDebut: req.body.periodeDebut,
+        periodeFin: req.body.periodeFin,
+        chargeEffectue: req.body.chargeEffectue,
+        chargeRestante: req.body.chargeRestante, //=chargeEffectue * (1-avancementFinal)/avancementEffectué)
+        avancementInitial: DataTache.dataAvancement.pourcent, //entre 0 et 1 (pourcentage)
+        avancementEffectue:
+          req.body.avancementFinal - DataTache.dataAvancement.pourcent,
+        avancementFinal: req.body.avancementFinal,
+        commentaire: req.body.commentaire ? req.body.commentaire : "",
+      });
 
-       DataTache.dataAvancement.pourcent = req.body.avancementFinal;
-       DataTache.dataAvancement.chargeConsomme += req.body.chargeEffectue;
-       DataTache.dataAvancement.chargeRestante = req.body.chargeRestante;
-       DataTache.dataAvancement.chargeEffective = DataTache.dataAvancement.chargeConsomme+req.body.chargeRestante;
-       DataTache.dateFinEffect.setDate(DateDeSaisie.getDate()+DataTache.dataAvancement.chargeRestante);  //nouvelle date effective = date de saisie + chargeRestante
-       if (DataTache.dateFinEffect>DataTache.dateFinInit) {
-         await NotificationTools.sendSystemNotification(DataTache.responsable, "la tache "+DataTache.chemin+DataTache.titre+" a du retard. date de fin effective:"+DataTache.dateFinEffect.toLocaleDateString()+", date de fin initiale:"+DataTache.dateFinInit.toLocaleDateString());
-       }
-       //verification que tache terminée
-       if (DataTache.dataAvancement.pourcent>=1) {
-         await TachesTools.closeTacheFinished(DataTache._id)
-       }
-       await DataTache.save();
-       await NewRapport.save();
-       let result = await TachesTools.updateProjetFromTache(req.body._idTache);
-       if (!result) {
-         res.json({erreur: "Une erreur est survenue dans l update des taches mere!", success:true});
-       } else {
-         res.json({message: "Rapport soumit et projet updater avec succes!", success:true});
-       }
-     } catch (e) {
-       console.error(e);
-       res.json({erreur: "Une erreur est survenue", stack: e, success: false});
-       return;
-     }
-
-
-
-
-
-
-
-   });
-
-
+      DataTache.dataAvancement.pourcent = req.body.avancementFinal;
+      DataTache.dataAvancement.chargeConsomme += req.body.chargeEffectue;
+      DataTache.dataAvancement.chargeRestante = req.body.chargeRestante;
+      DataTache.dataAvancement.chargeEffective =
+        DataTache.dataAvancement.chargeConsomme + req.body.chargeRestante;
+      DataTache.dateFinEffect.setDate(
+        DateDeSaisie.getDate() + DataTache.dataAvancement.chargeRestante
+      ); //nouvelle date effective = date de saisie + chargeRestante
+      if (DataTache.dateFinEffect > DataTache.dateFinInit) {
+        await NotificationTools.sendSystemNotification(
+          DataTache.responsable,
+          "la tache " +
+            DataTache.chemin +
+            DataTache.titre +
+            " a du retard. date de fin effective:" +
+            DataTache.dateFinEffect.toLocaleDateString() +
+            ", date de fin initiale:" +
+            DataTache.dateFinInit.toLocaleDateString()
+        );
+      }
+      //verification que tache terminée
+      if (DataTache.dataAvancement.pourcent >= 1) {
+        await TachesTools.closeTacheFinished(DataTache._id);
+      }
+      await DataTache.save();
+      await NewRapport.save();
+      let result = await TachesTools.updateProjetFromTache(req.body._idTache);
+      if (!result) {
+        res.json({
+          erreur: "Une erreur est survenue dans l update des taches mere!",
+          success: true,
+        });
+      } else {
+        res.json({
+          message: "Rapport soumit et projet updater avec succes!",
+          success: true,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      res.json({ erreur: "Une erreur est survenue", stack: e, success: false });
+      return;
+    }
+  });
 
   /** Ajout d'un Tache
    * requiert un champ :
@@ -149,9 +213,20 @@ module.exports = function(app){
    * les champs listeTacheResponsable et listeTacheCollaborateur du responsable et du collaborateur sont automatiquement MAJ
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
-  app.post('/Ajout/Tache', async (req,res) => {
-    if (!req.body.titre || !req.body.responsable || !req.body.description || !req.body.dateDebutInit || !req.body.dateFinInit || !req.body._idMere) {
-      res.json({erreur: "Requete non valide. veuillez remplir les champs titre, responsable, mdp, description, dateDebutInit, dateFinInit, _idMere", success: false});
+  app.post("/Ajout/Tache", async (req, res) => {
+    if (
+      !req.body.titre ||
+      !req.body.responsable ||
+      !req.body.description ||
+      !req.body.dateDebutInit ||
+      !req.body.dateFinInit ||
+      !req.body._idMere
+    ) {
+      res.json({
+        erreur:
+          "Requete non valide. veuillez remplir les champs titre, responsable, mdp, description, dateDebutInit, dateFinInit, _idMere",
+        success: false,
+      });
       return;
     }
 
@@ -163,16 +238,30 @@ module.exports = function(app){
       if (!DataMere) {
         DataMere = await TachesSchema.findById(req.body._idMere);
         if (!DataMere) {
-          res.json({erreur: "Le projet/tache mere "+req.body._idMere+" n'existe pas dans la base de donnée. Veuillez rentrer un projet/tache mere existant", success: false});
+          res.json({
+            erreur:
+              "Le projet/tache mere " +
+              req.body._idMere +
+              " n'existe pas dans la base de donnée. Veuillez rentrer un projet/tache mere existant",
+            success: false,
+          });
           return;
         } else {
           if (DataMere.collaborateur != "") {
-            res.json({erreur: "Impossible de creer une tache fille d'une tache contenant un collaborateur. Si la tache mere possède un collaborateur, cela suppose qu'elle est de niveau le plus bas possible, par conséquent, elle ne peut pas posséder de sous taches.", success: false});
+            res.json({
+              erreur:
+                "Impossible de creer une tache fille d'une tache contenant un collaborateur. Si la tache mere possède un collaborateur, cela suppose qu'elle est de niveau le plus bas possible, par conséquent, elle ne peut pas posséder de sous taches.",
+              success: false,
+            });
             return;
           }
-          Niveau = DataMere.niveau+1;
-          if (Niveau>3) {
-            res.json({erreur: "Impossible de creer une tache fille de niveau 4, le niveau d'imbriquation maximale étant 3", success: false});
+          Niveau = DataMere.niveau + 1;
+          if (Niveau > 3) {
+            res.json({
+              erreur:
+                "Impossible de creer une tache fille de niveau 4, le niveau d'imbriquation maximale étant 3",
+              success: false,
+            });
             return;
           }
         }
@@ -181,7 +270,12 @@ module.exports = function(app){
       }
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Une erreur est survenue lors de la recherche du projet/tache mere ", stack: e, success: false});
+      res.json({
+        erreur:
+          "Une erreur est survenue lors de la recherche du projet/tache mere ",
+        stack: e,
+        success: false,
+      });
       return;
     }
 
@@ -189,18 +283,36 @@ module.exports = function(app){
 
     let DataResponsable;
     try {
-      DataResponsable = await UtilisateursSchema.findOne({email: req.body.responsable});
+      DataResponsable = await UtilisateursSchema.findOne({
+        email: req.body.responsable,
+      });
       if (!DataResponsable) {
-        res.json({erreur: "Le responsable "+req.body.responsable+" n'existe pas dans la base de donnée. Veuillez rentrer un responsable existant", success: false});
+        res.json({
+          erreur:
+            "Le responsable " +
+            req.body.responsable +
+            " n'existe pas dans la base de donnée. Veuillez rentrer un responsable existant",
+          success: false,
+        });
         return;
       }
       if (DataResponsable.role == "collaborateur") {
-        res.json({erreur: "Le responsable "+req.body.responsable+" n'a pas le droit d'être responsable de projet", success: false});
+        res.json({
+          erreur:
+            "Le responsable " +
+            req.body.responsable +
+            " n'a pas le droit d'être responsable de projet",
+          success: false,
+        });
         return;
       }
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Une erreur est survenue lors de la recherche du responsable", stack: e, success: false});
+      res.json({
+        erreur: "Une erreur est survenue lors de la recherche du responsable",
+        stack: e,
+        success: false,
+      });
       return;
     }
 
@@ -208,18 +320,30 @@ module.exports = function(app){
     let DataCollaborateur;
     if (req.body.collaborateur) {
       try {
-        DataCollaborateur = await UtilisateursSchema.findOne({email: req.body.collaborateur});
+        DataCollaborateur = await UtilisateursSchema.findOne({
+          email: req.body.collaborateur,
+        });
         if (!DataCollaborateur) {
-          res.json({erreur: "Le collaborateur "+req.body.collaborateur+" n'existe pas dans la base de donnée. Veuillez rentrer un collaborateur existant", success: false});
+          res.json({
+            erreur:
+              "Le collaborateur " +
+              req.body.collaborateur +
+              " n'existe pas dans la base de donnée. Veuillez rentrer un collaborateur existant",
+            success: false,
+          });
           return;
         }
       } catch (e) {
         console.error(e);
-        res.json({erreur: "Une erreur est survenue lors de la recherche du collaborateur", stack: e, success: false});
+        res.json({
+          erreur:
+            "Une erreur est survenue lors de la recherche du collaborateur",
+          stack: e,
+          success: false,
+        });
         return;
       }
     }
-
 
     //on convertit bien en Date
     try {
@@ -227,7 +351,12 @@ module.exports = function(app){
       req.body.dateFinInit = new Date(req.body.dateFinInit);
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Probleme lors du parsage des dates dateDebutInit et dateFinInit", stack: e, success: false});
+      res.json({
+        erreur:
+          "Probleme lors du parsage des dates dateDebutInit et dateFinInit",
+        stack: e,
+        success: false,
+      });
       return;
     }
 
@@ -273,17 +402,29 @@ module.exports = function(app){
       await DataResponsable.save();
       await DataMere.save();
       await TachesTools.updateProjetFromTache(ID);
-      await NotificationTools.sendSystemNotification(DataResponsable.email, "Une tache vient d'etre crééer et vous etes le responsable! ("+Chemin+req.body.titre+")");
+      await NotificationTools.sendSystemNotification(
+        DataResponsable.email,
+        "Une tache vient d'etre crééer et vous etes le responsable! (" +
+          Chemin +
+          req.body.titre +
+          ")"
+      );
       if (req.body.collaborateur) {
-        await NotificationTools.sendSystemNotification(DataCollaborateur.email, "Une tache vient d'etre crééer et vous etes le collaborateur! ("+Chemin+req.body.titre+")");
+        await NotificationTools.sendSystemNotification(
+          DataCollaborateur.email,
+          "Une tache vient d'etre crééer et vous etes le collaborateur! (" +
+            Chemin +
+            req.body.titre +
+            ")"
+        );
       }
-      res.json({message: "La tache a bien été sauvegardé", success: true});
+      res.json({ message: "La tache a bien été sauvegardé", success: true });
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Une erreur est survenue", stack: e, success: false});
+      res.json({ erreur: "Une erreur est survenue", stack: e, success: false });
       return;
     }
-  })
+  });
 
   /** Ajout d'une Notification
    * requiert un champ :
@@ -292,39 +433,55 @@ module.exports = function(app){
    * @contenu
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
-  app.post('/Ajout/Notification', async (req,res) => {
+  app.post("/Ajout/Notification", async (req, res) => {
     if (!req.body.de || !req.body.pour || !req.body.contenu) {
-      res.json({erreur: "Requete non valide. veuillez remplir les champs de, pour et contenu", success: false});
+      res.json({
+        erreur:
+          "Requete non valide. veuillez remplir les champs de, pour et contenu",
+        success: false,
+      });
       return;
     }
 
     let DataEnvoyeur;
     try {
-      DataEnvoyeur = await UtilisateursSchema.findOne({email: req.body.de});
-    /*  console.log("req.body.de", req.body.de);
+      DataEnvoyeur = await UtilisateursSchema.findOne({ email: req.body.de });
+      /*  console.log("req.body.de", req.body.de);
       console.log("DataEnvoyeur", DataEnvoyeur);*/
       if (!DataEnvoyeur) {
-        res.json({erreur: "L'envoyeur n'existe pas dans la base de donnée", success: false});
+        res.json({
+          erreur: "L'envoyeur n'existe pas dans la base de donnée",
+          success: false,
+        });
         return;
       }
     } catch (e) {
-      res.json({erreur: "Un probleme est survenue lors de la recherche de l'envoyeur", success: false});
+      res.json({
+        erreur: "Un probleme est survenue lors de la recherche de l'envoyeur",
+        success: false,
+      });
       return;
     }
 
     let DataDestinataire;
     try {
-      DataDestinataire = await UtilisateursSchema.findOne({email: req.body.pour});
+      DataDestinataire = await UtilisateursSchema.findOne({
+        email: req.body.pour,
+      });
       if (!DataDestinataire) {
-        res.json({erreur: "Le destinataire n'existe pas dans la base de donnée", success: false});
+        res.json({
+          erreur: "Le destinataire n'existe pas dans la base de donnée",
+          success: false,
+        });
         return;
       }
     } catch (e) {
-      res.json({erreur: "Un probleme est survenue lors de la recherche du destinataire", success: false});
+      res.json({
+        erreur: "Un probleme est survenue lors de la recherche du destinataire",
+        success: false,
+      });
       return;
     }
-
-
 
     try {
       let ID = mongoose.Types.ObjectId();
@@ -340,13 +497,15 @@ module.exports = function(app){
       });
       DataDestinataire.listeNotifications.push(ID);
       await NewNotification.save();
-      await DataDestinataire.save()
-      res.json({message: "La notification a bien été envoyé a bien été sauvegardé", success: true})
+      await DataDestinataire.save();
+      res.json({
+        message: "La notification a bien été envoyé a bien été sauvegardé",
+        success: true,
+      });
     } catch (e) {
-      res.json({erreur: "Une erreur est survenue", stack: e, success: false})
+      res.json({ erreur: "Une erreur est survenue", stack: e, success: false });
     }
-  })
-
+  });
 
   /** Ajout d'un Projet
    * requiert un champ :
@@ -361,41 +520,80 @@ module.exports = function(app){
    * les champs listeProjets du client et du responsable sont automatiquement MAJ
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
-  app.post('/Ajout/Projet', async (req,res) => {
-    if (!req.body.titre || !req.body.responsable || !req.body.description || !req.body.dateDebutInit || !req.body.dateFinInit || !req.body.client) {
-      res.json({erreur: "Requete non valide. veuillez remplir les champs titre, responsable, mdp, description, dateDebutInit, dateFinInit et client", success: false});
+  app.post("/Ajout/Projet", async (req, res) => {
+    if (
+      !req.body.titre ||
+      !req.body.responsable ||
+      !req.body.description ||
+      !req.body.dateDebutInit ||
+      !req.body.dateFinInit ||
+      !req.body.client
+    ) {
+      res.json({
+        erreur:
+          "Requete non valide. veuillez remplir les champs titre, responsable, description, date de début, date de fin et client",
+        success: false,
+      });
       return;
     }
 
     //On verifie que le client existe bien
     let DataClient;
     try {
-      DataClient = await ClientsSchema.findOne({email: req.body.client});
+      DataClient = await ClientsSchema.findOne({ email: req.body.client });
       if (!DataClient) {
-        res.json({erreur: "Le client "+req.body.client+" n'existe pas dans la base de donnée. Veuillez rentrer un client existant, ou creer un client avec ce mail", success: false});
+        res.json({
+          erreur:
+            "Le client " +
+            req.body.client +
+            " n'existe pas dans la base de donnée. Veuillez rentrer un client existant, ou creer un client avec ce mail",
+          success: false,
+        });
         return;
       }
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Une erreur est survenue lors de la recherche du client", stack: e, success: false});
+      res.json({
+        erreur: "Une erreur est survenue lors de la recherche du client",
+        stack: e,
+        success: false,
+      });
       return;
     }
 
     //On verifie que le responsable existe bien et bon role
     let DataResponsable;
     try {
-      DataResponsable = await UtilisateursSchema.findOne({email: req.body.responsable});
+      DataResponsable = await UtilisateursSchema.findOne({
+        email: req.body.responsable,
+      });
       if (!DataResponsable) {
-        res.json({erreur: "Le responsable "+req.body.responsable+" n'existe pas dans la base de donnée. Veuillez rentrer un client existant, ou creer un client avec ce mail", success: false});
+        res.json({
+          erreur:
+            "Le responsable " +
+            req.body.responsable +
+            " n'existe pas dans la base de donnée. Veuillez rentrer un client existant, ou creer un client avec ce mail",
+          success: false,
+        });
         return;
       }
       if (DataResponsable.role == "collaborateur") {
-        res.json({erreur: "Le responsable "+req.body.responsable+" n'a pas le droit d'être responsable de projet", success: false});
+        res.json({
+          erreur:
+            "Le responsable " +
+            req.body.responsable +
+            " n'a pas le droit d'être responsable de projet",
+          success: false,
+        });
         return;
       }
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Une erreur est survenue lors de la recherche du responsable", stack: e, success: false});
+      res.json({
+        erreur: "Une erreur est survenue lors de la recherche du responsable",
+        stack: e,
+        success: false,
+      });
       return;
     }
 
@@ -405,7 +603,12 @@ module.exports = function(app){
       req.body.dateFinInit = new Date(req.body.dateFinInit);
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Probleme lors du parsage des dates dateDebutInit et dateFinInit", stack: e, success: false});
+      res.json({
+        erreur:
+          "Probleme lors du parsage des dates dateDebutInit et dateFinInit",
+        stack: e,
+        success: false,
+      });
       return;
     }
 
@@ -438,13 +641,12 @@ module.exports = function(app){
       await DataResponsable.save();
       await DataClient.save();
 
-      res.json({message: "Le projet a bien été sauvegardé", success: true});
+      res.json({ message: "Le projet a bien été sauvegardé", success: true });
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Une erreur est survenue", stack: e, success: false});
+      res.json({ erreur: "Une erreur est survenue", stack: e, success: false });
     }
-  })
-
+  });
 
   /** Ajout d'un utilisateur
    * requiert un champ :
@@ -457,29 +659,60 @@ module.exports = function(app){
    * @tel
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
-  app.post('/Ajout/Utilisateur', async (req,res) => {
-    if (!req.body.nom || !req.body.prenom || !req.body.mdp || !req.body.email || !req.body.role || !req.body.tel) {
-      res.json({erreur: "Requete non valide. veuillez remplir les champs nom, prenom, mdp, email, role et tel", success: false});
+  app.post("/Ajout/Utilisateur", async (req, res) => {
+    if (
+      !req.body.nom ||
+      !req.body.prenom ||
+      !req.body.mdp ||
+      !req.body.email ||
+      !req.body.role ||
+      !req.body.tel
+    ) {
+      res.json({
+        erreur:
+          "Requete non valide. veuillez remplir les champs nom, prenom, mdp, email, role et tel",
+        success: false,
+      });
       return;
     }
-    if (req.body.role!="administrateur" && req.body.role!="responsable de projet" && req.body.role!="collaborateur") {
-      res.json({erreur: "Champ role non valide. il ne peut prendre que les valeurs 'administrateur', 'responsable de projet' ou 'collaborateur' (tout en minuscule!)", success: false});
+    if (
+      req.body.role != "administrateur" &&
+      req.body.role != "responsable de projet" &&
+      req.body.role != "collaborateur"
+    ) {
+      res.json({
+        erreur:
+          "Champ role non valide. il ne peut prendre que les valeurs 'administrateur', 'responsable de projet' ou 'collaborateur' (tout en minuscule!)",
+        success: false,
+      });
       return;
     }
 
     //On verifie que le mail n'existe pas deja
     try {
-      let DataResponsable = await UtilisateursSchema.findOne({email: req.body.email});
+      let DataResponsable = await UtilisateursSchema.findOne({
+        email: req.body.email,
+      });
       if (DataResponsable) {
-        res.json({erreur: "L'utilisateur avec le mail "+req.body.email+" existe deja dans la base de donnée", success: false});
+        res.json({
+          erreur:
+            "L'utilisateur avec le mail " +
+            req.body.email +
+            " existe deja dans la base de donnée",
+          success: false,
+        });
         return;
       }
     } catch (e) {
       console.error(e);
-      res.json({erreur: "Une erreur est survenue lors de la recherche d'utilisateur unique", stack: e, success: false});
+      res.json({
+        erreur:
+          "Une erreur est survenue lors de la recherche d'utilisateur unique",
+        stack: e,
+        success: false,
+      });
       return;
     }
-
 
     try {
       // On crée une instance du Model
@@ -496,16 +729,18 @@ module.exports = function(app){
         listeNotifications: [],
         listePojetsTermines: [],
         listeTachesTermines: [],
-        listeTacheCommencés: []
+        listeTacheCommencés: [],
       });
 
       await NewUtilisateur.save();
-      res.json({message: "L'utilisateur a bien été sauvegardé", success: true})
-
+      res.json({
+        message: "L'utilisateur a bien été sauvegardé",
+        success: true,
+      });
     } catch (e) {
-      res.json({erreur: "Une erreur est survenue", stack: e, success: false})
+      res.json({ erreur: "Une erreur est survenue", stack: e, success: false });
     }
-  })
+  });
 
   /** Ajout d'un client
    * requiert un champ :
@@ -515,9 +750,13 @@ module.exports = function(app){
    * @contactsAssocies
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
-  app.post('/Ajout/Client', async (req,res) => {
+  app.post("/Ajout/Client", async (req, res) => {
     if (!req.body.nomEntreprise || !req.body.tel || !req.body.email) {
-      res.json({erreur: "Requete non valide. veuillez remplir les champs nomEntreprise, email et tel", success: false});
+      res.json({
+        erreur:
+          "Requete non valide. veuillez remplir les champs nomEntreprise, email et tel",
+        success: false,
+      });
       return;
     }
 
@@ -527,18 +766,15 @@ module.exports = function(app){
         nomEntreprise: req.body.nomEntreprise,
         email: req.body.email,
         tel: req.body.tel,
-        contactsAssocies: req.body.contactsAssocies ? req.body.contactsAssocies : [],
+        contactsAssocies: req.body.contactsAssocies
+          ? req.body.contactsAssocies
+          : [],
       });
 
       await NewClient.save();
-      res.json({message: "Le client a bien été sauvegardé", success: true})
-
+      res.json({ message: "Le client a bien été sauvegardé", success: true });
     } catch (e) {
-      res.json({erreur: "Une erreur est survenue", stack: e, success: false})
+      res.json({ erreur: "Une erreur est survenue", stack: e, success: false });
     }
-  })
-
-
-
-
-}
+  });
+};
