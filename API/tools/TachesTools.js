@@ -272,8 +272,8 @@ async function getAllDataUnderTache(id){
 
 Object.defineProperty(Array.prototype, 'flatyflat', {
     value: function(depth = 1) {
-      return this.reduce(function (flat, toFlatten) {
-        return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+      return this.reduce(function (flatyflat, toFlatten) {
+        return flatyflat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flatyflat(depth-1) : toFlatten);
       }, []);
     }
 });
