@@ -25,9 +25,15 @@ module.exports = {
     for (var i = 0; i < DataMere.listeSousTaches.length; i++) {
       NewData.push(await getAllDataUnderTache(DataMere.listeSousTaches[i]));
     }
-    console.log("id", id, AllData, NewData);
     AllData = AllData.concat(NewData);
-    AllData = AllData.flat(2);
+    try {
+      AllData = AllData.flatyflat(2);
+    } catch (e) {
+      console.error(e);
+      console.log("AllData", AllData);
+      throw e;
+    }
+
     return AllData;
   },
 
@@ -253,8 +259,21 @@ async function getAllDataUnderTache(id){
   for (var i = 0; i < DataMere.listeSousTaches.length; i++) {
     NewData.push(await getAllDataUnderTache(DataMere.listeSousTaches[i]));
   }
-  console.log("id", id, AllData, NewData);
   AllData = AllData.concat(NewData);
-  AllData = AllData.flat(2);
+  try {
+    AllData = AllData.flatyflat(2);
+  } catch (e) {
+    console.error(e);
+    console.log("AllData", AllData);
+    throw e;
+  }
   return AllData;
 }
+
+Object.defineProperty(Array.prototype, 'flatyflat', {
+    value: function(depth = 1) {
+      return this.reduce(function (flatyflat, toFlatten) {
+        return flatyflat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flatyflat(depth-1) : toFlatten);
+      }, []);
+    }
+});

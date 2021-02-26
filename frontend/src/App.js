@@ -86,7 +86,7 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data) {
+        if (data.success === true) {
           console.log("bonnerep");
           setAppState({
             loading: false,
@@ -103,34 +103,6 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   };
-  /* useEffect(() => {
-    setAppState({ loading: true });
-    const apiUrl = "http://localhost:3001/login";
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify(user);
-
-    var reqOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(apiUrl, reqOptions)
-      .then((res) => res.json())
-      .then((data) => {
-        //console.log(data);
-        setAppState({
-          loading: false,
-          userData: data.dataUtilisateur,
-          notifsData: data.dataNotifications,
-          projectsData: data.dataProjects,
-          tasksData: data.dataTaches,
-        });
-      })
-      .catch((error) => console.log("error", error));
-  }, [setAppState]); */
   if (!appState.islogged) {
     return (
       <React.Fragment>
