@@ -9,7 +9,6 @@ import Loading2 from "./Loading2";
 import GrosTaskList from "./GrosTaskList";
 import * as AIIcons from "react-icons/ai";
 import TaskForm from "./TaskForm";
-import ProjectForm from "./ProjectForm";
 function Project(props) {
   console.log("cette page");
   console.log(props);
@@ -17,6 +16,7 @@ function Project(props) {
     mode: false,
     loading: false,
     tasks: [],
+    tasksObj: [],
   });
   useEffect(() => {
     setState({
@@ -57,13 +57,38 @@ function Project(props) {
         });
     }
   }, [setState]);
+  useEffect(() => {
+    setState({
+      mode: state.mode,
+      loading: true,
+      tasks: state.tasks,
+      isPro2: state.isPro2,
+      add: state.add,
+    });
+    const apiUrl = "http://localhost:3001/Recherche/AllProjet";
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const id = { id: props.project._id };
+    const raw = JSON.stringify(id);
+
+    var reqOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    fetch(apiUrl, reqOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  }, [setState]);
   //console.log(state.tasks);
   const changeMode = () =>
     setState({ mode: !state.mode, loading: state.loading, tasks: state.tasks });
   if (state.add) {
     return <TaskForm project={props.project}></TaskForm>;
-  }
-  if (state.loading) {
+  } else if (state.loading) {
     return <Loading2></Loading2>;
   } else if (!state.tasks || state.tasks === 0) {
     if (props.user.email === props.project.responsable) {
@@ -90,39 +115,73 @@ function Project(props) {
     } else {
       return <p>pas de taches dans le proj</p>;
     }
-  } else if (state.add) {
-    return <ProjectForm></ProjectForm>;
   } else if (state.mode) {
-    return (
-      <div className="home">
-        {/* test pour voir comment marche des fonctions avec params */}
-        {/* <button
-          onClick={() => {
-            test(nom);
-          }}
-        ></button> */}
-        <Container>
-          <Row>
-            <Col lg={4}>
-              <div className="test">
-                <button onClick={changeMode}>
-                  <FcTimeline />
-                </button>
-              </div>
-            </Col>
-            <Col lg={4} />
-            <Col lg={4} />
-          </Row>
-          <Row>
-            <GrosTaskList
-              project={props.project}
-              tasks={state.tasks}
-              user={props.user}
-            />
-          </Row>
-        </Container>
-      </div>
-    );
+    if (!props.user.email === props.project.responsable) {
+      return (
+        <div className="home">
+          <Container>
+            <Row>
+              <Col lg={4}>
+                <div className="test">
+                  <button onClick={changeMode}>
+                    <FcTimeline />
+                  </button>
+                </div>
+              </Col>
+              <Col lg={4} />
+              <Col lg={4} />
+            </Row>
+            <Row>
+              <GrosTaskList
+                project={props.project}
+                tasks={state.tasks}
+                user={props.user}
+              />
+            </Row>
+          </Container>
+        </div>
+      );
+    } else {
+      return (
+        <div className="home">
+          <Container>
+            <Row>
+              <Col lg={4}>
+                <div className="test">
+                  <button onClick={changeMode}>
+                    <FcTimeline />
+                  </button>
+                </div>
+              </Col>
+              <Col lg={4} />
+              <Col lg={4} />
+            </Row>
+            <Row>
+              <GrosTaskList
+                project={props.project}
+                tasks={state.tasks}
+                user={props.user}
+              />
+            </Row>
+            <div
+              className="test_hover"
+              style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
+              onClick={() => {
+                if (!state.isPro2) {
+                  setState({ add: true, tasks: state.tasks });
+                  console.log("on est en tache");
+                }
+              }}
+            >
+              <AIIcons.AiFillPlusCircle
+                style={{ color: "red" }}
+                size={40}
+              ></AIIcons.AiFillPlusCircle>
+            </div>
+          </Container>
+        </div>
+      );
+    }
   } else if (props.user.email === props.project.responsable) {
     return (
       <div className="home">

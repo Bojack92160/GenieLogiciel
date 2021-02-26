@@ -86,7 +86,7 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data) {
+        if (data.success === true) {
           console.log("bonnerep");
           setAppState({
             loading: false,
