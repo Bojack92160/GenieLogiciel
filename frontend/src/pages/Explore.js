@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import { makeStyles } from "@material-ui/core/styles";
 import ClientDisplaySelection from "./../components/ClientDisplaySelection";
 import ProjectDisplaySelection from "../components/ProjectDisplaySelection";
-import CollabDisplaySelection from "../components/CollabDisplaySelection";
+import UserDisplaySelection from "../components/UserDisplaySelection";
 import IdDisplaySelection from "./../components/IdDisplaySelection";
 import TaskDisplaySelection from "./../components/TaskDisplaySelection";
 
@@ -98,7 +98,7 @@ function Explore() {
             </Form.Control>
           </Form.Group>
         </div>
-        <CollabDisplaySelection />
+        <UserDisplaySelection />
       </>
     );
   }
