@@ -259,8 +259,13 @@ async function getAllDataUnderTache(id){
   for (var i = 0; i < DataMere.listeSousTaches.length; i++) {
     NewData.push(await getAllDataUnderTache(DataMere.listeSousTaches[i]));
   }
-  console.log("id", id, AllData, NewData);
   AllData = AllData.concat(NewData);
-  AllData = AllData.flat(2);
+  try {
+    AllData = AllData.flat(2);
+  } catch (e) {
+    console.error(e);
+    console.log("AllData", AllData);
+    throw e;
+  }
   return AllData;
 }
