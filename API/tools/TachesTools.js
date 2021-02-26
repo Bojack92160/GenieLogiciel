@@ -27,7 +27,7 @@ module.exports = {
     }
     AllData = AllData.concat(NewData);
     try {
-      AllData = AllData.flat(2);
+      AllData = AllData.flatyflat(2);
     } catch (e) {
       console.error(e);
       console.log("AllData", AllData);
@@ -261,7 +261,7 @@ async function getAllDataUnderTache(id){
   }
   AllData = AllData.concat(NewData);
   try {
-    AllData = AllData.flat(2);
+    AllData = AllData.flatyflat(2);
   } catch (e) {
     console.error(e);
     console.log("AllData", AllData);
@@ -269,3 +269,11 @@ async function getAllDataUnderTache(id){
   }
   return AllData;
 }
+
+Object.defineProperty(Array.prototype, 'flatyflat', {
+    value: function(depth = 1) {
+      return this.reduce(function (flat, toFlatten) {
+        return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+      }, []);
+    }
+});
