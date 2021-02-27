@@ -206,6 +206,7 @@ module.exports = function (app) {
    * @_idMere
    * @collaborateur //si besoin! pas besoin si elle contiendra des sous taches plus tard
    * @chargeInitiale //si besoin! pas besoin si elle contiendra des sous taches plus tard (qui du coup fourniront les données)
+   * @predecesseurs //si besoin, mais si fournit, doit etre un array d'id. exemple: ['14a6zd4165zefzefezf5615DS', 'azd1zadz615reg1yrtjn165']
    * !il faut que _idMere existe, sinon erreur
    * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
    * !il faut que le collaborateur existe dans Utilisateur
