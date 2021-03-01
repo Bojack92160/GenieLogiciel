@@ -3,8 +3,26 @@ import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import Checkbox from "@material-ui/core/Checkbox";
+import IconButton from "@material-ui/core/IconButton";
+import CommentIcon from "@material-ui/icons/Comment";
 
+const getNow = () => {
+  const now = new Date();
+  console.log(now.toLocaleDateString());
+  return now.toLocaleDateString();
+};
 const useStyles = makeStyles((theme) => ({
+  liste: {
+    width: "100%",
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
   root: {
     "& .MuiTextField-root": {
       //margin: "2rem auto",
@@ -22,12 +40,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TaskForm = (props) => {
+  console.log("-------------add-----------", props);
   const handleEndChange = (e) => {
     setstate({
       titre: state.titre,
       description: state.description,
       responsable: state.responsable,
-      Collaborateur: state.Collaborateur,
+      client: state.client,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: e.target.value,
     });
@@ -37,7 +56,7 @@ const TaskForm = (props) => {
       titre: state.titre,
       description: state.description,
       responsable: state.responsable,
-      Collaborateur: state.Collaborateur,
+      client: state.client,
       dateDebutInit: e.target.value,
       dateFinInit: state.dateFinInit,
     });
@@ -47,7 +66,7 @@ const TaskForm = (props) => {
       titre: state.titre,
       description: state.description,
       responsable: state.responsable,
-      Collaborateur: e.target.value,
+      client: e.target.value,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: state.dateFinInit,
     });
@@ -57,7 +76,7 @@ const TaskForm = (props) => {
       titre: state.titre,
       description: state.description,
       responsable: e.target.value,
-      Collaborateur: state.Collaborateur,
+      client: state.client,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: state.dateFinInit,
     });
@@ -67,7 +86,7 @@ const TaskForm = (props) => {
       titre: state.titre,
       description: e.target.value,
       responsable: state.responsable,
-      Collaborateur: state.Collaborateur,
+      client: state.client,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: state.dateFinInit,
     });
@@ -77,7 +96,7 @@ const TaskForm = (props) => {
       titre: e.target.value,
       description: state.description,
       responsable: state.responsable,
-      Collaborateur: state.Collaborateur,
+      client: state.client,
       dateDebutInit: state.dateDebutInit,
       dateFinInit: state.dateFinInit,
     });
@@ -87,7 +106,7 @@ const TaskForm = (props) => {
     titre: "",
     description: "",
     responsable: "",
-    Collaborateur: "",
+    client: "",
     dateDebutInit: "",
     dateFinInit: "",
     now: new Date(),
@@ -97,20 +116,18 @@ const TaskForm = (props) => {
   const history = useHistory();
   return (
     <>
-      {/* <h1>Créer un projet/tâche</h1> */}
+      <h1>Créer une Tâche</h1>
       <form className={classes.root} noValidate autoComplete="off">
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <TextField
             variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "18%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             margin="normal"
             required
             fullWidth
@@ -119,6 +136,9 @@ const TaskForm = (props) => {
             name="titre"
             autoComplete="titre"
             autoFocus
+            InputLabelProps={{
+              style: { color: "#060b26" },
+            }}
             onChange={handleTittleChange}
           />
           <TextField
@@ -126,78 +146,45 @@ const TaskForm = (props) => {
             label="Description"
             required
             autoFocus
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "32%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             multiline
             rows={3}
             variant="outlined"
+            InputLabelProps={{
+              style: { color: "#060b26" },
+            }}
             onChange={handleDescChange}
           />
+          <List className={classes.liste}>
+            Prédecesseurs
+            {props.project.slice(1).map((item) => {
+              const labelId = `checkbox-list-label-${item.titre}`;
+
+              return (
+                <ListItem
+                  key={item}
+                  role={undefined}
+                  dense
+                  button
+                  //onClick={handleToggle(value)}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      //checked={checked.indexOf(value) !== -1}
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{ "aria-labelledby": labelId }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText id={labelId} primary={`${item[1]}`} />
+                </ListItem>
+              );
+            })}
+          </List>
 
           <TextField
             className={classes.description}
             variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "45.5%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
-            //margin="normal"
-            required
-            fullWidth
-            id="resp"
-            label="Responsable"
-            name="resp"
-            autoComplete="collaborateurs"
-            autoFocus
-            onChange={handleRespChange}
-          />
-
-          <TextField
-            className={classes.description}
-            variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "55.5%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
-            //margin="normal"
-            required
-            fullWidth
-            id="Collaborateur"
-            label="Collaborateur"
-            name="Collaborateur"
-            autoComplete="Collaborateur"
-            autoFocus
-            onChange={handleClientChange}
-          />
-          <TextField
-            className={classes.description}
-            variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "66.5%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             //margin="normal"
             required
             id="date"
@@ -205,21 +192,13 @@ const TaskForm = (props) => {
             type="date"
             InputLabelProps={{
               shrink: true,
+              style: { color: "#060b26" },
             }}
             onChange={handleBeginChange}
           />
           <TextField
             className={classes.description}
             variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "77.5%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             //margin="normal"
             required
             id="date"
@@ -227,20 +206,12 @@ const TaskForm = (props) => {
             type="date"
             InputLabelProps={{
               shrink: true,
+              style: { color: "#060b26" },
             }}
             onChange={handleEndChange}
           />
 
           <Button
-            style={{
-              position: "absolute",
-              left: "95%",
-              top: "95%",
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-              zIndex: 3,
-            }}
             variant="contained"
             color="primary"
             disableElevation

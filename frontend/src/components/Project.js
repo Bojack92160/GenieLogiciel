@@ -16,7 +16,17 @@ function Project(props) {
     mode: false,
     loading: false,
     tasks: [],
-    tasksObj: [],
+    tasksObj: [
+      [
+        { type: "string", label: "Task ID" },
+        { type: "string", label: "Task Name" },
+        { type: "date", label: "Start Date" },
+        { type: "date", label: "End Date" },
+        { type: "number", label: "Duration" },
+        { type: "number", label: "Percent Complete" },
+        { type: "string", label: "Dependencies" },
+      ],
+    ],
   });
   useEffect(() => {
     setState({
@@ -80,27 +90,74 @@ function Project(props) {
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        var dt = state.tasksObj;
+
+        data.map((item, index) => {
+          console.log(item);
+          if (index !== 0) {
+            const test = [
+              item._id.toString(),
+              item.titre,
+              new Date(item.dateDebutInit),
+              new Date(item.dateFinInit),
+              null,
+              parseInt(item.dataAvancement.pourcent) * 100,
+              item.prédécesseurs.toString(),
+            ];
+
+            dt.push(test);
+          }
+
+          setState({
+            tasksObj: dt,
+            mode: state.mode,
+            loading: state.loading,
+            tasks: state.tasks,
+            isPro2: state.isPro2,
+          });
+
+          return null;
+        });
       });
   }, [setState]);
   //console.log(state.tasks);
   const changeMode = () =>
-    setState({ mode: !state.mode, loading: state.loading, tasks: state.tasks });
-  if (state.add) {
-    return <TaskForm project={props.project}></TaskForm>;
-  } else if (state.loading) {
-    return <Loading2></Loading2>;
-  } else if (!state.tasks || state.tasks === 0) {
+    setState({
+      mode: !state.mode,
+      loading: state.loading,
+      tasks: state.tasks,
+      tasksObj: state.tasksObj,
+    });
+  if (!state.tasks || state.tasks.length === 0) {
+    if (state.loading) {
+      return <Loading2></Loading2>;
+    }
     if (props.user.email === props.project.responsable) {
+      if (state.add) {
+        return <TaskForm project={state.tasksObj}></TaskForm>;
+      }
+
       return (
         <>
-          <p>pas de taches dans le proj</p>
+          <p
+            style={{
+              display: "flex",
+              alignContent: "center",
+              justifyContent: "center",
+            }}
+          >
+            ce projet est vide
+          </p>
           <div
             className="test_hover"
             style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
             onClick={() => {
               if (!state.isPro2) {
-                setState({ add: true, tasks: state.tasks });
+                setState({
+                  add: true,
+                  tasks: state.tasks,
+                  tasksObj: state.tasksObj,
+                });
                 console.log("on est en tache");
               }
             }}
@@ -113,295 +170,177 @@ function Project(props) {
         </>
       );
     } else {
-      return <p>pas de taches dans le proj</p>;
+      return <p>Ce Projet est vide</p>;
     }
-  } else if (state.mode) {
-    if (!props.user.email === props.project.responsable) {
-      return (
-        <div className="home">
-          <Container>
-            <Row>
-              <Col lg={4}>
-                <div className="test">
-                  <button onClick={changeMode}>
-                    <FcTimeline />
-                  </button>
-                </div>
-              </Col>
-              <Col lg={4} />
-              <Col lg={4} />
-            </Row>
-            <Row>
-              <GrosTaskList
-                project={props.project}
-                tasks={state.tasks}
-                user={props.user}
-              />
-            </Row>
-          </Container>
-        </div>
-      );
-    } else {
-      return (
-        <div className="home">
-          <Container>
-            <Row>
-              <Col lg={4}>
-                <div className="test">
-                  <button onClick={changeMode}>
-                    <FcTimeline />
-                  </button>
-                </div>
-              </Col>
-              <Col lg={4} />
-              <Col lg={4} />
-            </Row>
-            <Row>
-              <GrosTaskList
-                project={props.project}
-                tasks={state.tasks}
-                user={props.user}
-              />
-            </Row>
-            <div
-              className="test_hover"
-              style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
-              onClick={() => {
-                if (!state.isPro2) {
-                  setState({ add: true, tasks: state.tasks });
-                  console.log("on est en tache");
-                }
-              }}
-            >
-              <AIIcons.AiFillPlusCircle
-                style={{ color: "red" }}
-                size={40}
-              ></AIIcons.AiFillPlusCircle>
-            </div>
-          </Container>
-        </div>
-      );
-    }
-  } else if (props.user.email === props.project.responsable) {
-    return (
-      <div className="home">
-        <Container>
-          <Row>
-            <Col lg={4}>
-              <div className="test">
-                <button onClick={changeMode}>
-                  <FcTimeline />
-                </button>
-              </div>
-            </Col>
-            <Col lg={4} />
-            <Col lg={4} />
-          </Row>
-          <Row>
-            <Col lg={12}>
-              <Chart
-                width={"100%"}
-                height={"400px"}
-                chartType="Gantt"
-                loader={<div>Loading Chart</div>}
-                data={[
-                  [
-                    { type: "string", label: "Task ID" },
-                    { type: "string", label: "Task Name" },
-                    { type: "date", label: "Start Date" },
-                    { type: "date", label: "End Date" },
-                    { type: "number", label: "Duration" },
-                    { type: "number", label: "Percent Complete" },
-                    { type: "string", label: "Dependencies" },
-                  ],
-                  [
-                    "Research",
-                    "Find sources",
-                    new Date(2015, 0, 1),
-                    new Date(2015, 0, 5),
-                    null,
-                    100,
-                    null,
-                  ],
-                  [
-                    "Research2",
-                    "Find sources",
-                    new Date(2015, 0, 1),
-                    new Date(2015, 0, 6),
-                    null,
-                    100,
-                    null,
-                  ],
-
-                  [
-                    "Write",
-                    "Write paper",
-                    null,
-                    new Date(2015, 0, 9),
-                    3 * 24 * 60 * 60 * 1000,
-                    25,
-                    "Research,Outline",
-                  ],
-                  [
-                    "Cite",
-                    "Create bibliography",
-                    null,
-                    new Date(2015, 0, 7),
-                    1 * 24 * 60 * 60 * 1000,
-                    20,
-                    "Research",
-                  ],
-                  [
-                    "Complete",
-                    "Hand in paper",
-                    null,
-                    new Date(2015, 0, 10),
-                    1 * 24 * 60 * 60 * 1000,
-                    0,
-                    "Cite,Write",
-                  ],
-                  [
-                    "Outline",
-                    "Outline paper",
-                    null,
-                    new Date(2015, 0, 6),
-                    1 * 24 * 60 * 60 * 1000,
-                    100,
-                    "Research",
-                  ],
-                ]}
-                rootProps={{ "data-testid": "1" }}
-              />
-            </Col>
-          </Row>
-          <div
-            className="test_hover"
-            style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
-            onClick={() => {
-              if (!state.isPro2) {
-                setState({ add: true, tasks: state.tasks });
-                console.log("on est en tache");
-              }
-            }}
-          >
-            <AIIcons.AiFillPlusCircle
-              style={{ color: "red" }}
-              size={40}
-            ></AIIcons.AiFillPlusCircle>
-          </div>
-        </Container>
-      </div>
-    );
   } else {
-    return (
-      <div className="home">
-        <Container>
-          <Row>
-            <Col lg={4}>
-              <div className="test">
-                <button onClick={changeMode}>
-                  <FcTimeline />
-                </button>
-              </div>
-            </Col>
-            <Col lg={4} />
-            <Col lg={4} />
-          </Row>
-          <Row>
-            <Col lg={12}>
-              <Chart
-                width={"100%"}
-                height={"400px"}
-                chartType="Gantt"
-                loader={<div>Loading Chart</div>}
-                data={[
-                  [
-                    { type: "string", label: "Task ID" },
-                    { type: "string", label: "Task Name" },
-                    { type: "date", label: "Start Date" },
-                    { type: "date", label: "End Date" },
-                    { type: "number", label: "Duration" },
-                    { type: "number", label: "Percent Complete" },
-                    { type: "string", label: "Dependencies" },
-                  ],
-                  [
-                    "Research",
-                    "Find sources",
-                    new Date(2015, 0, 1),
-                    new Date(2015, 0, 5),
-                    null,
-                    100,
-                    null,
-                  ],
-                  [
-                    "Research2",
-                    "Find sources",
-                    new Date(2015, 0, 1),
-                    new Date(2015, 0, 6),
-                    null,
-                    100,
-                    null,
-                  ],
-
-                  [
-                    "Write",
-                    "Write paper",
-                    null,
-                    new Date(2015, 0, 9),
-                    3 * 24 * 60 * 60 * 1000,
-                    25,
-                    "Research,Outline",
-                  ],
-                  [
-                    "Cite",
-                    "Create bibliography",
-                    null,
-                    new Date(2015, 0, 7),
-                    1 * 24 * 60 * 60 * 1000,
-                    20,
-                    "Research",
-                  ],
-                  [
-                    "Complete",
-                    "Hand in paper",
-                    null,
-                    new Date(2015, 0, 10),
-                    1 * 24 * 60 * 60 * 1000,
-                    0,
-                    "Cite,Write",
-                  ],
-                  [
-                    "Outline",
-                    "Outline paper",
-                    null,
-                    new Date(2015, 0, 6),
-                    1 * 24 * 60 * 60 * 1000,
-                    100,
-                    "Research",
-                  ],
-                ]}
-                rootProps={{ "data-testid": "1" }}
-              />
-            </Col>
-          </Row>
-          <div
-            className="test_hover"
-            style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
-            onClick={() => {
-              if (!state.isPro2) {
-                setState({ add: true, tasks: state.tasks });
-                console.log("on est en tache");
-              }
-            }}
-          >
-            <AIIcons.AiFillPlusCircle
-              style={{ color: "#red" }}
-              size={40}
-            ></AIIcons.AiFillPlusCircle>
+    if (state.loading) {
+      return <Loading2></Loading2>;
+    }
+    if (state.mode) {
+      if (state.add) {
+        return <TaskForm project={state.tasksObj}></TaskForm>;
+      }
+      if (props.user.email !== props.project.responsable) {
+        return (
+          <div className="home">
+            <Container>
+              <Row>
+                <Col lg={4}>
+                  <div className="test">
+                    <button onClick={changeMode}>
+                      <FcTimeline />
+                    </button>
+                  </div>
+                </Col>
+                <Col lg={4} />
+                <Col lg={4} />
+              </Row>
+              <Row>
+                <GrosTaskList
+                  project={props.project}
+                  tasks={state.tasks}
+                  user={props.user}
+                />
+              </Row>
+            </Container>
           </div>
-        </Container>
-      </div>
-    );
+        );
+      } else {
+        return (
+          <div className="home">
+            <Container>
+              <Row>
+                <Col lg={4}>
+                  <div className="test">
+                    <button onClick={changeMode}>
+                      <FcTimeline />
+                    </button>
+                  </div>
+                </Col>
+                <Col lg={4} />
+                <Col lg={4} />
+              </Row>
+              <Row>
+                <GrosTaskList
+                  project={props.project}
+                  tasks={state.tasks}
+                  user={props.user}
+                />
+              </Row>
+              <div
+                className="test_hover"
+                style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
+                onClick={() => {
+                  if (!state.isPro2) {
+                    setState({
+                      add: true,
+                      tasks: state.tasks,
+                      tasksObj: state.tasksObj,
+                    });
+                    console.log("on est en tache");
+                  }
+                }}
+              >
+                <AIIcons.AiFillPlusCircle
+                  style={{ color: "red" }}
+                  size={40}
+                ></AIIcons.AiFillPlusCircle>
+              </div>
+            </Container>
+          </div>
+        );
+      }
+    } else {
+      if (state.add) {
+        return <TaskForm project={state.tasksObj}></TaskForm>;
+      }
+      if (props.user.email === props.project.responsable) {
+        return (
+          <div className="home">
+            <Container>
+              <Row>
+                <Col lg={4}>
+                  <div className="test">
+                    <button onClick={changeMode}>
+                      <FcTimeline />
+                    </button>
+                  </div>
+                </Col>
+                <Col lg={4} />
+                <Col lg={4} />
+              </Row>
+              <Row>
+                <Col lg={12}>
+                  <Chart
+                    width={"100%"}
+                    height={state.tasksObj?.length * 4}
+                    chartType="Gantt"
+                    loader={<div>Loading Chart</div>}
+                    data={state.tasksObj}
+                    options={{
+                      criticalPathEnabled: true,
+                    }}
+                    rootProps={{ "data-testid": "1" }}
+                  />
+                </Col>
+              </Row>
+              <div
+                className="test_hover"
+                style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
+                onClick={() => {
+                  if (!state.isPro2) {
+                    setState({
+                      add: true,
+                      tasks: state.tasks,
+                      tasksObj: state.tasksObj,
+                    });
+                    console.log("on est en tache");
+                  }
+                }}
+              >
+                <AIIcons.AiFillPlusCircle
+                  style={{ color: "red" }}
+                  size={40}
+                ></AIIcons.AiFillPlusCircle>
+              </div>
+            </Container>
+          </div>
+        );
+      } else {
+        return (
+          <div className="home">
+            <Container>
+              <Row>
+                <Col lg={4}>
+                  <div className="test">
+                    <button onClick={changeMode}>
+                      <FcTimeline />
+                    </button>
+                  </div>
+                </Col>
+                <Col lg={4} />
+                <Col lg={4} />
+              </Row>
+              <Row>
+                <Col lg={12}>
+                  <Chart
+                    width={"100%"}
+                    height={state.tasksObj?.length * 4}
+                    chartType="Gantt"
+                    loader={<div>Loading Chart</div>}
+                    data={state.tasksObj}
+                    options={{
+                      criticalPathEnabled: true,
+                    }}
+                    rootProps={{ "data-testid": "1" }}
+                  />
+                </Col>
+              </Row>
+            </Container>
+          </div>
+        );
+      }
+    }
   }
 }
 

@@ -113,8 +113,10 @@ function GrosTaskList(props) {
                   </Card.Text>
                   <Card.Text>
                     <ProgressBar
-                      now={item.dataAvancement.pourcent}
-                      label={`${item.dataAvancement.pourcent}%`}
+                      now={item.dataAvancement.pourcent * 100}
+                      label={`${(item.dataAvancement.pourcent * 100).toFixed(
+                        2
+                      )}%`}
                     />
                   </Card.Text>
                   <Card.Link href="#">Card Link</Card.Link>
@@ -231,8 +233,10 @@ function GrosTaskList(props) {
                   </Card.Text>
                   <Card.Text>
                     <ProgressBar
-                      now={item.dataAvancement.pourcent}
-                      label={`${item.dataAvancement.pourcent}%`}
+                      now={item.dataAvancement.pourcent * 100}
+                      label={`${(item.dataAvancement.pourcent * 100).toFixed(
+                        2
+                      )}%`}
                     />
                   </Card.Text>
                   <Card.Link href="#">Card Link</Card.Link>

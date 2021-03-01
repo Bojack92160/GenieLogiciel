@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -103,6 +103,21 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   };
+  const enterHandle = useCallback(
+    (event) => {
+      if (event.key === "Enter") {
+        login();
+      }
+    },
+    [login]
+  );
+  useEffect(() => {
+    document.addEventListener("keydown", enterHandle, false);
+
+    return () => {
+      document.removeEventListener("keydown", enterHandle, false);
+    };
+  }, [enterHandle]);
   if (!appState.islogged) {
     return (
       <React.Fragment>
