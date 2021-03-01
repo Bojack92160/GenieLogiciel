@@ -361,6 +361,40 @@ module.exports = function (app) {
       return;
     }
 
+    //on cheque les prédécesseurs
+    if (req.body.predecesseurs) {
+      try {
+        for (var i = 0; i < req.body.predecesseurs.length; i++) {
+          let DataPrede = await TachesSchema.findById(req.body.predecesseurs[i]);
+          if (!DataPrede) {
+            res.json({
+              erreur:
+                "la tache prédécesseuse "+req.body.predecesseurs[i]+" n existe pas" ,
+              success: false,
+            });
+            return;
+          } else if (DataPrede && DataPrede.dateFinInit>req.body.dateDebutInit) {
+            res.json({
+              erreur:
+                "la tache prédécesseuse "+req.body.predecesseurs[i]+" a une date de fin APRES la tache que vous voulez créer. C'est incohérent." ,
+              success: false,
+            });
+            return;
+          }
+        }
+
+      } catch (e) {
+        console.error(e);
+        res.json({
+          erreur:
+            "Une erreur est survenue lors de la recherche de prédécesseur",
+          stack: e,
+          success: false,
+        });
+        return;
+      }
+    }
+
     try {
       let Chemin = await TachesTools.getChemin(DataMere._id);
       //on créé l'id manuellement pour le sauvegardé
