@@ -206,6 +206,7 @@ module.exports = function (app) {
    * @_idMere
    * @collaborateur //si besoin! pas besoin si elle contiendra des sous taches plus tard
    * @chargeInitiale //si besoin! pas besoin si elle contiendra des sous taches plus tard (qui du coup fourniront les données)
+   * @predecesseurs //si besoin, mais si fournit, doit etre un array d'id. exemple: ['14a6zd4165zefzefezf5615DS', 'azd1zadz615reg1yrtjn165']
    * !il faut que _idMere existe, sinon erreur
    * !il faut que le responsable existe dans Utilisateur et qu'il ne soit pas collaborateur, sinon erreur
    * !il faut que le collaborateur existe dans Utilisateur
@@ -358,6 +359,40 @@ module.exports = function (app) {
         success: false,
       });
       return;
+    }
+
+    //on cheque les prédécesseurs
+    if (req.body.predecesseurs) {
+      try {
+        for (var i = 0; i < req.body.predecesseurs.length; i++) {
+          let DataPrede = await TachesSchema.findById(req.body.predecesseurs[i]);
+          if (!DataPrede) {
+            res.json({
+              erreur:
+                "la tache prédécesseuse "+req.body.predecesseurs[i]+" n existe pas" ,
+              success: false,
+            });
+            return;
+          } else if (DataPrede && DataPrede.dateFinInit>req.body.dateDebutInit) {
+            res.json({
+              erreur:
+                "la tache prédécesseuse "+req.body.predecesseurs[i]+" a une date de fin APRES la tache que vous voulez créer. C'est incohérent." ,
+              success: false,
+            });
+            return;
+          }
+        }
+
+      } catch (e) {
+        console.error(e);
+        res.json({
+          erreur:
+            "Une erreur est survenue lors de la recherche de prédécesseur",
+          stack: e,
+          success: false,
+        });
+        return;
+      }
     }
 
     try {
