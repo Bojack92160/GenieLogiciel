@@ -69,6 +69,7 @@ function App() {
   };
 
   const login = () => {
+    console.log("logged");
     setAppState({ loading: true });
     const apiUrl = "http://localhost:3001/login";
     var myHeaders = new Headers();

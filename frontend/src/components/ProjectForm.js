@@ -27,6 +27,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectForm = () => {
+  const [state, setstate] = useState({
+    titre: "",
+    description: "",
+    responsable: "",
+    client: "",
+    dateDebutInit: "",
+    dateFinInit: "",
+    now: new Date(),
+  });
   const handleEndChange = (e) => {
     setstate({
       titre: state.titre,
@@ -87,16 +96,6 @@ const ProjectForm = () => {
       dateFinInit: state.dateFinInit,
     });
   };
-
-  const [state, setstate] = useState({
-    titre: "",
-    description: "",
-    responsable: "",
-    client: "",
-    dateDebutInit: "",
-    dateFinInit: "",
-    now: new Date(),
-  });
 
   const classes = useStyles();
   const history = useHistory();

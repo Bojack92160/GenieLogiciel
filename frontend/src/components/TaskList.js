@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import GrosTaskList from "./GrosTaskList";
 function TaskList(props) {
+  console.log(props);
   const [state, setstate] = useState({ diving: true });
   if (!props.tasks || props.tasks === 0) return <p>pas de taches3</p>;
   if (state.diving) {
@@ -48,6 +49,7 @@ function TaskList(props) {
                     <Row>
                       <Col>Charge restante</Col>
                       <Col>{item.dataAvancement.chargeRestante}</Col>
+                      <Col>Date de fin prévue:</Col>
                       <Col>
                         {new Date(item.dateFinEffect).toLocaleDateString()}
                       </Col>

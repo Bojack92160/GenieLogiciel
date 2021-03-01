@@ -134,7 +134,13 @@ function Project(props) {
     }
     if (props.user.email === props.project.responsable) {
       if (state.add) {
-        return <TaskForm project={state.tasksObj}></TaskForm>;
+        return (
+          <TaskForm
+            project={state.tasksObj}
+            user={props.user}
+            projectInfo={props.project}
+          ></TaskForm>
+        );
       }
 
       return (
@@ -178,7 +184,13 @@ function Project(props) {
     }
     if (state.mode) {
       if (state.add) {
-        return <TaskForm project={state.tasksObj}></TaskForm>;
+        return (
+          <TaskForm
+            project={state.tasksObj}
+            user={props.user}
+            projectInfo={props.project}
+          ></TaskForm>
+        );
       }
       if (props.user.email !== props.project.responsable) {
         return (
@@ -252,7 +264,13 @@ function Project(props) {
       }
     } else {
       if (state.add) {
-        return <TaskForm project={state.tasksObj}></TaskForm>;
+        return (
+          <TaskForm
+            project={state.tasksObj}
+            user={props.user}
+            projectInfo={props.project}
+          ></TaskForm>
+        );
       }
       if (props.user.email === props.project.responsable) {
         return (
@@ -273,7 +291,7 @@ function Project(props) {
                 <Col lg={12}>
                   <Chart
                     width={"100%"}
-                    height={state.tasksObj?.length * 4}
+                    height={state.tasksObj?.length * 40}
                     chartType="Gantt"
                     loader={<div>Loading Chart</div>}
                     data={state.tasksObj}
