@@ -6,6 +6,7 @@ import ProjectDisplaySelection from "../components/ProjectDisplaySelection";
 import UserDisplaySelection from "../components/UserDisplaySelection";
 import IdDisplaySelection from "./../components/IdDisplaySelection";
 import TaskDisplaySelection from "./../components/TaskDisplaySelection";
+import SimpleCard from './../components/Informations';
 
 const useStyles = makeStyles({
   dropDown: {
@@ -99,6 +100,8 @@ function Explore() {
           </Form.Group>
         </div>
         <UserDisplaySelection />
+       
+        
       </>
     );
   }
