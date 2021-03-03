@@ -383,13 +383,7 @@ module.exports = function (app) {
           ) {
             res.json({
               erreur:
-<<<<<<< HEAD
                 "la tache prédécesseuse "+DataPrede.titre+" a une date de fin APRES la tache que vous voulez créer. C'est incohérent." ,
-=======
-                "la tache prédécesseuse " +
-                req.body.predecesseurs[i] +
-                " a une date de fin APRES la tache que vous voulez créer. C'est incohérent.",
->>>>>>> 06ace3e4788d114fff64dd986f1ec701ad279952
               success: false,
             });
             return;
