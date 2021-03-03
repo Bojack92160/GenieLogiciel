@@ -27,6 +27,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectForm = () => {
+  const [state, setstate] = useState({
+    titre: "",
+    description: "",
+    responsable: "",
+    client: "",
+    dateDebutInit: "",
+    dateFinInit: "",
+    now: new Date(),
+  });
   const handleEndChange = (e) => {
     setstate({
       titre: state.titre,
@@ -88,34 +97,22 @@ const ProjectForm = () => {
     });
   };
 
-  const [state, setstate] = useState({
-    titre: "",
-    description: "",
-    responsable: "",
-    client: "",
-    dateDebutInit: "",
-    dateFinInit: "",
-    now: new Date(),
-  });
-
   const classes = useStyles();
   const history = useHistory();
   return (
     <>
       <h1>Créer un projet</h1>
       <form className={classes.root} noValidate autoComplete="off">
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <TextField
             variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "18%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             margin="normal"
             required
             fullWidth
@@ -124,6 +121,9 @@ const ProjectForm = () => {
             name="titre"
             autoComplete="titre"
             autoFocus
+            InputLabelProps={{
+              style: { color: "#060b26" },
+            }}
             onChange={handleTittleChange}
           />
           <TextField
@@ -131,33 +131,18 @@ const ProjectForm = () => {
             label="Description"
             required
             autoFocus
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "32%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             multiline
             rows={3}
             variant="outlined"
+            InputLabelProps={{
+              style: { color: "#060b26" },
+            }}
             onChange={handleDescChange}
           />
 
           <TextField
             className={classes.description}
             variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "45.5%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             //margin="normal"
             required
             fullWidth
@@ -166,21 +151,15 @@ const ProjectForm = () => {
             name="resp"
             autoComplete="collaborateurs"
             autoFocus
+            InputLabelProps={{
+              style: { color: "#060b26" },
+            }}
             onChange={handleRespChange}
           />
 
           <TextField
             className={classes.description}
             variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "55.5%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             //margin="normal"
             required
             fullWidth
@@ -189,20 +168,14 @@ const ProjectForm = () => {
             name="client"
             autoComplete="client"
             autoFocus
+            InputLabelProps={{
+              style: { color: "#060b26" },
+            }}
             onChange={handleClientChange}
           />
           <TextField
             className={classes.description}
             variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "66.5%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             //margin="normal"
             required
             id="date"
@@ -210,21 +183,13 @@ const ProjectForm = () => {
             type="date"
             InputLabelProps={{
               shrink: true,
+              style: { color: "#060b26" },
             }}
             onChange={handleBeginChange}
           />
           <TextField
             className={classes.description}
             variant="outlined"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "77.5%",
-              width: 500,
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-            }}
             //margin="normal"
             required
             id="date"
@@ -232,20 +197,12 @@ const ProjectForm = () => {
             type="date"
             InputLabelProps={{
               shrink: true,
+              style: { color: "#060b26" },
             }}
             onChange={handleEndChange}
           />
 
           <Button
-            style={{
-              position: "absolute",
-              left: "95%",
-              top: "95%",
-
-              display: "flex",
-              transform: "translate(-50%, -50%)",
-              zIndex: 3,
-            }}
             variant="contained"
             color="primary"
             disableElevation
