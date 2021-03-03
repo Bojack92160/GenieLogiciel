@@ -13,7 +13,7 @@ module.exports = function (app) {
   /** Renvoi TOUTE les datas d'un projet
    *  nécessite le champ:
    * @id //id du projet
-   *
+   * retourn un array
    */
   app.post("/Recherche/AllProjet", async (req, res) => {
     if (!req.body.id) {
