@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -69,6 +69,7 @@ function App() {
   };
 
   const login = () => {
+    console.log("logged");
     setAppState({ loading: true });
     const apiUrl = "http://localhost:3001/login";
     var myHeaders = new Headers();
@@ -103,6 +104,7 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   };
+<<<<<<< HEAD
   /* useEffect(() => {
     setAppState({ loading: true });
     const apiUrl = "http://localhost:3001/login";
@@ -131,6 +133,23 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   }, [setAppState]); */
+=======
+  const enterHandle = useCallback(
+    (event) => {
+      if (event.key === "Enter") {
+        login();
+      }
+    },
+    [login]
+  );
+  useEffect(() => {
+    document.addEventListener("keydown", enterHandle, false);
+
+    return () => {
+      document.removeEventListener("keydown", enterHandle, false);
+    };
+  }, [enterHandle]);
+>>>>>>> 556fce8c99b60dc2d100c4ff2db67d668b4c2f10
   if (!appState.islogged) {
     return (
       <React.Fragment>

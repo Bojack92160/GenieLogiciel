@@ -361,8 +361,52 @@ module.exports = function (app) {
       return;
     }
 
+    //on cheque les prédécesseurs
+    if (req.body.predecesseurs) {
+      try {
+        for (var i = 0; i < req.body.predecesseurs.length; i++) {
+          let DataPrede = await TachesSchema.findById(
+            req.body.predecesseurs[i]
+          );
+          if (!DataPrede) {
+            res.json({
+              erreur:
+                "la tache prédécesseuse " +
+                req.body.predecesseurs[i] +
+                " n existe pas",
+              success: false,
+            });
+            return;
+          } else if (
+            DataPrede &&
+            DataPrede.dateFinInit > req.body.dateDebutInit
+          ) {
+            res.json({
+              erreur:
+                "la tache prédécesseuse " +
+                req.body.predecesseurs[i] +
+                " a une date de fin APRES la tache que vous voulez créer. C'est incohérent.",
+              success: false,
+            });
+            return;
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        res.json({
+          erreur:
+            "Une erreur est survenue lors de la recherche de prédécesseur",
+          stack: e,
+          success: false,
+        });
+        return;
+      }
+    }
+
     try {
       let Chemin = await TachesTools.getChemin(DataMere._id);
+      const diffTime = Math.abs(req.body.dateDebutInit - req.body.dateFinInit);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       //on créé l'id manuellement pour le sauvegardé
       let ID = mongoose.Types.ObjectId();
       // On crée une instance du Model
@@ -383,8 +427,12 @@ module.exports = function (app) {
         dataAvancement: {
           pourcent: 0, //entre 0 et 1
           chargeConsomme: 0, //Somme des soustaches
-          chargeRestante: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches
-          chargeInitiale: req.body.chargeInitiale ? req.body.chargeInitiale : 0, //Somme des soustaches
+          chargeRestante: req.body.chargeInitiale
+            ? req.body.chargeInitiale
+            : diffDays, //Somme des soustaches
+          chargeInitiale: req.body.chargeInitiale
+            ? req.body.chargeInitiale
+            : diffDays, //Somme des soustaches
           chargeEffective: 0, //Somme des soustaches
         },
         prédécesseurs: req.body.predecesseurs ? req.body.predecesseurs : [],
