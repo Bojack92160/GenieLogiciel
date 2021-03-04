@@ -175,6 +175,16 @@ module.exports = function (app) {
       if (DataTache.dataAvancement.pourcent >= 1) {
         await TachesTools.closeTacheFinished(DataTache._id);
       }
+
+      //clean des taches commencés
+      for (var i = 0; i < DataUtilisateur.listeTacheCommencés.length; i++) {
+        if (DataUtilisateur.listeTacheCommencés[i]._id == DataTache._id) {
+          DataUtilisateur.listeTacheCommencés.splice(i, 1);
+          break;
+        }
+      }
+
+      await DataUtilisateur.save();
       await DataTache.save();
       await NewRapport.save();
       let result = await TachesTools.updateProjetFromTache(req.body._idTache);
@@ -185,7 +195,7 @@ module.exports = function (app) {
         });
       } else {
         res.json({
-          message: "Rapport soumit et projet updater avec succes!",
+          message: "Rapport soumit et projet updater avec succes!!!",
           success: true,
         });
       }
