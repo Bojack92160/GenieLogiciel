@@ -17,7 +17,6 @@ module.exports = function(app){
    * @emailNewResponsable
    * l'ancien responsable PEUT ne plus exister dans la BDD
    * le nouveau responsable et le projet doit exister
-   *
    */
   app.post("/Change/ProjetResponsable", async (req, res) => {
     if (!req.body.idProjet || !req.body.emailNewResponsable) {

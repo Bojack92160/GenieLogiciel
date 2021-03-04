@@ -152,13 +152,10 @@ module.exports = function (app) {
       });
 
       DataTache.dataAvancement.pourcent = req.body.avancementFinal;
-      DataTache.dataAvancement.chargeConsomme += req.body.chargeEffectue;
-      DataTache.dataAvancement.chargeRestante = req.body.chargeRestante;
-      DataTache.dataAvancement.chargeEffective =
-        DataTache.dataAvancement.chargeConsomme + req.body.chargeRestante;
-      DataTache.dateFinEffect.setDate(
-        DateDeSaisie.getDate() + DataTache.dataAvancement.chargeRestante
-      ); //nouvelle date effective = date de saisie + chargeRestante
+      DataTache.dataAvancement.chargeConsomme += parseInt(req.body.chargeEffectue, 10);
+      DataTache.dataAvancement.chargeRestante = parseInt(req.body.chargeRestante, 10);
+      DataTache.dataAvancement.chargeEffective = parseInt(DataTache.dataAvancement.chargeConsomme, 10) + parseInt(req.body.chargeRestante, 10);
+      DataTache.dateFinEffect.setDate(DateDeSaisie.getDate() + DataTache.dataAvancement.chargeRestante); //nouvelle date effective = date de saisie + chargeRestante
       if (DataTache.dateFinEffect > DataTache.dateFinInit) {
         await NotificationTools.sendSystemNotification(
           DataTache.responsable,
@@ -175,6 +172,16 @@ module.exports = function (app) {
       if (DataTache.dataAvancement.pourcent >= 1) {
         await TachesTools.closeTacheFinished(DataTache._id);
       }
+
+      //clean des taches commencés
+      for (var i = 0; i < DataUtilisateur.listeTacheCommencés.length; i++) {
+        if (DataUtilisateur.listeTacheCommencés[i]._id == DataTache._id) {
+          DataUtilisateur.listeTacheCommencés.splice(i, 1);
+          break;
+        }
+      }
+
+      await DataUtilisateur.save();
       await DataTache.save();
       await NewRapport.save();
       let result = await TachesTools.updateProjetFromTache(req.body._idTache);
@@ -185,7 +192,7 @@ module.exports = function (app) {
         });
       } else {
         res.json({
-          message: "Rapport soumit et projet updater avec succes!",
+          message: "Rapport soumit et projet updater avec succes!!!",
           success: true,
         });
       }
@@ -702,7 +709,6 @@ module.exports = function (app) {
    * @mdp
    * @email
    * @role
-   * @mdp
    * @tel
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */

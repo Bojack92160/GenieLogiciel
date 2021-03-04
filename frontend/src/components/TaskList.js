@@ -10,11 +10,9 @@ function TaskList(props) {
   const [state, setstate] = useState({ diving: true });
   const [listetaches, setListeTache] = useState([]);
   const addToStart = (e) => {
-    e.target.style.background = "#ffc107";
     console.log(e.target.id);
     const id = e.target.id;
     const userid = props.user._id;
-    console.log(userid);
     const apiUrl = "http://localhost:3001/Action/CommenceTache";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -28,7 +26,15 @@ function TaskList(props) {
     };
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        console.log(data);
+        if (data.success) {
+          e.target.style.background = "#ffc107";
+          alert("Vous avez commencé à travailler sur la tâche");
+        } else {
+          alert(data.erreur);
+        }
+      });
   };
   if (!props.tasks || props.tasks === 0) return <p>pas de taches3</p>;
   if (state.diving) {

@@ -248,9 +248,6 @@ app.post("/Supprime/Tache", async (req, res) => {
     res.json({message: "tache abandonné avec succés", success:true})
     return;
   }
-
-
-
 });
 
 

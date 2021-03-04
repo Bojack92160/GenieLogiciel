@@ -74,7 +74,7 @@ function App() {
     const apiUrl = "http://localhost:3001/login";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const user = { email: appState.email, mdp: appState.mdp };
+    const user = { email: "Admin@gmail.com", mdp: "Admin" };
     var raw = JSON.stringify(user);
     console.log(user);
     var reqOptions = {
@@ -147,6 +147,7 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   }, [setAppState]); */
+<<<<<<< HEAD
   // if (!appState.islogged) {
   //   return (
   //     <React.Fragment>
@@ -227,6 +228,30 @@ function App() {
                   isLoading={appState.loading}
                   Userdata={appState.userData}
                   tasks={appState.tasksData}
+=======
+  if (!appState.islogged) {
+    return (
+      <React.Fragment>
+        <main className="App">
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <div className={classes.paper}>
+              <Typography component="h1" variant="h5">
+                Sign in
+              </Typography>
+              <form className={classes.form} noValidate>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  onChange={handleMailChange}
+>>>>>>> 1208db1a5c49a0d58e919c57ad66bd5655431ca7
                 />
               )}
             />
@@ -237,6 +262,7 @@ function App() {
                   Userdata={appState.userData}
                   projects={appState.projectsData}
                 />
+<<<<<<< HEAD
               )}
             />
             <Route
@@ -251,6 +277,77 @@ function App() {
       </main>
     </React.Fragment>
   );
+=======
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    login();
+                  }}
+                >
+                  Sign In
+                </Button>
+              </form>
+            </div>
+            <Box mt={8}>
+              <Typography variant="body2" color="textSecondary" align="center">
+                {"Copyright © "}
+                <Link color="inherit" href="https://material-ui.com/">
+                  Project Manager
+                </Link>{" "}
+                {new Date().getFullYear()}
+                {"."}
+              </Typography>
+            </Box>
+          </Container>
+        </main>
+      </React.Fragment>
+    );
+  } else {
+    return (
+      <React.Fragment>
+        <main className="App">
+          <Router>
+            <Sidebar />
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => (
+                  <HomeLoading
+                    isLoading={appState.loading}
+                    Userdata={appState.userData}
+                    tasks={appState.tasksData}
+                  />
+                )}
+              />
+              <Route
+                path="/projects"
+                render={() => (
+                  <Projects
+                    Userdata={appState.userData}
+                    projects={appState.projectsData}
+                  />
+                )}
+              />
+              <Route
+                path="/notifications"
+                render={() => <Notifs notifs={appState.notifsData} />}
+              />
+              <Route path="/explore" component={Explore} />
+              <Route path="/settings" component={ProjectForm} />
+              <Route
+                path="/cr"
+                render={() => <CR user={appState.userData} />}
+              />
+            </Switch>
+          </Router>
+        </main>
+      </React.Fragment>
+    );
+  }
+>>>>>>> 1208db1a5c49a0d58e919c57ad66bd5655431ca7
 }
 // }
 

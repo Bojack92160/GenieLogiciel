@@ -15,6 +15,7 @@ function Projects(props) {
   if (state.addproj) {
     return <ProjectForm></ProjectForm>;
   }
+  //changer
   if (!props.projects || props.projects.length === 0)
     return (
       <div
