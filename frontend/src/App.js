@@ -9,7 +9,7 @@ import Notifs from "./pages/Notifs";
 import Settings from "./pages/Settings";
 import { td } from "./components/TasksData";
 import loading from "./components/Loading";
-
+import CR from "./pages/CR";
 import LoginForm from "./components/loginForm";
 import SignUp from "./components/SignUp";
 import ProjectForm from "./components/ProjectForm";
@@ -136,7 +136,7 @@ function App() {
 =======
   const enterHandle = useCallback(
     (event) => {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !appState.islogged) {
         login();
       }
     },
@@ -248,9 +248,10 @@ function App() {
               />
               <Route path="/explore" component={Explore} />
               <Route path="/settings" component={ProjectForm} />
-              <Route exact path="/login" component={LoginForm} />
-              <Route exact path="/signup" component={SignUp} />
-              <Route exact path="/signup" component={SignUp} />
+              <Route
+                path="/cr"
+                render={() => <CR user={appState.userData} />}
+              />
             </Switch>
           </Router>
         </main>
