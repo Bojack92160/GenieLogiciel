@@ -9,6 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "react-bootstrap/Button";
 function CrCard(props) {
   console.log(props);
+  const [stop, setStop] = useState(false);
   const [debut, setDebut] = useState("");
   const [fin, setFin] = useState("");
   const [desc, setDesc] = useState("");
@@ -123,38 +124,43 @@ function CrCard(props) {
             <Col>
               <Button
                 onClick={() => {
-                  const pourcent =
-                    avancement - props.task.dataAvancement.pourcent * 100;
-                  console.log(pourcent);
-                  const reste = ((100 - pourcent) * charge) / pourcent;
-                  const body = {
-                    _idTache: props.task._id,
-                    _idUtilisateur: props.user._id,
-                    periodeDebut: debut,
-                    periodeFin: fin,
-                    chargeEffectue: charge,
-                    //changer le calcul de la charge restante
-                    chargeRestante: reste,
-                    avancementFinal: avancement / 100,
-                  };
+                  if (!stop) {
+                    const pourcent =
+                      avancement - props.task.dataAvancement.pourcent * 100;
+                    console.log(pourcent);
+                    const reste = ((100 - pourcent) * charge) / pourcent;
+                    const body = {
+                      _idTache: props.task._id,
+                      _idUtilisateur: props.user._id,
+                      periodeDebut: debut,
+                      periodeFin: fin,
+                      chargeEffectue: parseInt(charge),
+                      chargeRestante: reste,
+                      avancementFinal: avancement / 100,
+                    };
 
-                  const apiUrl = "http://localhost:3001/Ajout/Rapport_Activite";
-                  var myHeaders = new Headers();
-                  myHeaders.append("Content-Type", "application/json");
-                  var raw = JSON.stringify(body);
-                  console.log(raw);
-                  var reqOptions = {
-                    method: "POST",
-                    headers: myHeaders,
-                    body: raw,
-                    redirect: "follow",
-                  };
-                  fetch(apiUrl, reqOptions)
-                    .then((res) => res.json())
-                    .then((data) => {
-                      console.log(data);
-                    });
-                  //console.log(body);
+                    const apiUrl =
+                      "http://localhost:3001/Ajout/Rapport_Activite";
+                    var myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    var raw = JSON.stringify(body);
+                    console.log(raw);
+                    var reqOptions = {
+                      method: "POST",
+                      headers: myHeaders,
+                      body: raw,
+                      redirect: "follow",
+                    };
+                    fetch(apiUrl, reqOptions)
+                      .then((res) => res.json())
+                      .then((data) => {
+                        console.log(data);
+                        setStop(true);
+                      });
+                    //console.log(body);
+                  } else {
+                    alert("Compte rendu déjà envoyé");
+                  }
                 }}
               >
                 Envoyer le compte rendu de tâche

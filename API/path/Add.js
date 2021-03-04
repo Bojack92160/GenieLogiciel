@@ -174,15 +174,18 @@ module.exports = function (app) {
       }
 
       //clean des taches commencés
-      for (var i = 0; i < DataUtilisateur.listeTacheCommencés.length; i++) {
-        if (DataUtilisateur.listeTacheCommencés[i]._id == DataTache._id) {
-          DataUtilisateur.listeTacheCommencés.splice(i, 1);
+      for (var i = 0; i < DataUtilisateur.listeTacheCommences.length; i++) {
+        console.log("DataUtilisateur avant", DataUtilisateur);
+        if (DataUtilisateur.listeTacheCommences[i]._id == DataTache._id) {
+          DataUtilisateur.listeTacheCommences[i] = null; //je veux faire splice mais visiblement
+          console.log("DataUtilisateur apres", DataUtilisateur);
           break;
         }
+
       }
 
-      await DataUtilisateur.save();
       await DataTache.save();
+      await DataUtilisateur.save();
       await NewRapport.save();
       let result = await TachesTools.updateProjetFromTache(req.body._idTache);
       if (!result) {
@@ -782,7 +785,7 @@ module.exports = function (app) {
         listeNotifications: [],
         listePojetsTermines: [],
         listeTachesTermines: [],
-        listeTacheCommencés: [],
+        listeTacheCommences: [],
       });
 
       await NewUtilisateur.save();

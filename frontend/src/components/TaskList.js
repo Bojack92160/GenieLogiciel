@@ -43,7 +43,7 @@ function TaskList(props) {
         {props.tasks.map((item, index) => {
           if (props.user.email === item.collaborateur) {
             if (
-              props.user.listeTacheCommencés.find(
+              props.user.listeTacheCommences.find(
                 (elem) => elem._id === item._id
               )
             ) {
