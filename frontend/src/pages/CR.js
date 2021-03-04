@@ -7,7 +7,7 @@ function CR(props) {
   const [state, setstate] = useState([]);
   useEffect(() => {
     setstate([]);
-    for (const id of props.user.listeTacheCommencés) {
+    for (const id of props.user.listeTacheCommences) {
       const apiUrl = "http://localhost:3001/Recherche/Tache";
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
