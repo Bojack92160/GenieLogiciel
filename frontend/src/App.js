@@ -104,36 +104,6 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   };
-<<<<<<< HEAD
-  /* useEffect(() => {
-    setAppState({ loading: true });
-    const apiUrl = "http://localhost:3001/login";
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify(user);
-
-    var reqOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(apiUrl, reqOptions)
-      .then((res) => res.json())
-      .then((data) => {
-        //console.log(data);
-        setAppState({
-          loading: false,
-          userData: data.dataUtilisateur,
-          notifsData: data.dataNotifications,
-          projectsData: data.dataProjects,
-          tasksData: data.dataTaches,
-        });
-      })
-      .catch((error) => console.log("error", error));
-  }, [setAppState]); */
-=======
   const enterHandle = useCallback(
     (event) => {
       if (event.key === "Enter") {
@@ -149,7 +119,6 @@ function App() {
       document.removeEventListener("keydown", enterHandle, false);
     };
   }, [enterHandle]);
->>>>>>> 556fce8c99b60dc2d100c4ff2db67d668b4c2f10
   if (!appState.islogged) {
     return (
       <React.Fragment>
