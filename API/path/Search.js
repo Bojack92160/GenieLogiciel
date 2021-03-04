@@ -4,10 +4,56 @@ const ClientsSchema = require('./../models/Clients-model.js');
 const ProjetsSchema = require('./../models/Projets-model.js');
 const NotificationsSchema = require('./../models/Notifications-model.js');
 const TachesSchema = require('./../models/Taches-model.js');
+const Rapports_Activites = require("./../models/Rapports_Activites-model.js");
 
 const TachesTools = require('./../tools/TachesTools.js');
 
 module.exports = function (app) {
+
+  /** recherche pour rapport
+  * Champs Possibles
+  * @email //tout les rapports d'un utilisateur
+  * @_idTache //id d'une certaine tache
+  * @date //retourne les rapport dont cette date est inclus entre periodeDebut et periodeFin
+  */
+  app.post("/Recherche/Rapports", async (req, res) => {
+    if (!req.body.email && !req.body._idTache && eq.body.date) {
+      res.json(await Rapports_Activites.find());
+      return;
+    }
+
+    if (req.body.email) {
+      res.json(await Rapports_Activites.find({"emailUtilisateur" : req.body.email}));
+      return;
+    } else if (req.body.responsable) {
+      res.json(await Rapports_Activites.find({"_idTache" : req.body._idTache}));
+      return;
+    } else if (req.body.date) {
+      ResponseList = await Rapports_Activites.find();
+      let FiltredResponseList = [];
+      try {
+        for (var i = 0; i < ResponseList.length; i++) {
+          let DateDebut = new Date(ResponseList[i].periodeDebut);
+          let DateFin = new Date(ResponseList[i].periodeFin);
+          let MyDate = new Date(req.body.date);
+          if (MyDate>=DateDebut && MyDate<=DateFin) {
+            FiltredResponseList.push(ResponseList[i]);
+          }
+        }
+        res.json(FiltredResponseList);
+        return;
+      } catch (e) {
+        res.json({error: "une erreur est survenue avec les dates de recherche de rapport", success:false});
+        return;
+      }
+    }
+
+    res.json(await Rapports_Activites.find());
+    return;
+
+});
+
+
 
 
   /** Renvoi TOUTE les datas d'un projet
