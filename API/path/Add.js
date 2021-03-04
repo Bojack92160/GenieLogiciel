@@ -152,13 +152,10 @@ module.exports = function (app) {
       });
 
       DataTache.dataAvancement.pourcent = req.body.avancementFinal;
-      DataTache.dataAvancement.chargeConsomme += req.body.chargeEffectue;
-      DataTache.dataAvancement.chargeRestante = req.body.chargeRestante;
-      DataTache.dataAvancement.chargeEffective =
-        DataTache.dataAvancement.chargeConsomme + req.body.chargeRestante;
-      DataTache.dateFinEffect.setDate(
-        DateDeSaisie.getDate() + DataTache.dataAvancement.chargeRestante
-      ); //nouvelle date effective = date de saisie + chargeRestante
+      DataTache.dataAvancement.chargeConsomme += parseInt(req.body.chargeEffectue, 10);
+      DataTache.dataAvancement.chargeRestante = parseInt(req.body.chargeRestante, 10);
+      DataTache.dataAvancement.chargeEffective = parseInt(DataTache.dataAvancement.chargeConsomme, 10) + parseInt(req.body.chargeRestante, 10);
+      DataTache.dateFinEffect.setDate(DateDeSaisie.getDate() + DataTache.dataAvancement.chargeRestante); //nouvelle date effective = date de saisie + chargeRestante
       if (DataTache.dateFinEffect > DataTache.dateFinInit) {
         await NotificationTools.sendSystemNotification(
           DataTache.responsable,
@@ -712,7 +709,6 @@ module.exports = function (app) {
    * @mdp
    * @email
    * @role
-   * @mdp
    * @tel
    * renvoie un objet avec success a true si reussite, renvoie un objet avec success a false si echec
    */
