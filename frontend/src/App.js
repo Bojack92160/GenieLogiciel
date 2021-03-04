@@ -58,8 +58,8 @@ function App() {
     email: "",
     mdp: "",
   });
+
   const handleMailChange = (e) => {
-    //console.log(e);
     setAppState({ mdp: appState.mdp, email: e.target.value });
     console.log(appState.email);
   };
@@ -87,7 +87,7 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data) {
+        if (data.success) {
           console.log("bonnerep");
           setAppState({
             loading: false,
@@ -104,7 +104,27 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   };
+  const enterHandle = useCallback(
+    (event) => {
 <<<<<<< HEAD
+      if (event.key === "Enter") {
+=======
+      if (event.key === "Enter" && !appState.islogged) {
+>>>>>>> 11823ffa19b4a6727d8e9549cb7cb49f365e922e
+        login();
+      }
+    },
+    [login]
+  );
+  useEffect(() => {
+    document.addEventListener("keydown", enterHandle, false);
+
+    return () => {
+      document.removeEventListener("keydown", enterHandle, false);
+    };
+  }, [enterHandle]);
+<<<<<<< HEAD
+=======
   /* useEffect(() => {
     setAppState({ loading: true });
     const apiUrl = "http://localhost:3001/login";
@@ -133,23 +153,7 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   }, [setAppState]); */
-=======
-  const enterHandle = useCallback(
-    (event) => {
-      if (event.key === "Enter" && !appState.islogged) {
-        login();
-      }
-    },
-    [login]
-  );
-  useEffect(() => {
-    document.addEventListener("keydown", enterHandle, false);
-
-    return () => {
-      document.removeEventListener("keydown", enterHandle, false);
-    };
-  }, [enterHandle]);
->>>>>>> 556fce8c99b60dc2d100c4ff2db67d668b4c2f10
+>>>>>>> 11823ffa19b4a6727d8e9549cb7cb49f365e922e
   if (!appState.islogged) {
     return (
       <React.Fragment>
