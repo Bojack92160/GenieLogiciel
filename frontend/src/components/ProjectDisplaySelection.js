@@ -1,94 +1,168 @@
-import {React, useState} from "react" 
-import { makeStyles } from '@material-ui/core/styles';
+import { React, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
-    groupedFields : {
-      justifyContent: 'space-around',
-      display: "flex"
-    },
-    searchField:{
-        
-    }
-  });
-
-
+  groupedFields: {
+    justifyContent: "space-around",
+    display: "flex",
+    marginBottom: "2rem",
+  },
+  searchField: {},
+});
+//Responsable et client
 const ProjectDisplaySelection = (props) => {
   const [state, setState] = useState({
     id: "",
-    titre:"",
+    titre: "",
     //responsable:"",
-    
-    date:""
+
+    date: "",
+    etat: "",
+    projects: [],
+    project: null,
+    loading: true,
   });
 
   const handleChangeId = (event) => {
-    setState({id: event.target.value})
+    setState({ id: event.target.value });
     const apiUrl = "http://localhost:3001/Recherche/Projet";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const req = { id: state.id };
+    const req = { id: event.target.value };
     var raw = JSON.stringify(req);
     console.log(req);
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw
+      body: raw,
     };
+    setState({ loading: true });
     fetch(apiUrl, reqOptions)
-    .then((res) => console.log(res))
-    .then((data)=>console.log(data))
-  }
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.error(res);
+        if (res.length > 0) {
+          setState({ projects: res, loading: false });
+        }
+      });
+  };
   const handleChangeTitle = (event) => {
-    setState({title: event.target.value})
+    setState({ titre: event.target.value });
     const apiUrl = "http://localhost:3001/Recherche/Projet";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const req = { title: state.title };
+    const req = { titre: event.target.value };
     var raw = JSON.stringify(req);
     console.log(req);
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw
+      body: raw,
     };
+    setState({ loading: true });
     fetch(apiUrl, reqOptions)
-    .then((res) => console.log(res))
-  }
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.error(res);
+        if (res.length > 0) {
+          setState({ projects: res, loading: false });
+        }
+      });
+  };
   const handleChangeDate = (event) => {
-    setState({date: event.target.value})
+    setState({ date: event.target.value });
     const apiUrl = "http://localhost:3001/Recherche/Projet";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const req = { date: state.date };
+    const req = { date: event.target.value };
     var raw = JSON.stringify(req);
     console.log(req);
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw
+      body: raw,
     };
+    setState({ loading: true });
     fetch(apiUrl, reqOptions)
-    .then((res) => console.log(res))
-  }
-    const classes = useStyles();
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.error(res);
+        if (res.length > 0) {
+          setState({ projects: res, loading: false });
+        }
+      });
+  };
+  const classes = useStyles();
 
-    return (
-        <div className={classes.groupedFields}>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="Id"
-            aria-label="Search" value={state.id} onChange={handleChangeId}/>
-            </div>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="titre"
-            aria-label="Search" value={state.titre} onChange={handleChangeTitle} />
-            </div>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="date"
-            aria-label="Search" onChange={handleChangeDate}/>
-            </div>
-            
+  return (
+    <div>
+      <div className={classes.groupedFields}>
+        <div className={classes.searchField}>
+          <input
+            type="search"
+            id="form1"
+            className="form-control"
+            placeholder="Id"
+            aria-label="Search"
+            value={state.id}
+            onChange={handleChangeId}
+          />
         </div>
-    )
-}
+        <div className={classes.searchField}>
+          <input
+            type="search"
+            id="form1"
+            className="form-control"
+            placeholder="titre"
+            aria-label="Search"
+            value={state.titre}
+            onChange={handleChangeTitle}
+          />
+        </div>
+        <div className={classes.searchField}>
+          <input
+            type="search"
+            id="form1"
+            className="form-control"
+            placeholder="date"
+            aria-label="Search"
+            onChange={handleChangeDate}
+          />
+        </div>
+      </div>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Date</th>
+            <th>Etat</th>
+          </tr>
+        </thead>
+        {!state.loading ? (
+          <tbody>
+            {state.projects.map((project) => (
+              <tr key={project._id}>
+                <td>{project._id}</td>
 
-export default ProjectDisplaySelection
+                <td>{project.titre}</td>
+                <td>
+                  {project.dateDebutEffect} -- {project.dateFinEffect}
+                </td>
+                <td>E</td>
+              </tr>
+            ))}
+          </tbody>
+        ) : null}
+      </table>
+    </div>
+  );
+};
+
+export default ProjectDisplaySelection;

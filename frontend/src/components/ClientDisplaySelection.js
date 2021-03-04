@@ -1,91 +1,163 @@
-import {React,useState} from "react" 
-import { makeStyles } from '@material-ui/core/styles';
+import { React, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
-    groupedFields : {
-      justifyContent: 'space-around',
-      display: "flex"
-    },
-    searchField:{
-
-    }
-  });
-
+  groupedFields: {
+    justifyContent: "space-around",
+    display: "flex",
+    marginBottom: "2rem",
+  },
+  searchField: {},
+});
 
 const ClientDisplaySelection = (props) => {
   const [state, setState] = useState({
     id: "",
-    email:"",
-    entreprise:""
+    nom: "",
+    prenom: "",
+    email: "",
+    telephone: "",
+    role: "",
+    users: [],
+    user: null,
+    loading: true,
   });
 
   const handleChangeId = (event) => {
-    setState({id: event.target.value})
+    setState({ id: event.target.value });
     const apiUrl = "http://localhost:3001/Recherche/Client";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const req = { id: state.id };
+    const req = { id: event.target.value };
     var raw = JSON.stringify(req);
     console.log(req);
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw
+      body: raw,
     };
+    setState({ loading: true });
     fetch(apiUrl, reqOptions)
-    .then((res) => console.log(res))
-  }
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.error(res);
+        if (res.length > 0) {
+          setState({ users: res, loading: false });
+        }
+      });
+  };
   const handleChangeEmail = (event) => {
-    setState({email: event.target.value})
+    setState({ email: event.target.value });
     const apiUrl = "http://localhost:3001/Recherche/Client";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const req = { email: state.email };
+    const req = { email: event.target.value };
     var raw = JSON.stringify(req);
     console.log(req);
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw
+      body: raw,
     };
+    setState({ loading: true });
     fetch(apiUrl, reqOptions)
-    .then((res) => console.log(res))
-  }
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.error(res);
+        if (res.length > 0) {
+          setState({ users: res, loading: false });
+        }
+      });
+  };
   const handleChangeEntreprise = (event) => {
-    setState({entreprise: event.target.value})
+    setState({ entreprise: event.target.value });
     const apiUrl = "http://localhost:3001/Recherche/Client";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const req = { entreprise: state.entreprise };
+    const req = { entreprise: event.target.value };
     var raw = JSON.stringify(req);
     console.log(req);
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw
+      body: raw,
     };
+    setState({ loading: true });
     fetch(apiUrl, reqOptions)
-    .then((res) => console.log(res))
-  }
-    const classes = useStyles();
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.error(res);
+        if (res.length > 0) {
+          setState({ users: res, loading: false });
+        }
+      });
+  };
+  const classes = useStyles();
 
-    return (
-        <div className={classes.groupedFields}>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="Id"
-            aria-label="Search" onChange={handleChangeId} />
-            </div>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="email"
-            aria-label="Search" onChange={handleChangeEmail}/>
-            </div>
-            <div className={classes.searchField}>
-            <input type="search" id="form1" className="form-control" placeholder="entreprise"
-            aria-label="Search" onChange={handleChangeEntreprise} />
-            </div>
-            
+  return (
+    <div>
+      <div className={classes.groupedFields}>
+        <div className={classes.searchField}>
+          <input
+            type="search"
+            id="form1"
+            className="form-control"
+            placeholder="Id"
+            aria-label="Search"
+            onChange={handleChangeId}
+          />
         </div>
-    )
-}
+        <div className={classes.searchField}>
+          <input
+            type="search"
+            id="form1"
+            className="form-control"
+            placeholder="email"
+            aria-label="Search"
+            onChange={handleChangeEmail}
+          />
+        </div>
+        <div className={classes.searchField}>
+          <input
+            type="search"
+            id="form1"
+            className="form-control"
+            placeholder="entreprise"
+            aria-label="Search"
+            onChange={handleChangeEntreprise}
+          />
+        </div>
+      </div>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Id</th>
 
-export default ClientDisplaySelection
+            <th>Email</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        {!state.loading ? (
+          <tbody>
+            {state.users.map((user) => (
+              <tr key={user._id}>
+                <td>{user._id}</td>
+
+                <td>{user.email}</td>
+                <td>{user.entreprise}</td>
+              </tr>
+            ))}
+          </tbody>
+        ) : null}
+      </table>
+    </div>
+  );
+};
+
+export default ClientDisplaySelection;
