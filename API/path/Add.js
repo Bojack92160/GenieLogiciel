@@ -174,14 +174,16 @@ module.exports = function (app) {
       }
 
       //clean des taches commencés
+      console.log('DataUtilisateur', DataUtilisateur);
       for (var i = 0; i < DataUtilisateur.listeTacheCommences.length; i++) {
         if (DataUtilisateur.listeTacheCommences[i]._id == DataTache._id) {
-          console.log("HIT");
+
           DataUtilisateur.listeTacheCommences[i] = null; //je veux faire splice mais visiblement ca bug
+          console.log("HIT", DataUtilisateur);
           break;
         }
-
       }
+      
       await DataUtilisateur.save();
       await DataTache.save();
       await NewRapport.save();
