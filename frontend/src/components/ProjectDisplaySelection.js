@@ -36,6 +36,7 @@ const ProjectDisplaySelection = (props) => {
     };
     fetch(apiUrl, reqOptions)
     .then((res) => console.log(res))
+    .then((data)=>console.log(data))
   }
   const handleChangeTitle = (event) => {
     setState({title: event.target.value})
