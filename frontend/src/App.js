@@ -106,7 +106,7 @@ function App() {
   };
   const enterHandle = useCallback(
     (event) => {
-      if (event.key === "Enter" && !appState.islogged) {
+      if (event.key === "Enter") {
         login();
       }
     },
