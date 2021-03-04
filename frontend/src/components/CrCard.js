@@ -125,10 +125,15 @@ function CrCard(props) {
               <Button
                 onClick={() => {
                   if (!stop) {
-                    const pourcent =
-                      avancement - props.task.dataAvancement.pourcent * 100;
-                    console.log(pourcent);
-                    const reste = ((100 - pourcent) * charge) / pourcent;
+                    var reste = 0;
+                    if (avancement !== 1) {
+                      const pourcent =
+                        avancement - props.task.dataAvancement.pourcent * 100;
+                      reste = ((100 - pourcent) * charge) / pourcent;
+                    } else {
+                      reste = 0;
+                    }
+
                     const body = {
                       _idTache: props.task._id,
                       _idUtilisateur: props.user._id,
