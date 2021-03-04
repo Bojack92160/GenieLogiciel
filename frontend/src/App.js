@@ -60,7 +60,6 @@ function App() {
   });
 
   const handleMailChange = (e) => {
-    //console.log(e);
     setAppState({ mdp: appState.mdp, email: e.target.value });
     console.log(appState.email);
   };
