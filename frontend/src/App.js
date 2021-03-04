@@ -106,11 +106,7 @@ function App() {
   };
   const enterHandle = useCallback(
     (event) => {
-<<<<<<< HEAD
-      if (event.key === "Enter") {
-=======
       if (event.key === "Enter" && !appState.islogged) {
->>>>>>> 11823ffa19b4a6727d8e9549cb7cb49f365e922e
         login();
       }
     },
@@ -123,8 +119,6 @@ function App() {
       document.removeEventListener("keydown", enterHandle, false);
     };
   }, [enterHandle]);
-<<<<<<< HEAD
-=======
   /* useEffect(() => {
     setAppState({ loading: true });
     const apiUrl = "http://localhost:3001/login";
@@ -153,115 +147,111 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   }, [setAppState]); */
->>>>>>> 11823ffa19b4a6727d8e9549cb7cb49f365e922e
-  if (!appState.islogged) {
-    return (
-      <React.Fragment>
-        <main className="App">
-          <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-              <Typography component="h1" variant="h5">
-                Sign in
-              </Typography>
-              <form className={classes.form} noValidate>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  onChange={handleMailChange}
+  // if (!appState.islogged) {
+  //   return (
+  //     <React.Fragment>
+  //       <main className="App">
+  //         <Container component="main" maxWidth="xs">
+  //           <CssBaseline />
+  //           <div className={classes.paper}>
+  //             <Typography component="h1" variant="h5">
+  //               Sign in
+  //             </Typography>
+  //             <form className={classes.form} noValidate>
+  //               <TextField
+  //                 variant="outlined"
+  //                 margin="normal"
+  //                 required
+  //                 fullWidth
+  //                 id="email"
+  //                 label="Email Address"
+  //                 name="email"
+  //                 autoComplete="email"
+  //                 autoFocus
+  //                 onChange={handleMailChange}
+  //               />
+  //               <TextField
+  //                 variant="outlined"
+  //                 margin="normal"
+  //                 required
+  //                 fullWidth
+  //                 name="password"
+  //                 label="Password"
+  //                 type="password"
+  //                 id="password"
+  //                 autoComplete="current-password"
+  //                 onChange={handleMDPChange}
+  //               />
+  //               <FormControlLabel
+  //                 control={<Checkbox value="remember" color="primary" />}
+  //                 label="Remember me"
+  //               />
+  //               <Button
+  //                 fullWidth
+  //                 variant="contained"
+  //                 color="primary"
+  //                 onClick={() => {
+  //                   login();
+  //                 }}
+  //               >
+  //                 Sign In
+  //               </Button>
+  //             </form>
+  //           </div>
+  //           <Box mt={8}>
+  //             <Typography variant="body2" color="textSecondary" align="center">
+  //               {"Copyright © "}
+  //               <Link color="inherit" href="https://material-ui.com/">
+  //                 Project Manager
+  //               </Link>{" "}
+  //               {new Date().getFullYear()}
+  //               {"."}
+  //             </Typography>
+  //           </Box>
+  //         </Container>
+  //       </main>
+  //     </React.Fragment>
+  //   );
+  // } else {
+  return (
+    <React.Fragment>
+      <main className="App">
+        <Router>
+          <Sidebar />
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => (
+                <HomeLoading
+                  isLoading={appState.loading}
+                  Userdata={appState.userData}
+                  tasks={appState.tasksData}
                 />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  onChange={handleMDPChange}
+              )}
+            />
+            <Route
+              path="/projects"
+              render={() => (
+                <Projects
+                  Userdata={appState.userData}
+                  projects={appState.projectsData}
                 />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                />
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    login();
-                  }}
-                >
-                  Sign In
-                </Button>
-              </form>
-            </div>
-            <Box mt={8}>
-              <Typography variant="body2" color="textSecondary" align="center">
-                {"Copyright © "}
-                <Link color="inherit" href="https://material-ui.com/">
-                  Project Manager
-                </Link>{" "}
-                {new Date().getFullYear()}
-                {"."}
-              </Typography>
-            </Box>
-          </Container>
-        </main>
-      </React.Fragment>
-    );
-  } else {
-    return (
-      <React.Fragment>
-        <main className="App">
-          <Router>
-            <Sidebar />
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => (
-                  <HomeLoading
-                    isLoading={appState.loading}
-                    Userdata={appState.userData}
-                    tasks={appState.tasksData}
-                  />
-                )}
-              />
-              <Route
-                path="/projects"
-                render={() => (
-                  <Projects
-                    Userdata={appState.userData}
-                    projects={appState.projectsData}
-                  />
-                )}
-              />
-              <Route
-                path="/notifications"
-                render={() => <Notifs notifs={appState.notifsData} />}
-              />
-              <Route path="/explore" component={Explore} />
-              <Route path="/settings" component={ProjectForm} />
-              <Route
-                path="/cr"
-                render={() => <CR user={appState.userData} />}
-              />
-            </Switch>
-          </Router>
-        </main>
-      </React.Fragment>
-    );
-  }
+              )}
+            />
+            <Route
+              path="/notifications"
+              render={() => <Notifs notifs={appState.notifsData} />}
+            />
+            <Route path="/explore" component={Explore} />
+            <Route path="/settings" component={ProjectForm} />
+            <Route path="/cr" render={() => <CR user={appState.userData} />} />
+          </Switch>
+        </Router>
+      </main>
+    </React.Fragment>
+  );
 }
+// }
 
 export default App;

@@ -6,6 +6,12 @@ import ProjectDisplaySelection from "../components/ProjectDisplaySelection";
 import UserDisplaySelection from "../components/UserDisplaySelection";
 import IdDisplaySelection from "./../components/IdDisplaySelection";
 import TaskDisplaySelection from "./../components/TaskDisplaySelection";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import LensIcon from "@material-ui/icons/Lens";
 
 const useStyles = makeStyles({
   dropDown: {
@@ -17,12 +23,30 @@ const useStyles = makeStyles({
   test: {
     width: "100%",
   },
+  root: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: "inline-block",
+    margin: "0 2px",
+    transform: "scale(0.8)",
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+  flagContainer: {
+    display: "flex",
+    justifyContent: "center",
+  },
 });
 
 function Explore() {
   const classes = useStyles();
 
-  const [searchMode, setSearchMode] = useState("Projects");
+  const [searchMode, setSearchMode] = useState("Projets");
   const handleChange = (e) => {
     setSearchMode(e.target.value);
   };
@@ -51,6 +75,18 @@ function Explore() {
   if (searchMode === "Projets") {
     return (
       <>
+        <Card className={classes.root}>
+          <CardContent>
+            <div className={classes.flagContainer}>
+              <LensIcon color="primary" />
+              <span>projet terminé </span>
+            </div>
+            <div className={classes.flagContainer}>
+              <LensIcon color="secondary" />
+              <span>projet en cours </span>
+            </div>
+          </CardContent>
+        </Card>
         <div className={classes.dropDown}>
           <Form.Group controlId="exampleForm.ControlSelect1">
             <Form.Control as="select" onChange={handleChange}>

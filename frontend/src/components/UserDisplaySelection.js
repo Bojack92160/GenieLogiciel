@@ -3,9 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   root: {
-    marginTop: "2rem auto",
-    width: "85%",
-    height: "90%",
+    width: "80%",
+    margin: "0 auto",
   },
   cardContent: {
     width: "10%",
@@ -152,7 +151,7 @@ const UserDisplaySelection = (props) => {
   const classes = useStyles();
 
   return (
-    <div>
+    <div className={classes.root}>
       <div className={classes.groupedFields}>
         <div className={classes.searchField}>
           <input
