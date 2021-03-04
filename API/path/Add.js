@@ -184,8 +184,8 @@ module.exports = function (app) {
 
       }
 
-      await DataUtilisateur.save();
       await DataTache.save();
+      await DataUtilisateur.save();
       await NewRapport.save();
       let result = await TachesTools.updateProjetFromTache(req.body._idTache);
       if (!result) {
