@@ -123,21 +123,26 @@ function CrCard(props) {
             <Col>
               <Button
                 onClick={() => {
+                  const pourcent =
+                    avancement - props.task.dataAvancement.pourcent * 100;
+                  console.log(pourcent);
+                  const reste = ((100 - pourcent) * charge) / pourcent;
                   const body = {
                     _idTache: props.task._id,
                     _idUtilisateur: props.user._id,
                     periodeDebut: debut,
                     periodeFin: fin,
                     chargeEffectue: charge,
-                    chargeRestante:
-                      props.task.dataAvancement.chargeRestante - charge,
+                    //changer le calcul de la charge restante
+                    chargeRestante: reste,
                     avancementFinal: avancement / 100,
                   };
-                  console.log(body);
+
                   const apiUrl = "http://localhost:3001/Ajout/Rapport_Activite";
                   var myHeaders = new Headers();
                   myHeaders.append("Content-Type", "application/json");
                   var raw = JSON.stringify(body);
+                  console.log(raw);
                   var reqOptions = {
                     method: "POST",
                     headers: myHeaders,

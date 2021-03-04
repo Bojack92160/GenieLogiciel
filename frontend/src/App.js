@@ -74,7 +74,7 @@ function App() {
     const apiUrl = "http://localhost:3001/login";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const user = { email: appState.email, mdp: appState.mdp };
+    const user = { email: "Admin@gmail.com", mdp: "Admin" };
     var raw = JSON.stringify(user);
     console.log(user);
     var reqOptions = {
@@ -181,10 +181,6 @@ function App() {
                   id="password"
                   autoComplete="current-password"
                   onChange={handleMDPChange}
-                />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
                 />
                 <Button
                   fullWidth

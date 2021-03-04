@@ -30,21 +30,36 @@ function CR(props) {
   }, [setstate]);
 
   console.log(props);
-  if (props.user.role === ("administrateur" || "responsable de projet"));
-
-  return (
-    <Container>
-      <Row>
-        {state.map((item) => {
-          return (
-            <>
-              <CrCard task={item} user={props.user}></CrCard>
-            </>
-          );
-        })}
-      </Row>
-    </Container>
-  );
+  if (props.user.role === ("administrateur" || "responsable de projet")) {
+    return (
+      <Container>
+        <Row>
+          {state.map((item) => {
+            return (
+              <>
+                <CrCard task={item} user={props.user}></CrCard>
+              </>
+            );
+          })}
+        </Row>
+        <Row></Row>
+      </Container>
+    );
+  } else {
+    return (
+      <Container>
+        <Row>
+          {state.map((item) => {
+            return (
+              <>
+                <CrCard task={item} user={props.user}></CrCard>
+              </>
+            );
+          })}
+        </Row>
+      </Container>
+    );
+  }
 }
 
 export default CR;
