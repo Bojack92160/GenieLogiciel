@@ -89,10 +89,6 @@ const TaskForm = (props) => {
     });
   };
   const handleEndChange = (e) => {
-    const deb = new Date(state.dateDebutInit);
-    const fin = new Date(state.dateFinInit);
-    const diffTime = Math.abs(fin - deb);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     setstate({
       titre: state.titre,
       description: state.description,
@@ -106,10 +102,6 @@ const TaskForm = (props) => {
     });
   };
   const handleBeginChange = (e) => {
-    const deb = new Date(state.dateDebutInit);
-    const fin = new Date(state.dateFinInit);
-    const diffTime = Math.abs(fin - deb);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     setstate({
       titre: state.titre,
       description: state.description,
@@ -300,38 +292,33 @@ const TaskForm = (props) => {
           color="primary"
           disableElevation
           onClick={() => {
-            setstate({
-              titre: state.titre,
-              description: state.description,
-              responsable: state.responsable,
-              client: state.client,
-              collaborateur: state.collaborateur,
-              dateDebutInit: state.dateDebutInit,
-              dateFinInit: state.dateFinInit,
-              _idMere: state._idMere,
-              predecesseurs: state.predecesseurs,
-            });
-            const apiUrl = "http://localhost:3001/Ajout/Tache";
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            const req = state;
-            var raw = JSON.stringify(req);
-            var reqOptions = {
-              method: "POST",
-              headers: myHeaders,
-              body: raw,
-              redirect: "follow",
-            };
-            fetch(apiUrl, reqOptions)
-              .then((res) => res.json())
-              .then((data) => {
-                console.log(data);
-                if (data.success) {
-                  history.goBack();
-                } else {
-                  alert(data.erreur);
-                }
-              });
+            const deb = new Date(state.dateDebutInit);
+            const fin = new Date(state.dateFinInit);
+            if (deb <= fin) {
+              const apiUrl = "http://localhost:3001/Ajout/Tache";
+              var myHeaders = new Headers();
+              myHeaders.append("Content-Type", "application/json");
+              const req = state;
+              var raw = JSON.stringify(req);
+              var reqOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow",
+              };
+              fetch(apiUrl, reqOptions)
+                .then((res) => res.json())
+                .then((data) => {
+                  console.log(data);
+                  if (data.success) {
+                    history.goBack();
+                  } else {
+                    alert(data.erreur);
+                  }
+                });
+            } else {
+              alert("date de fin avant la date de début");
+            }
           }}
         >
           Créer

@@ -82,10 +82,21 @@ app.post("/login", async (req, res) => {
     }
   }
   for (var i = 0; i < Utilisateur.listeTacheCollaborateur.length; i++) {
+    //evite les duplicas au cas ou on est responsable et collaborateur
+    let dontAdd = false;
+    for (var j = 0; j < Response.dataTaches.length; j++) {
+      if (Response.dataTaches[j]._id == Utilisateur.listeTacheCollaborateur[i]) {
+        dontAdd = true;
+        break;
+      }
+    }
+    if (dontAdd) {
+      continue;
+    }
+
     let DataTaches = await TachesSchema.findById(
       Utilisateur.listeTacheCollaborateur[i]
     );
-    console.log("DataTachesU", DataTaches);
     if (DataTaches) {
       Response.dataTaches.push(DataTaches);
     }

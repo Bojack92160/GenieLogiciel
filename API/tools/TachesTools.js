@@ -15,7 +15,7 @@ module.exports = {
     if (!DataMere) {
       DataMere = await TachesSchema.findById(id);
       if (!DataMere) {
-        throw "impossible de récupérer la datamere";
+        throw "impossible de récupérer la datamere "+id;
       }
     }
 
@@ -312,7 +312,7 @@ async function getAllDataUnderTache(id) {
   if (!DataMere) {
     DataMere = await TachesSchema.findById(id);
     if (!DataMere) {
-      throw "impossible de récupérer la datamere";
+      throw "impossible de récupérer la datamere "+id;
     }
   }
 

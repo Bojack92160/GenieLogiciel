@@ -9,7 +9,7 @@ import Notifs from "./pages/Notifs";
 import Settings from "./pages/Settings";
 import { td } from "./components/TasksData";
 import loading from "./components/Loading";
-
+import CR from "./pages/CR";
 import LoginForm from "./components/loginForm";
 import SignUp from "./components/SignUp";
 import ProjectForm from "./components/ProjectForm";
@@ -58,6 +58,7 @@ function App() {
     email: "",
     mdp: "",
   });
+
   const handleMailChange = (e) => {
     //console.log(e);
     setAppState({ mdp: appState.mdp, email: e.target.value });
@@ -87,7 +88,7 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data) {
+        if (data.success) {
           console.log("bonnerep");
           setAppState({
             loading: false,
@@ -106,7 +107,11 @@ function App() {
   };
   const enterHandle = useCallback(
     (event) => {
+<<<<<<< HEAD
       if (event.key === "Enter") {
+=======
+      if (event.key === "Enter" && !appState.islogged) {
+>>>>>>> 11823ffa19b4a6727d8e9549cb7cb49f365e922e
         login();
       }
     },
@@ -119,6 +124,37 @@ function App() {
       document.removeEventListener("keydown", enterHandle, false);
     };
   }, [enterHandle]);
+<<<<<<< HEAD
+=======
+  /* useEffect(() => {
+    setAppState({ loading: true });
+    const apiUrl = "http://localhost:3001/login";
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify(user);
+
+    var reqOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    fetch(apiUrl, reqOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        //console.log(data);
+        setAppState({
+          loading: false,
+          userData: data.dataUtilisateur,
+          notifsData: data.dataNotifications,
+          projectsData: data.dataProjects,
+          tasksData: data.dataTaches,
+        });
+      })
+      .catch((error) => console.log("error", error));
+  }, [setAppState]); */
+>>>>>>> 11823ffa19b4a6727d8e9549cb7cb49f365e922e
   if (!appState.islogged) {
     return (
       <React.Fragment>
@@ -217,9 +253,10 @@ function App() {
               />
               <Route path="/explore" component={Explore} />
               <Route path="/settings" component={ProjectForm} />
-              <Route exact path="/login" component={LoginForm} />
-              <Route exact path="/signup" component={SignUp} />
-              <Route exact path="/signup" component={SignUp} />
+              <Route
+                path="/cr"
+                render={() => <CR user={appState.userData} />}
+              />
             </Switch>
           </Router>
         </main>

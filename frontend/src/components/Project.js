@@ -272,7 +272,9 @@ function Project(props) {
           ></TaskForm>
         );
       }
+
       if (props.user.email === props.project.responsable) {
+        console.log(state.tasksObj?.length);
         return (
           <div className="home">
             <Container>
@@ -291,14 +293,21 @@ function Project(props) {
                 <Col lg={12}>
                   <Chart
                     width={"100%"}
-                    height={state.tasksObj?.length * 40}
+                    height={state.tasksObj?.length * 30}
                     chartType="Gantt"
                     loader={<div>Loading Chart</div>}
                     data={state.tasksObj}
                     options={{
-                      criticalPathEnabled: true,
+                      gantt: {
+                        criticalPathEnabled: true,
+                        criticalPathStyle: {
+                          stroke: "#e64a19",
+                          strokeWidth: 3,
+                        },
+                        trackHeight: 30,
+                      },
                     }}
-                    rootProps={{ "data-testid": "1" }}
+                    rootProps={{ "data-testid": "5" }}
                   />
                 </Col>
               </Row>
@@ -348,9 +357,16 @@ function Project(props) {
                     loader={<div>Loading Chart</div>}
                     data={state.tasksObj}
                     options={{
-                      criticalPathEnabled: true,
+                      gantt: {
+                        criticalPathEnabled: true,
+                        criticalPathStyle: {
+                          stroke: "#e64a19",
+                          strokeWidth: 3,
+                        },
+                        trackHeight: 30,
+                      },
                     }}
-                    rootProps={{ "data-testid": "1" }}
+                    rootProps={{ "data-testid": "5" }}
                   />
                 </Col>
               </Row>

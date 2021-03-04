@@ -1,6 +1,7 @@
 import React from "react";
 import * as FAIcons from "react-icons/fa";
 import * as AIIcons from "react-icons/ai";
+import * as BIIcons from "react-icons/bi";
 
 export const SideBarData = [
   {
@@ -25,6 +26,12 @@ export const SideBarData = [
     title: "Explorer",
     path: "/explore",
     icon: <AIIcons.AiOutlineSearch />,
+    cName: "nav-text",
+  },
+  {
+    title: "Compte rendu",
+    path: "/cr",
+    icon: <BIIcons.BiTask />,
     cName: "nav-text",
   },
   {
