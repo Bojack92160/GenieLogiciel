@@ -217,7 +217,7 @@ module.exports = {
         DataTacheMere.dataAvancement.pourcent =
           SommeDesPourcent / NombreDeFille;
         if (DataTacheMere.dataAvancement.pourcent >= 1) {
-          closeTacheFinished(DataTacheMere._id);
+          await closeTacheFinished(DataTacheMere._id);
         }
 
         //on monte d'un niveau

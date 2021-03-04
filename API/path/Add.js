@@ -50,9 +50,7 @@ module.exports = function (app) {
     let DataUtilisateur;
     try {
       DataTache = await TachesSchema.findById(req.body._idTache);
-      DataUtilisateur = await UtilisateursSchema.findById(
-        req.body._idUtilisateur
-      );
+      DataUtilisateur = await UtilisateursSchema.findById(req.body._idUtilisateur);
       if (!DataTache) {
         res.json({
           erreur:
@@ -174,18 +172,17 @@ module.exports = function (app) {
       }
 
       //clean des taches commencés
+      console.log('DataUtilisateur', DataUtilisateur);
       for (var i = 0; i < DataUtilisateur.listeTacheCommences.length; i++) {
-        console.log("DataUtilisateur avant", DataUtilisateur);
         if (DataUtilisateur.listeTacheCommences[i]._id == DataTache._id) {
-          DataUtilisateur.listeTacheCommences[i] = null; //je veux faire splice mais visiblement
-          console.log("DataUtilisateur apres", DataUtilisateur);
+          DataUtilisateur.listeTacheCommences[i] = {_id:"", dateDebut: new Date}; //je veux faire splice mais visiblement ca bug
           break;
         }
-
       }
 
-      await DataTache.save();
       await DataUtilisateur.save();
+      console.log('DataUtilisateur APRES', DataUtilisateur);
+      await DataTache.save();
       await NewRapport.save();
       let result = await TachesTools.updateProjetFromTache(req.body._idTache);
       if (!result) {

@@ -119,7 +119,6 @@ function GrosTaskList(props) {
                       )}%`}
                     />
                   </Card.Text>
-                  <Card.Link href="#">Card Link</Card.Link>
                 </Card.Body>
               </Card>
             </Col>

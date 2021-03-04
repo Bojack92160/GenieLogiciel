@@ -23,18 +23,7 @@ function Home(props) {
         ></button> */}
       <Container>
         <Row>
-          <TaskList
-            tasks={props.tasks.filter((item, index) => {
-              const thing = JSON.stringify(item);
-              return (
-                index ===
-                props.tasks.findIndex((obj) => {
-                  return JSON.stringify(obj) === thing;
-                })
-              );
-            })}
-            user={props.Userdata}
-          />
+          <TaskList tasks={props.tasks} user={props.Userdata} />
         </Row>
       </Container>
     </div>
