@@ -91,7 +91,6 @@ function Project(props) {
       .then((res) => res.json())
       .then((data) => {
         var dt = state.tasksObj;
-
         data.map((item, index) => {
           console.log(item);
           if (index !== 0) {

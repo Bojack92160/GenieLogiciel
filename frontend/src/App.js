@@ -106,11 +106,7 @@ function App() {
   };
   const enterHandle = useCallback(
     (event) => {
-<<<<<<< HEAD
-      if (event.key === "Enter") {
-=======
       if (event.key === "Enter" && !appState.islogged) {
->>>>>>> 11823ffa19b4a6727d8e9549cb7cb49f365e922e
         login();
       }
     },
@@ -123,8 +119,6 @@ function App() {
       document.removeEventListener("keydown", enterHandle, false);
     };
   }, [enterHandle]);
-<<<<<<< HEAD
-=======
   /* useEffect(() => {
     setAppState({ loading: true });
     const apiUrl = "http://localhost:3001/login";
@@ -153,7 +147,6 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   }, [setAppState]); */
->>>>>>> 11823ffa19b4a6727d8e9549cb7cb49f365e922e
   if (!appState.islogged) {
     return (
       <React.Fragment>
