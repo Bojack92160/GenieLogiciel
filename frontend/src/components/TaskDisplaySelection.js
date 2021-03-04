@@ -22,11 +22,13 @@ const TaskDisplaySelection = (props) => {
     responsable: "",
     collaborateur: "",
     date: "",
+    tasks: [],
+    task: null,
   });
 
   const handleChangeId = (event) => {
     setState({ id: event.target.value });
-    const apiUrl = "http://localhost:3001/Recherche/Projet";
+    const apiUrl = "http://localhost:3001/Recherche/Tache";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const req = { id: event.target.value };
@@ -45,13 +47,13 @@ const TaskDisplaySelection = (props) => {
       .then((res) => {
         console.error(res);
         if (res.length > 0) {
-          setState({ projects: res, loading: false });
+          setState({ tasks: res, loading: false });
         }
       });
   };
   const handleChangeTitle = (event) => {
     setState({ titre: event.target.value });
-    const apiUrl = "http://localhost:3001/Recherche/Projet";
+    const apiUrl = "http://localhost:3001/Recherche/Tache";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const req = { titre: event.target.value };
@@ -70,13 +72,13 @@ const TaskDisplaySelection = (props) => {
       .then((res) => {
         console.error(res);
         if (res.length > 0) {
-          setState({ projects: res, loading: false });
+          setState({ tasks: res, loading: false });
         }
       });
   };
   const handleChangeDate = (event) => {
     setState({ date: event.target.value });
-    const apiUrl = "http://localhost:3001/Recherche/Projet";
+    const apiUrl = "http://localhost:3001/Recherche/Tache";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const req = { date: event.target.value };
@@ -95,7 +97,7 @@ const TaskDisplaySelection = (props) => {
       .then((res) => {
         console.error(res);
         if (res.length > 0) {
-          setState({ projects: res, loading: false });
+          setState({ tasks: res, loading: false });
         }
       });
   };
