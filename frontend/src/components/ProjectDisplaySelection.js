@@ -1,5 +1,7 @@
 import { React, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import LensIcon from "@material-ui/icons/Lens";
+import moment from "moment";
 
 const useStyles = makeStyles({
   groupedFields: {
@@ -8,6 +10,10 @@ const useStyles = makeStyles({
     marginBottom: "2rem",
   },
   searchField: {},
+  root: {
+    width: "80%",
+    margin: "0 auto",
+  },
 });
 //Responsable et client
 const ProjectDisplaySelection = (props) => {
@@ -101,7 +107,7 @@ const ProjectDisplaySelection = (props) => {
   const classes = useStyles();
 
   return (
-    <div>
+    <div className={classes.root}>
       <div className={classes.groupedFields}>
         <div className={classes.searchField}>
           <input
@@ -142,6 +148,8 @@ const ProjectDisplaySelection = (props) => {
             <th>Id</th>
             <th>Titre</th>
             <th>Date</th>
+            <th>Responsable</th>
+            <th>Client</th>
             <th>Etat</th>
           </tr>
         </thead>
@@ -155,7 +163,18 @@ const ProjectDisplaySelection = (props) => {
                 <td>
                   {project.dateDebutEffect} -- {project.dateFinEffect}
                 </td>
-                <td>E</td>
+                <td>{project.responsable}</td>
+                <td>{project.client}</td>
+                <td>
+                  <LensIcon
+                    color={
+                      moment(project.dateFinEffect).format("DD-MM-YYYY H:mm") <
+                      moment().format("DD-MM-YYYY H:mm")
+                        ? "primary"
+                        : "secondary"
+                    }
+                  />
+                </td>
               </tr>
             ))}
           </tbody>

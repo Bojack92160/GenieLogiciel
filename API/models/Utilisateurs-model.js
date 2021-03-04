@@ -13,7 +13,7 @@ const Utilisateurs = mongoose.Schema({
   listeNotifications: [String],
   listePojetsTermines: [String],
   listeTachesTermines: [String],
-  listeTacheCommencés: [{
+  listeTacheCommences: [{
     _id: String,
     dateDebut: Date
   }]

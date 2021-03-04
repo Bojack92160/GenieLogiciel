@@ -66,15 +66,15 @@ module.exports = function(app) {
         }
 
         //verification que la tache n'est pas deja commencé
-        for (var i = 0; i < DataUtilisateur.listeTacheCommencés.length; i++) {
-          if (DataUtilisateur.listeTacheCommencés[i]._id == DataTache._id) {
+        for (var i = 0; i < DataUtilisateur.listeTacheCommences.length; i++) {
+          if (DataUtilisateur.listeTacheCommences[i]._id == DataTache._id) {
             res.json({erreur: "Cette tache est deja commencé!", success: false});
             return;
           }
         }
 
 
-        DataUtilisateur.listeTacheCommencés.push({_id: DataTache._id, dateDebut: new Date});
+        DataUtilisateur.listeTacheCommences.push({_id: DataTache._id, dateDebut: new Date});
         await DataUtilisateur.save();
         res.json({message: "La tache a bien été commencé!", success: true});
         return;

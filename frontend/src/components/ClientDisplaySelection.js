@@ -8,6 +8,10 @@ const useStyles = makeStyles({
     marginBottom: "2rem",
   },
   searchField: {},
+  root: {
+    width: "80%",
+    margin: "0 auto",
+  },
 });
 
 const ClientDisplaySelection = (props) => {
@@ -101,7 +105,7 @@ const ClientDisplaySelection = (props) => {
   const classes = useStyles();
 
   return (
-    <div>
+    <div className={classes.root}>
       <div className={classes.groupedFields}>
         <div className={classes.searchField}>
           <input
@@ -138,9 +142,9 @@ const ClientDisplaySelection = (props) => {
         <thead>
           <tr>
             <th>Id</th>
-
+            <th>Entreprise</th>
             <th>Email</th>
-            <th>Role</th>
+            <th>Telephone</th>
           </tr>
         </thead>
         {!state.loading ? (
@@ -148,9 +152,9 @@ const ClientDisplaySelection = (props) => {
             {state.users.map((user) => (
               <tr key={user._id}>
                 <td>{user._id}</td>
-
+                <td>{user.nomEntreprise}</td>
                 <td>{user.email}</td>
-                <td>{user.entreprise}</td>
+                <th>{user.tel}</th>
               </tr>
             ))}
           </tbody>
