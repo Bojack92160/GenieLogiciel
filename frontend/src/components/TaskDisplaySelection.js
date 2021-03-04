@@ -187,6 +187,26 @@ const TaskDisplaySelection = (props) => {
             onChange={handleChangeDate}
           />
         </div>
+        <div className={classes.searchField}>
+          <input
+            type="search"
+            id="form1"
+            className="form-control"
+            placeholder="responsable"
+            aria-label="Search"
+            onChange={handleChangeResponsable}
+          />
+        </div>
+        <div className={classes.searchField}>
+          <input
+            type="search"
+            id="form1"
+            className="form-control"
+            placeholder="collaborateur"
+            aria-label="Search"
+            onChange={handleChangeCollab}
+          />
+        </div>
       </div>
       <table className="table">
         <thead>
@@ -195,27 +215,25 @@ const TaskDisplaySelection = (props) => {
             <th>Titre</th>
             <th>Date</th>
             <th>Responsable</th>
-            <th>Client</th>
-            <th>Etat</th>
+            <th>Collaborateur</th>
           </tr>
         </thead>
-        {/* {!state.loading ? (
-            <tbody>
-              {state.projects.map((project) => (
-                <tr key={project._id}>
-                  <td>{project._id}</td>
-  
-                  <td>{project.titre}</td>
-                  <td>
-                    {project.dateDebutEffect} -- {project.dateFinEffect}
-                  </td>
-                  <td>{project.responsable}</td>
-                  <td>{project.client}</td>
-                  <td>E</td>
-                </tr>
-              ))}
-            </tbody>
-          ) : null} */}
+        {!state.loading ? (
+          <tbody>
+            {state.tasks.map((task) => (
+              <tr key={task._id}>
+                <td>{task._id}</td>
+
+                <td>{task.titre}</td>
+                <td>
+                  {task.dateDebutEffect} -- {task.dateFinEffect}
+                </td>
+                <td>{task.responsable}</td>
+                <td>{task.collaborateur}</td>
+              </tr>
+            ))}
+          </tbody>
+        ) : null}
       </table>
     </div>
   );
