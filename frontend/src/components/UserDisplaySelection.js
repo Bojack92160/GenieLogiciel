@@ -92,7 +92,7 @@ const UserDisplaySelection = (props) => {
       .then((res) => {
         console.error(res);
         if (res.length > 0) {
-          setState({ user: res, loading: false });
+          setState({ users: res, loading: false });
         }
       });
   };

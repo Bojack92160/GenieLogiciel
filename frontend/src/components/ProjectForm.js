@@ -101,7 +101,6 @@ const ProjectForm = () => {
   const history = useHistory();
   return (
     <>
-      <h1>Créer un projet</h1>
       <form className={classes.root} noValidate autoComplete="off">
         <div
           style={{

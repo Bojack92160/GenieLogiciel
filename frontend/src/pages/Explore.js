@@ -24,7 +24,8 @@ const useStyles = makeStyles({
     width: "100%",
   },
   root: {
-    minWidth: 275,
+    width: "20%",
+    marginLeft: "30rem",
   },
   bullet: {
     display: "inline-block",
@@ -63,7 +64,6 @@ function Explore() {
               <option>Tâches</option>
               <option>Utilisateurs</option>
               <option selected={true}>Clients</option>
-              <option>Tout par ID</option>
             </Form.Control>
           </Form.Group>
         </div>
@@ -94,7 +94,6 @@ function Explore() {
               <option>Tâches</option>
               <option>Utilisateurs</option>
               <option>Clients</option>
-              <option>Tout par ID</option>
             </Form.Control>
           </Form.Group>
         </div>
@@ -112,7 +111,6 @@ function Explore() {
               <option selected={true}>Tâches</option>
               <option>Utilisateurs</option>
               <option>Clients</option>
-              <option>Tout par ID</option>
             </Form.Control>
           </Form.Group>
         </div>
@@ -130,29 +128,10 @@ function Explore() {
               <option>Tâches</option>
               <option selected={true}>Utilisateurs</option>
               <option>Clients</option>
-              <option>Tout par ID</option>
             </Form.Control>
           </Form.Group>
         </div>
         <UserDisplaySelection />
-      </>
-    );
-  }
-  if (searchMode === "Tout par ID") {
-    return (
-      <>
-        <div className={classes.dropDown}>
-          <Form.Group controlId="exampleForm.ControlSelect1">
-            <Form.Control as="select" onChange={handleChange}>
-              <option>Projets</option>
-              <option>Tâches</option>
-              <option>Utilisateurs</option>
-              <option>Clients</option>
-              <option selected={true}>Tout par ID</option>
-            </Form.Control>
-          </Form.Group>
-        </div>
-        <IdDisplaySelection />
       </>
     );
   }
@@ -164,7 +143,6 @@ function Explore() {
         <option>Tâches</option>
         <option>Utilisateurs</option>
         <option>Clients</option>
-        <option>Tout par ID</option>
       </Form.Control>
     </Form.Group>
   );
