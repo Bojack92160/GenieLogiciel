@@ -244,7 +244,7 @@ function App() {
                 render={() => <Notifs notifs={appState.notifsData} />}
               />
               <Route path="/explore" component={Explore} />
-              <Route path="/settings" component={ProjectForm} />
+              <Route path="/settings" component={Settings} />
               <Route
                 path="/cr"
                 render={() => <CR user={appState.userData} />}

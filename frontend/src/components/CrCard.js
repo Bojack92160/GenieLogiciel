@@ -142,6 +142,7 @@ function CrCard(props) {
                       chargeEffectue: parseInt(charge),
                       chargeRestante: reste,
                       avancementFinal: avancement / 100,
+                      commentaire: desc,
                     };
 
                     const apiUrl =

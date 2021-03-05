@@ -50,7 +50,9 @@ module.exports = function (app) {
     let DataUtilisateur;
     try {
       DataTache = await TachesSchema.findById(req.body._idTache);
-      DataUtilisateur = await UtilisateursSchema.findById(req.body._idUtilisateur);
+      DataUtilisateur = await UtilisateursSchema.findById(
+        req.body._idUtilisateur
+      );
       if (!DataTache) {
         res.json({
           erreur:
@@ -150,10 +152,20 @@ module.exports = function (app) {
       });
 
       DataTache.dataAvancement.pourcent = req.body.avancementFinal;
-      DataTache.dataAvancement.chargeConsomme += parseInt(req.body.chargeEffectue, 10);
-      DataTache.dataAvancement.chargeRestante = parseInt(req.body.chargeRestante, 10);
-      DataTache.dataAvancement.chargeEffective = parseInt(DataTache.dataAvancement.chargeConsomme, 10) + parseInt(req.body.chargeRestante, 10);
-      DataTache.dateFinEffect.setDate(DateDeSaisie.getDate() + DataTache.dataAvancement.chargeRestante); //nouvelle date effective = date de saisie + chargeRestante
+      DataTache.dataAvancement.chargeConsomme += parseInt(
+        req.body.chargeEffectue,
+        10
+      );
+      DataTache.dataAvancement.chargeRestante = parseInt(
+        req.body.chargeRestante,
+        10
+      );
+      DataTache.dataAvancement.chargeEffective =
+        parseInt(DataTache.dataAvancement.chargeConsomme, 10) +
+        parseInt(req.body.chargeRestante, 10);
+      DataTache.dateFinEffect.setDate(
+        DateDeSaisie.getDate() + DataTache.dataAvancement.chargeRestante
+      ); //nouvelle date effective = date de saisie + chargeRestante
       if (DataTache.dateFinEffect > DataTache.dateFinInit) {
         await NotificationTools.sendSystemNotification(
           DataTache.responsable,
@@ -172,16 +184,19 @@ module.exports = function (app) {
       }
 
       //clean des taches commencés
-      console.log('DataUtilisateur', DataUtilisateur);
+      console.log("DataUtilisateur", DataUtilisateur);
       for (var i = 0; i < DataUtilisateur.listeTacheCommences.length; i++) {
         if (DataUtilisateur.listeTacheCommences[i]._id == DataTache._id) {
-          DataUtilisateur.listeTacheCommences[i] = {_id:"", dateDebut: new Date}; //je veux faire splice mais visiblement ca bug
+          DataUtilisateur.listeTacheCommences[i] = {
+            _id: "",
+            dateDebut: new Date(),
+          }; //je veux faire splice mais visiblement ca bug
           break;
         }
       }
 
       await DataUtilisateur.save();
-      console.log('DataUtilisateur APRES', DataUtilisateur);
+      console.log("DataUtilisateur APRES", DataUtilisateur);
       await DataTache.save();
       await NewRapport.save();
       let result = await TachesTools.updateProjetFromTache(req.body._idTache);
@@ -390,7 +405,9 @@ module.exports = function (app) {
           ) {
             res.json({
               erreur:
-                "la tache prédécesseuse "+DataPrede.titre+" a une date de fin APRES la tache que vous voulez créer. C'est incohérent." ,
+                "la tache prédécesseuse " +
+                DataPrede.titre +
+                " a une date de fin APRES la tache que vous voulez créer. C'est incohérent.",
               success: false,
             });
             return;
