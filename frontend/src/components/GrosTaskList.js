@@ -7,8 +7,6 @@ import Loading2 from "./Loading2";
 import * as AIIcons from "react-icons/ai";
 import ProjectForm from "./ProjectForm";
 function GrosTaskList(props) {
-  console.log("yes");
-  console.log(props);
   const [state, setState] = useState({
     diving: true,
     subTasks: [],
@@ -22,7 +20,6 @@ function GrosTaskList(props) {
   else if (state.loading) {
     return <Loading2></Loading2>;
   } else if (state.diving && props.user.email === props.project.responsable) {
-    console.log("diving");
     return (
       <>
         {props.tasks.map((item, index) => {
@@ -129,7 +126,6 @@ function GrosTaskList(props) {
           style={{ position: "fixed", bottom: 10, right: 20, zIndex: 1 }}
           onClick={() => {
             if (state.isPro2 && !state.add) {
-              console.log("on est en Tache2");
               setState({ add: true });
             }
           }}

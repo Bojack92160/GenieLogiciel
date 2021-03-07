@@ -29,7 +29,7 @@ const IdDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { id: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,

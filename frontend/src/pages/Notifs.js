@@ -4,7 +4,6 @@ import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import Container from "react-bootstrap/Container";
 function Notifs(props) {
-  console.log(props.notifs);
   if (!props.notifs || props.notifs === 0)
     return (
       <div
@@ -27,7 +26,6 @@ function Notifs(props) {
     <Container>
       <Row>
         {[...props.notifs].reverse().map((item, index) => {
-          console.log(item);
           return (
             <Col lg={12} sm={12} key={index} style={{ marginTop: "10px" }}>
               <Card style={{ height: "100%" }}>

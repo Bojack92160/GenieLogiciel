@@ -1,14 +1,12 @@
-import { React, useEffect, useState } from "react";
+import { React, useState } from "react";
 
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import TextField from "@material-ui/core/TextField";
 import Slider from "@material-ui/core/Slider";
-import { withStyles } from "@material-ui/core/styles";
 import Button from "react-bootstrap/Button";
 function CrCard(props) {
-  console.log(props);
   const [stop, setStop] = useState(false);
   const [debut, setDebut] = useState("");
   const [fin, setFin] = useState("");
@@ -150,7 +148,7 @@ function CrCard(props) {
                     var myHeaders = new Headers();
                     myHeaders.append("Content-Type", "application/json");
                     var raw = JSON.stringify(body);
-                    console.log(raw);
+
                     var reqOptions = {
                       method: "POST",
                       headers: myHeaders,
@@ -160,7 +158,6 @@ function CrCard(props) {
                     fetch(apiUrl, reqOptions)
                       .then((res) => res.json())
                       .then((data) => {
-                        console.log(data);
                         setStop(true);
                       });
                     //console.log(body);

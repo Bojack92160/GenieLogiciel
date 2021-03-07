@@ -34,7 +34,7 @@ const ClientDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { id: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -59,7 +59,7 @@ const ClientDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { email: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -84,7 +84,7 @@ const ClientDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { entreprise: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,

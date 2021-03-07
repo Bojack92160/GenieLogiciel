@@ -10,8 +10,6 @@ import GrosTaskList from "./GrosTaskList";
 import * as AIIcons from "react-icons/ai";
 import TaskForm from "./TaskForm";
 function Project(props) {
-  console.log("cette page");
-  console.log(props);
   const [state, setState] = useState({
     mode: false,
     loading: false,
@@ -92,7 +90,6 @@ function Project(props) {
       .then((data) => {
         var dt = state.tasksObj;
         data.map((item, index) => {
-          console.log(item);
           if (index !== 0) {
             const test = [
               item._id.toString(),
@@ -163,7 +160,6 @@ function Project(props) {
                   tasks: state.tasks,
                   tasksObj: state.tasksObj,
                 });
-                console.log("on est en tache");
               }
             }}
           >
@@ -248,7 +244,6 @@ function Project(props) {
                       tasks: state.tasks,
                       tasksObj: state.tasksObj,
                     });
-                    console.log("on est en tache");
                   }
                 }}
               >
@@ -273,7 +268,6 @@ function Project(props) {
       }
 
       if (props.user.email === props.project.responsable) {
-        console.log(state.tasksObj?.length);
         return (
           <div className="home">
             <Container>
@@ -320,7 +314,6 @@ function Project(props) {
                       tasks: state.tasks,
                       tasksObj: state.tasksObj,
                     });
-                    console.log("on est en tache");
                   }
                 }}
               >

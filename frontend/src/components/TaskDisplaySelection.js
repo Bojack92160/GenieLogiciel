@@ -33,7 +33,7 @@ const TaskDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { id: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -58,7 +58,7 @@ const TaskDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { titre: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -83,7 +83,7 @@ const TaskDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { date: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -108,7 +108,7 @@ const TaskDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { responsable: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -133,7 +133,7 @@ const TaskDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { collaborateur: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,

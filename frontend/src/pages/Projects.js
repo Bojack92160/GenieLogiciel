@@ -11,7 +11,7 @@ function Projects(props) {
   const add = () => {
     setstate({ isPro: state.isPro, addproj: true });
   };
-  console.log(props.Userdata.role);
+
   if (state.addproj) {
     return <ProjectForm></ProjectForm>;
   }
@@ -48,7 +48,6 @@ function Projects(props) {
               style={{ position: "fixed", bottom: 10, right: 20 }}
               onClick={() => {
                 if (!state.isPro) {
-                  console.log("on est en projet");
                   add();
                 }
               }}

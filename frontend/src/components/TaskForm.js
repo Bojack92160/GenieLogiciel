@@ -48,16 +48,12 @@ const TaskForm = (props) => {
     _idMere: props.projectInfo._id,
   });
 
-  console.log("-------------add-----------", state);
   const handleCheck = (event) => {
-    console.log(event.target.value);
     var res = state.predecesseurs;
     if (state.predecesseurs.length !== 0) {
       if (state.predecesseurs.find((elem) => elem === event.target.value)) {
-        console.log("ok");
         res = res.filter((item) => item !== event.target.value);
       } else {
-        console.log("nope");
         res.push(event.target.value);
       }
     } else {
@@ -159,7 +155,6 @@ const TaskForm = (props) => {
   const history = useHistory();
   return (
     <>
-      <h1>Créer une Tâche</h1>
       <form className={classes.root} noValidate autoComplete="off">
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -309,7 +304,6 @@ const TaskForm = (props) => {
               fetch(apiUrl, reqOptions)
                 .then((res) => res.json())
                 .then((data) => {
-                  console.log(data);
                   if (data.success) {
                     history.goBack();
                   } else {

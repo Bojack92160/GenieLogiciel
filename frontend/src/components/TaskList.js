@@ -6,11 +6,9 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import GrosTaskList from "./GrosTaskList";
 import Button from "react-bootstrap/Button";
 function TaskList(props) {
-  console.log("tasks", props);
   const [state, setstate] = useState({ diving: true });
   const [listetaches, setListeTache] = useState([]);
   const addToStart = (e) => {
-    console.log(e.target.id);
     const id = e.target.id;
     const userid = props.user._id;
     const apiUrl = "http://localhost:3001/Action/CommenceTache";
@@ -27,7 +25,6 @@ function TaskList(props) {
     fetch(apiUrl, reqOptions)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data.success) {
           e.target.style.background = "#ffc107";
           alert("Vous avez commencé à travailler sur la tâche");

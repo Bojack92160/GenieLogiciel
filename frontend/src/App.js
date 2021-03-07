@@ -7,12 +7,9 @@ import Projects from "./pages/Projects";
 import Explore from "./pages/Explore";
 import Notifs from "./pages/Notifs";
 import Settings from "./pages/Settings";
-import { td } from "./components/TasksData";
 import loading from "./components/Loading";
 import CR from "./pages/CR";
-import LoginForm from "./components/loginForm";
-import SignUp from "./components/SignUp";
-import ProjectForm from "./components/ProjectForm";
+
 import {
   Button,
   CssBaseline,
@@ -58,25 +55,23 @@ function App() {
     email: "",
     mdp: "",
   });
+  const [logged, setLogged] = useState(false);
 
   const handleMailChange = (e) => {
     setAppState({ mdp: appState.mdp, email: e.target.value });
-    console.log(appState.email);
   };
   const handleMDPChange = (e) => {
     setAppState({ mdp: e.target.value, email: appState.email });
-    console.log(appState.mdp);
   };
 
   const login = () => {
-    console.log("logged");
     setAppState({ loading: true });
     const apiUrl = "http://localhost:3001/login";
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const user = { email: "Admin@gmail.com", mdp: "Admin" };
+    const user = { email: appState.email, mdp: appState.mdp };
     var raw = JSON.stringify(user);
-    console.log(user);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -88,7 +83,6 @@ function App() {
       .then((data) => {
         console.log(data);
         if (data.success) {
-          console.log("bonnerep");
           setAppState({
             loading: false,
             userData: data.dataUtilisateur,
@@ -98,6 +92,7 @@ function App() {
             isLoading: true,
             islogged: true,
           });
+          setLogged(true);
         } else {
           window.alert("Mauvais identifiants");
         }
@@ -106,7 +101,7 @@ function App() {
   };
   const enterHandle = useCallback(
     (event) => {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !logged) {
         login();
       }
     },
@@ -119,35 +114,7 @@ function App() {
       document.removeEventListener("keydown", enterHandle, false);
     };
   }, [enterHandle]);
-  /* useEffect(() => {
-    setAppState({ loading: true });
-    const apiUrl = "http://localhost:3001/login";
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify(user);
-
-    var reqOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(apiUrl, reqOptions)
-      .then((res) => res.json())
-      .then((data) => {
-        //console.log(data);
-        setAppState({
-          loading: false,
-          userData: data.dataUtilisateur,
-          notifsData: data.dataNotifications,
-          projectsData: data.dataProjects,
-          tasksData: data.dataTaches,
-        });
-      })
-      .catch((error) => console.log("error", error));
-  }, [setAppState]); */
-  if (!appState.islogged) {
+  if (!logged) {
     return (
       <React.Fragment>
         <main className="App">

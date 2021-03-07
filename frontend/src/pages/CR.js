@@ -36,13 +36,12 @@ function CR(props) {
         .then((res) => res.json())
         .then((data) => {
           data = Object.assign({}, ...data);
-          console.log(data);
+
           setstate((state) => [...state, data]);
         });
     }
   }, [setstate]);
 
-  console.log(props);
   if (props.user.role === ("administrateur" || "responsable de projet")) {
     if (mode) {
       if (crs.length === 0) {
@@ -67,14 +66,13 @@ function CR(props) {
                   <Col>
                     <Button
                       onClick={() => {
-                        console.log("à");
                         const body = { email: recherche };
                         const apiUrl =
                           "http://localhost:3001/Recherche/Rapports";
                         var myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
                         var raw = JSON.stringify(body);
-                        console.log(raw);
+
                         var reqOptions = {
                           method: "POST",
                           headers: myHeaders,
@@ -84,7 +82,6 @@ function CR(props) {
                         fetch(apiUrl, reqOptions)
                           .then((res) => res.json())
                           .then((data) => {
-                            console.log(data);
                             setCRs(data);
                           });
                       }}
@@ -124,7 +121,7 @@ function CR(props) {
                           var myHeaders = new Headers();
                           myHeaders.append("Content-Type", "application/json");
                           var raw = JSON.stringify(body);
-                          console.log(raw);
+
                           var reqOptions = {
                             method: "POST",
                             headers: myHeaders,
@@ -146,7 +143,6 @@ function CR(props) {
               </Row>
               <Row>
                 {crs.map((item) => {
-                  console.log(item);
                   return (
                     <Col lg={12} sm={12}>
                       <Card>

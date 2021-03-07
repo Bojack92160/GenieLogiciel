@@ -52,7 +52,7 @@ const UserDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { id: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -78,7 +78,7 @@ const UserDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { nom: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -103,7 +103,7 @@ const UserDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { prenom: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -129,7 +129,7 @@ const UserDisplaySelection = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const req = { email: event.target.value };
     var raw = JSON.stringify(req);
-    console.log(req);
+
     var reqOptions = {
       method: "POST",
       headers: myHeaders,
@@ -143,7 +143,6 @@ const UserDisplaySelection = (props) => {
       .then((res) => {
         console.error(res);
         if (res.length > 0) {
-          console.log(res);
           setState({ users: res, loading: false });
         }
       });

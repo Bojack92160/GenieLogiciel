@@ -4,11 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 
-const getNow = () => {
-  const now = new Date();
-  console.log(now.toLocaleDateString());
-  return now.toLocaleDateString();
-};
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -220,7 +215,6 @@ const ProjectForm = () => {
               fetch(apiUrl, reqOptions)
                 .then((res) => res.json())
                 .then((data) => {
-                  console.log(data);
                   if (data.success) {
                     history.goBack();
                   } else {
